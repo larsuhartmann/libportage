@@ -1,0 +1,37 @@
+
+
+=The XPAK data-format=
+
+every gentoo binary package has a xpak-blob attached to it which contains lots
+information like the use flags it was built with, the ebuild it was built from,
+the environmental variables, cflags, cxxflags .... used.
+
+lets have a look at this XPAK:
+
+after every tarball you find a binary blob(the xpak), an offset(32bit unsigned
+big int - every other length value is of the same kind) and finally the String
+"STOP":
+<tarball><xpak><offset><"STOP">
+
+if we read the offset and get back <offset> bytes from the end of the offset,
+we have the start of the XPAK Block which is easily to recognize as it starts
+with the String "XPAKPACK". this xpak block consists of the string "XPAKPACK",
+the index-len, the data-length, a binary blob which is <index-len> long (the
+index block), a binary blob which is <data-len> long (the data block) and
+finally the String "XPAKSTOP":
+<"XPAKPACK"><index_len><data_len><index><data><"XPAKSTOP">
+
+now we take a closer look at the index block:
+here we find several concatened index blocks whith a total length <index_len>:
+<indexblock><indexblock><indexblock>
+
+each of those indexblocks starts with the length of its name(name_len),
+followed by the name field which is <name_len>bytes long, followed by
+<data-offset>, followed by <data_len>:
+<name_len><name><data_offset><data_len>
+Ex: <3><"USE"><0><12> (name_len=3bytes, name=USE, data_offset=0, data_len=12
+
+now lets take a closer look at the data block:
+the data block contains the corresponding data to the index elements. for the
+upper example the first data-block might look like:
+<"SSL,GTK,X,QT">
