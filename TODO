@@ -1,0 +1,17 @@
+lpversionatom_t *
+lpgetversionatomstring(const str *s);
+
+lpversionatom_t *
+lpgetversionatomfile(const FILE *f);
+
+lpversionatom_t *
+lpgetversionatomfd(const int fd);
+
+lpxpak_t *
+lpgetxpakstring(const char *s);
+
+lpxpak_t *
+lpgetxpakfile(const FILE *f);
+
+lpxpak_t *
+lpgetxpakfd(const int fd);
