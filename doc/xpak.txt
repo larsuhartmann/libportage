@@ -41,40 +41,38 @@ a <index-len> bytes long binary blob which holds the index, a <data-len> bytes
 To actually get the index and the data, we cut out <index_len> bytes, after the
 end of <data_len> and for the index block and cut out the next <data_len> bytes
 for the data block. If we have done everything right up to this point, the
-following bytes would be the the ASCII formatted string "XPAKSTOP".
+following bytes would be the ASCII formatted string "XPAKSTOP".
 
-The actual data is concatened to one big block - so if we want to read it we
+The actual data is truncated to one big block - so if we want to read it we
 need the actual positions of each information in this big data block, this
 information can be obtained from the indices which are stored in the index
 block.
 
 Now we take a closer look at the index block:
-The index block consists of several concatened index blocks:
+The index block consists of several truncated index blocks:
 
 |<-----------------------index_len---------------------->|
 |<index1><index2><index3><index4><index5><index6><index7>|
 
-as you can see, the indexblock consits of truncated index elements with length
-<index_len>
-
-each of those indices stands for one information in the data block and consists
-of the length of its name - <name_len>, a <name_len> bytes long ASCII
+the index block holds all information we need to find the data we want in the
+<data> block. It consists of truncated index elements with length <index_len>.
+Each of those index elements stands for one information in the data block and
+consists of the length of its name - <name_len>, a <name_len> bytes long ASCII
 encoded String - the Name of the data block, this index belongs to, the offset
 of the data block (counted from the beginning of <data>) - <data_offset>, and
 the length of that data block - <data_len>:
 
-          <-name_len>
-<name_len><  name   ><data_offset><data_len>
-Ex: <3><"USE"><0><12>
+          <-name_len->
+<name_len><   name   ><data_offset><data_len>
 
 now lets take a closer look at the data block:
-the data block contains concenated data blocks with a total length of
+the data block contains truncated data blocks with a total length of
 <data_len>:
 
 <-----------------------data_len----------------------->
 <data1><data2><data3><data4><data5><data6><data7><data8>
 
-this binary block with a length of <data_len> bytes, consists of concenated
+this binary block with a length of <data_len> bytes, consists of truncated
 data.
 
 to select one data element, we need the <data_offset> and the <data_len> from
