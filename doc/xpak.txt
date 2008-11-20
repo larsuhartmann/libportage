@@ -11,16 +11,16 @@ The XPAK data format
 Data Types: every offset or len value in xpak is stored as an unsigned 32bit
             integer in big endian byte order.
 
-every gentoo binary package has a xpak- attached to it which contains
-built time information like the use flags it was built with, the ebuild it was
-built from, the environmental variables, CFLAGs, CXXFLAGs, ....
+every gentoo binary package has a xpak attached to it which contains built time
+information like the use flags it was built with, the ebuild it was built from,
+the environmental variables, CFLAGs, CXXFLAGs, ....
 
 lets have a look at this XPAK:
 
-if you look at a binpkg with a hex-editor you'll notice the following:
-after the data, which belongs to the tarball you find a binary blob - <xpak>,
-an offset which holds the bytes from the start of the <xpak> to the end of the
-file - <xpak_offset> and finally the String "STOP":
+if you look at a gentoo binary package (binpkg) with a hex-editor you'll notice
+the that after the data, which belongs to the tarball you find a binary blob
+ - the <xpak>, an offset which holds the bytes from the start of the <xpak> to
+the end of the file - <xpak_offset> and finally the String "STOP":
 
       <------xpak_offset------>
 <tbz2><xpak><xpak_offset>"STOP"
