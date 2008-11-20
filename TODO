@@ -1,3 +1,7 @@
+libs
+====
+
+=lpversionatom.h=
 lpversionatom_t *
 lpgetversionatomstring(const str *s);
 
@@ -7,6 +11,7 @@ lpgetversionatomfile(const FILE *f);
 lpversionatom_t *
 lpgetversionatomfd(const int fd);
 
+=lpxpak.h=
 lpxpak_t *
 lpgetxpakstring(const char *s);
 
@@ -15,3 +20,8 @@ lpgetxpakfile(const FILE *f);
 
 lpxpak_t *
 lpgetxpakfd(const int fd);
+
+doc
+===
+xpak.txt
+package-naming.txt
