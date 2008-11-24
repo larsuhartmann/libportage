@@ -11,14 +11,16 @@ THE XPAK DATA FORMAT
 Data Types
 ==========
 
-integer: every offset or length(len) value in xpak is stored as an unsigned
-         32bit integer in big endian byte order(32bit unsigned big int or
-         uint32(big) ).
+integer: every offset or length(len) value in this domumentation will be an
+         unsigned 32bit integer in big endian byte order(32bit unsigned big
+         int or uint32(big) ).
 
 Synopsis
 ========
 
-<tarball>: <tar><xpak><xpak_offset><"STOP">
+<tarball>:      |<-------xpak_offset------->|
+           <tar>|<xpak><xpak_offset><"STOP">|
+
 <xpak>   : <"XPAKPACK"><index_len><data_len><index><data><"XPAKSTOP">
 
 <index>  : |<-------------index_len------------->|
