@@ -91,8 +91,8 @@ belongs to, the offset of the data block (counted from the beginning of
 now lets take a closer look at the data block: the data block contains
 truncated data blocks with a total length of <data_len>:
 
-|<-----------------------data_len----------------------->|
-|<data1><data2><data3><data4><data5><data6><data7><data8>|
+|<------------------------data_len------------------------>|
+|<data1><data2><data3><data4><data5><data6><data7><data...>|
 
 his binary block with a length of <data_len> bytes, consists of truncated
 data.
@@ -102,5 +102,5 @@ the index, if we have those we can count <data_offset> bytes from the start of
 the data block, and then cut out the next <data_len> bytes. there we got our
 data Block:
 
-|<---------data_offset--------->|<-data_len->|
-|<datadatadatadatadatadatadatad>|<datawewant>|
+|<------data_offset------>|<--data_len-->|
+|<data1data2data3data....>|<data-we-want>|
