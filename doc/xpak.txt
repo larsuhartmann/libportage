@@ -5,12 +5,34 @@
 | (lars<at>chaotika<dot>org) to obtain one                                  |
 +---------------------------------------------------------------------------+
 
-The XPAK data format
+THE XPAK DATA FORMAT
 ====================
 
-Data Types: every offset or length(len) value in xpak is stored as an unsigned
-            32bit integer in big endian byte order(32bit unsigned big int or
-            uint32(big) ).
+Data Types
+==========
+
+integer: every offset or length(len) value in xpak is stored as an unsigned
+         32bit integer in big endian byte order(32bit unsigned big int or
+         uint32(big) ).
+
+Synopsis
+========
+
+<tarball>: <tar><xpak><xpak_offset><"STOP">
+<xpak>   : <"XPAKPACK"><index_len><data_len><index><data><"XPAKSTOP">
+
+<index>  : |<-------------index_len------------->|
+           |<index1><index2><index3><index4><...>|
+
+<indexN> :            |<-name_len->|
+           |<name_len>|<   name   >|<data_offset><data_len>
+
+<data>   : |<-------------data_len------------>|
+           |<-data_offset->|<-data_len->|
+           |<     data    >|<  data_N  >|<data>|
+
+Detailed
+========
 
 every gentoo binary package has a xpak attached to it which contains built
 time information like the use flags it was built with, the ebuild it was built
