@@ -11,7 +11,7 @@ THE XPAK DATA FORMAT
 Data Types
 ==========
 
-integer: every offset or length(len) value in this domumentation will be an
+integer: every offset or length(len) value in this documentation will be an
          unsigned 32bit integer in big endian byte order(32bit unsigned big
          int or uint32(big) ).
 
@@ -80,7 +80,7 @@ The index block consists of several truncated index blocks:
 |<index1><index2><index3><index4><index5><index6><index7>|
 
 the index block holds all information we need to find the data we want in the
-<dfata> block. It consists of truncated index elements with a length
+<data> block. It consists of truncated index elements with a length
 <index_len>. Each of those index elements stands for one information in the
 data block and consists of the length of its name - <name_len>, a <name_len>
 bytes long ASCII encoded String - the Name of the data block, this index
