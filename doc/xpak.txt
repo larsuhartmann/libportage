@@ -22,8 +22,8 @@ the that after the data, which belongs to the tarball you find a binary blob
  - the <xpak>, an offset which holds the bytes from the start of the <xpak> to
 the end of the file - <xpak_offset> and finally the String "STOP":
 
-      <------xpak_offset------>
-<tbz2><xpak><xpak_offset>"STOP"
+      |<------xpak_offset------>|
+<tbz2>|<xpak><xpak_offset>"STOP"|
 
 here you see the tbz2 archive, and the attached xpak-blob, the xpak-offset and
 the ASCII string "STOP" at the end.
@@ -35,8 +35,8 @@ the index block - <index-len>, the length of the data block - <data-len>,
 a <index-len> bytes long binary blob which holds the index, a <data-len> bytes
  long binary blob which holds the data and the String "XPAKSTOP" at the end:
 
-                                 <-index_len-><-data_len->
-"XPAKPACK"<index_len><data_len><   index   ><   data   >"XPAKSTOP"
+                               |<-index_len->|<-data_len->|
+"XPAKPACK"<index_len><data_len>|<   index   >|<   data   >|"XPAKSTOP"
 
 To actually get the index and the data, we cut out <index_len> bytes, after the
 end of <data_len> and for the index block and cut out the next <data_len> bytes
@@ -62,17 +62,17 @@ encoded String - the Name of the data block, this index belongs to, the offset
 of the data block (counted from the beginning of <data>) - <data_offset>, and
 the length of that data block - <data_len>:
 
-          <-name_len->
-<name_len><   name   ><data_offset><data_len>
+          |<-name_len->|
+<name_len>|<   name   >|<data_offset><data_len>
 
 now lets take a closer look at the data block:
 the data block contains truncated data blocks with a total length of
 <data_len>:
 
-<-----------------------data_len----------------------->
-<data1><data2><data3><data4><data5><data6><data7><data8>
+|<-----------------------data_len----------------------->|
+|<data1><data2><data3><data4><data5><data6><data7><data8>|
 
-this binary block with a length of <data_len> bytes, consists of truncated
+his binary block with a length of <data_len> bytes, consists of truncated
 data.
 
 to select one data element, we need the <data_offset> and the <data_len> from
@@ -80,5 +80,5 @@ the index, if we have those we can count <data_offset> bytes from the start of
 the data block, and then cut out the next <data_len> bytes. there we got our
 data Block:
 
-<---------data_offset---------><-data_len->
-<datadatadatadatadatadatadatad><datawewant>
+|<---------data_offset--------->|<-data_len->|
+|<datadatadatadatadatadatadatad>|<datawewant>|
