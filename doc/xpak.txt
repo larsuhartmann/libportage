@@ -45,9 +45,10 @@ The XPAK Data Format
   lets have a look at this XPAK:
 
   if you look at a gentoo binary package (binpkg) with a hex-editor you'll
-  notice the that after the data, which belongs to the tarball you find a binary
-  blob - the <xpak>, an offset which holds the bytes from the start of the
-  <xpak> to the end of the file - <xpak_offset> and finally the String "STOP":
+  notice the that after the data, which belongs to the tarball you find a
+  binary blob - the <xpak>, an offset which holds the bytes from the start of
+  the <xpak> to the end of the file - <xpak_offset> and finally the String
+  "STOP":
 
         |<------xpak_offset------>|
   <tbz2>|<xpak><xpak_offset>"STOP"|
