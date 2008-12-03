@@ -40,7 +40,7 @@ Synopsis
   <indexN> :           |<-name_len->|
              <name_len>|<   name   >|<data_offset><data_len>
 
-  <data>   : |<-------------data_len------------>|
+  <data>   : |<--------------data_len------------->|
              |<-dataN_offset->|<-dataN_len->|
              |<     data     >|<  data_N   >|<data>|
 
