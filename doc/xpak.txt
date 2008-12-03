@@ -105,8 +105,8 @@ Detailed
  Now lets take a closer look at the data block: the data block contains
  truncated data blocks with a total length of <data_len>:
 
- |<------------------------data_len------------------------>|
- |<data1><data2><data3><data4><data5><data6><data7><data...>|
+         |<------------------------data_len------------------------>|
+         |<data1><data2><data3><data4><data5><data6><data7><data...>|
 
  This binary block with a length of <data_len> bytes, consists of truncated
  data.
