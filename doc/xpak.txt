@@ -46,7 +46,7 @@ Synopsis
 Detailed
 ========
 
- Every gentoo binary package has a xpak attached to it which contains built
+ Every gentoo binary package has a xpak attached to it which contains build
  time information like the use flags it was built with, the ebuild it was
  built from, the environmental variables, CFLAGs, CXXFLAGs, ....
 
