@@ -8,14 +8,22 @@
                              The XPAK Data Format
                              ====================
 
-Data Types
-==========
+Notes
+=====
+ Data Types
+ ==========
 
-  integer: every offset or length(len) value in this documentation will be an
+  Integer: every offset or length(len) value in this documentation will be an
            unsigned 32bit integer in big endian byte order(32bit unsigned big
            int or uint32(big) ).
 
-  String:  All Strings, Mentioned in this Documentation are ASCII encoded
+  String:  All Strings, Mentioned in this Documentation are ASCII encoded.
+
+ Vertical Bars
+ =============
+
+  The vertical bars '|' are not part of the file format, they are merely used
+  to illustrate how the offset values apply to the data.
 
 Synopsis
 ========
