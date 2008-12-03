@@ -50,8 +50,8 @@ Detailed
  the <xpak> to the end of the file - <xpak_offset> and finally the String
  "STOP":
 
-       |<------xpak_offset------>|
- <tbz2>|<xpak><xpak_offset>"STOP"|
+                            |<------xpak_offset------>|
+                      <tbz2>|<xpak><xpak_offset>"STOP"|
 
  Here you see the tbz2 archive, and the attached xpak-blob, the xpak-offset
  and the string "STOP" at the end.
@@ -63,8 +63,8 @@ Detailed
  <index-len> bytes long binary blob which holds the index, a <data-len> bytes
  long binary blob which holds the data and the String "XPAKSTOP" at the end:
 
-                                |<-index_len->|<-data_len->|
- "XPAKPACK"<index_len><data_len>|<   index   >|<   data   >|"XPAKSTOP"
+                                   |<-index_len->|<-data_len->|
+    "XPAKPACK"<index_len><data_len>|<   index   >|<   data   >|"XPAKSTOP"
 
  To actually get the index and the data, we cut out <index_len> bytes, after
  the end of <data_len> and for the index block and cut out the next <data_len>
@@ -79,8 +79,8 @@ Detailed
  Now we take a closer look at the index block:
  The index block consists of several truncated index blocks:
 
- |<-----------------------index_len---------------------->|
- |<index1><index2><index3><index4><index5><index6><index7>|
+          |<-----------------------index_len---------------------->|
+          |<index1><index2><index3><index4><index5><index6><index7>|
 
  The index block holds all information we need to find the data we want in the
  <data> block. It consists of truncated index elements with a length
@@ -90,8 +90,8 @@ Detailed
  offset of the data block (counted from the beginning of <data>) -
  <data_offset>, and the length of that data block - <data_len>:
 
-           |<-name_len->|
- <name_len>|<   name   >|<data_offset><data_len>
+                         |<-name_len->|
+               <name_len>|<   name   >|<data_offset><data_len>
 
  Now lets take a closer look at the data block: the data block contains
  truncated data blocks with a total length of <data_len>:
@@ -107,5 +107,5 @@ Detailed
  of the data block, and then cut out the next <data_len> bytes. there we got
  our data Block:
 
- |<------data_offset------>|<--data_len-->|
- |<data1data2data3data....>|<data-we-want>|
+                  |<------data_offset------>|<--data_len-->|
+                  |<data1data2data3data....>|<data-we-want>|
