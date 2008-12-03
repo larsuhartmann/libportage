@@ -32,8 +32,8 @@ Synopsis
              <name_len>|<   name   >|<data_offset><data_len>
 
   <data>   : |<-------------data_len------------>|
-             |<-data_offset->|<-data_len->|
-             |<     data    >|<  data_N  >|<data>|
+             |<-dataN_offset->|<-dataN_len->|
+             |<     data     >|<  data_N   >|<data>|
 
 Detailed
 ========
@@ -91,7 +91,7 @@ Detailed
  <data_offset>, and the length of that data block - <data_len>:
 
                          |<-name_len->|
-               <name_len>|<   name   >|<data_offset><data_len>
+               <name_len>|<   name   >|<dataN_offset><dataN_len>
 
  Now lets take a closer look at the data block: the data block contains
  truncated data blocks with a total length of <data_len>:
@@ -107,5 +107,5 @@ Detailed
  of the data block, and then cut out the next <data_len> bytes. there we got
  our data Block:
 
-                  |<------data_offset------>|<--data_len-->|
-                  |<data1data2data3data....>|<data-we-want>|
+                  |<-----dataN_offset----->|<--dataN_len->|
+                  |<data1data2data3data...>|<data-we-want>|
