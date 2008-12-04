@@ -13,6 +13,11 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
+#define __LP_XPAK_STOP_OFFSET__         4
+#define __LP_XPAK_OFFSET_OFFSET__       8
 
 typedef struct {
      char *name;
@@ -53,7 +58,25 @@ lpxpak_t *
 lpgetxpakfile(FILE *file)
 {
      lpxpak_t *xpak;
+     char *xpakstr;
+     char tmp[5];
+     uint32_t xpakoffset;
+     int i;
      
+     fseek(file, __LP_XPAK_STOP_OFFSET__*-1, SEEK_END);
+     fread(tmp, 1, 4, file);
+     tmp[4] = '\0';
+
+     if (strcmp(tmp, "STOP") != 0) {
+          errno = EINVAL;
+          return NULL;
+     }
+
+     fseek(file, __LP_XPAK_OFFSET_OFFSET__*-1, SEEK_END);
+     fread(&xpakoffset, 4, 1, file);
+     xpakoffset = ntohl(xpakoffset);
+     printf("%i\n", xpakoffset);
+
      xpak = lpgetxpakstr(NULL);
      return xpak;
 }
@@ -70,6 +93,7 @@ lpgetxpakpath(char *path)
      if (! S_ISREG(ststr.st_mode) ) {
           errno = EINVAL;
      }
+
      xpakfile = fopen(path, "r");
      
      xpak = lpgetxpakfile(xpakfile);
