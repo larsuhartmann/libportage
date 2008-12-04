@@ -30,8 +30,8 @@ Notes
 Synopsis
 ========
 
-  <tarball>:      |<------xpak_offset------>|
-             <tar>|<xpak><xpak_offset>"STOP"|
+  <tarball>:      |<-xpak_offset->|
+             <tar>|<    xpak>     |<xpak_offset>"STOP"
 
   <xpak>   : "XPAKPACK"<index_len><data_len><index><data>"XPAKSTOP"
 
