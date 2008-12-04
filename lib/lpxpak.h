@@ -41,7 +41,13 @@ lpxpak_t *
 lpgetxpakstr(const char *s)
 {
      lpxpak_t *xpak;
+     char tmp[9];
      
+     memcpy(tmp, s, 8);
+     if (! strcmp(tmp, "XPAKPACK") == 0) {
+          errno = EINVAL;
+          return NULL;
+     }
      xpak = (lpxpak_t *)malloc(sizeof(lpxpak_t));
      return xpak;
 }
@@ -49,9 +55,11 @@ lpgetxpakstr(const char *s)
 lpxpak_t *
 lpgetxpakfd(int fd)
 {
+     FILE *file;
      lpxpak_t *xpak;
-     
-     xpak = lpgetxpakfile(NULL);
+
+     file = fdopen(fd, "r");
+     xpak = lpgetxpakfile(file);
      return xpak;
 }
 
@@ -61,28 +69,15 @@ lpgetxpakfile(FILE *file)
      lpxpak_t *xpak;
      char *xpakstr;
      char tmp[5];
-     uint32_t xpakoffset, test;
-     int ret;
+     uint32_t xpakoffset;
 
      /* seek to the start of the STOP string */
      fseek(file, __LP_XPAK_STOP_OFFSET__*-1, SEEK_END);
-     
-#ifdef Debug
-     printf("position after seek: %ld\n", ftell(file));
-#endif
-     
+
      /* read in the STOP string */
      fread(tmp, 1, 4, file);
      tmp[4] = '\0';
 
-#ifdef Debug
-     printf("position after read: %ld\n", ftell(file));
-#endif
-     
-#ifdef Debug
-     puts(tmp);
-#endif
-     
      /* check if the read in string is "STOP" - otherwise this here would be a
       * non valid / non xpak file */
      if (strcmp(tmp, "STOP") != 0) {
@@ -92,52 +87,30 @@ lpgetxpakfile(FILE *file)
 
      /* seek to the start of the xpak_offset value */
      fseek(file, __LP_XPAK_OFFSET_OFFSET__*-1, SEEK_END);
+
      /* read the offset */
-     
-#ifdef Debug
-     printf("position after seek: %ld\n", ftell(file));
-#endif
-     
      fread(&xpakoffset, 4, 1, file);
-     
-#ifdef Debug
-     printf("position after read: %ld\n", ftell(file));
-#endif
 
      /* convert it from network to local byteorder */
      xpakoffset = ntohl(xpakoffset);
-     
-#ifdef Debug
-     printf("%u\n", xpakoffset);
-#endif
-     
+
+     /* read xpak-blob into xpakstr  */
      xpakstr = (char *)malloc(xpakoffset+1);
-     fseek(file, (long)xpakoffset*-1, SEEK_END);
-     
-#ifdef Debug
-     printf("position after seek: %ld\n", ftell(file));
-#endif
-     ret = fread(&test, 1, 4, file);
-     printf("returnwert von fread: %u\n", ret);
+     fseek(file, (long)(xpakoffset+__LP_XPAK_OFFSET_OFFSET__)*-1, SEEK_END);
 
-#ifdef Debug
-     printf("position after read: %ld\n", ftell(file));
-#endif
+     fread(xpakstr, (size_t)xpakoffset, 1, file);
 
-     test = ntohl(test);
-     printf("%u\n", test);
-
-     xpak = lpgetxpakstr(NULL);
+     xpak = lpgetxpakstr(xpakstr);
      return xpak;
 }
 
 lpxpak_t *
-lpgetxpakpath(char *path) 
+lpgetxpakpath(char *path)
 {
      struct stat ststr;
      lpxpak_t *xpak;
      FILE *xpakfile;
-     
+
      /* check if path points to a file */
      if (stat(path, &ststr) == -1) 
           return NULL;
