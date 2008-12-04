@@ -60,18 +60,19 @@ Detailed
  the <xpak> to the end of the file - <xpak_offset> and finally the String
  "STOP":
 
-                            |<------xpak_offset------>|
-                      <tbz2>|<xpak><xpak_offset>"STOP"|
+                            |<-xpak_offset->|
+                      <tbz2>|<     xpak    >|<xpak_offset>"STOP"|
 
  Here you see the tbz2 archive, and the attached xpak-blob, the xpak-offset
  and the string "STOP" at the end.
 
- If we read the offset and count <offset> bytes backwards from the end of the
- file, we have found the start of the XPAK Block which starts with the String
- "XPAKPACK". this xpak block consists of the string "XPAKPACK", the length of
- the index block - <index-len>, the length of the data block - <data-len>, a
- <index-len> bytes long binary blob which holds the index, a <data-len> bytes
- long binary blob which holds the data and the String "XPAKSTOP" at the end:
+ If we read the offset and count <offset> bytes backwards from the start of
+ xpak_offset, we have found the start of the XPAK Block which starts with the
+ String "XPAKPACK". this xpak block consists of the string "XPAKPACK", the
+ length of the index block - <index-len>, the length of the data block -
+ <data-len>, a <index-len> bytes long binary blob which holds the index, a
+ <data-len> bytes long binary blob which holds the data and the String
+ "XPAKSTOP" at the end:
 
                                    |<-index_len->|<-data_len->|
     "XPAKPACK"<index_len><data_len>|<   index   >|<   data   >|"XPAKSTOP"
