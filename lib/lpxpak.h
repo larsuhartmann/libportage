@@ -64,7 +64,9 @@ lpxpak_parse_fd(int fd)
      FILE *file;
      lpxpak_t *xpak;
 
-     file = fdopen(fd, "r");
+     if ( (file = fdopen(fd, "r")) == NULL)
+          return NULL;
+     
      xpak = lpxpak_parse_file(file);
      return xpak;
 }
@@ -74,19 +76,19 @@ lpxpak_parse_file(FILE *file)
 {
      lpxpak_t *xpak;
      void *xpakdata;
-     char tmp[5];
+     void *tmp;
      uint32_t xpakoffset;
 
      /* seek to the start of the STOP string */
      fseek(file, __LP_XPAK_STOP_OFFSET__*-1, SEEK_END);
 
      /* read in the STOP string */
+     tmp = malloc(4);
      fread(tmp, 1, 4, file);
-     tmp[4] = '\0';
 
      /* check if the read in string is "STOP" - otherwise this here would be a
       * non valid / non xpak file */
-     if (strcmp(tmp, "STOP") != 0) {
+     if (memcmp(tmp, "STOP", 4) != 0) {
           errno = EINVAL;
           return NULL;
      }
@@ -101,7 +103,7 @@ lpxpak_parse_file(FILE *file)
      xpakoffset = ntohl(xpakoffset);
 
      /* read xpak-blob into xpakstr  */
-     xpakdata = malloc(xpakoffset+1);
+     xpakdata = malloc(xpakoffset);
      fseek(file, (long)(xpakoffset+__LP_XPAK_OFFSET_OFFSET__)*-1, SEEK_END);
      fread(xpakdata, (size_t)xpakoffset, 1, file);
 
@@ -124,7 +126,8 @@ lpxpak_parse_path(char *path)
      }
 
      /* open the file read-only*/
-     xpakfile = fopen(path, "r");
+     if ( (xpakfile = fopen(path, "r")) == NULL)
+          return NULL;
 
      xpak = lpxpak_parse_file(xpakfile);
      return xpak;
