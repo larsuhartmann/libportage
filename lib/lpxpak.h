@@ -28,7 +28,7 @@ typedef struct {
 } lpxpak_t;
 
 lpxpak_t *
-lpxpak_parse_data(const void *s, size_t length);
+lpxpak_parse_data(const void *data, size_t n);
 
 lpxpak_t *
 lpxpak_parse_fd(int fd);
@@ -37,10 +37,10 @@ lpxpak_t *
 lpxpak_parse_file(FILE *file);
 
 lpxpak_t *
-lpxpak_parse_path(char *path);
+lpxpak_parse_path(const char *path);
 
 lpxpak_t *
-lpxpak_parse_data(const void *s, size_t length)
+lpxpak_parse_data(const void *data, size_t n)
 {
      lpxpak_t *xpak;
      const void *temp = NULL;
