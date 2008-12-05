@@ -52,8 +52,6 @@
 #define _LP_XPAK_STOP_LEN_      4
 #define _LP_XPAK_STOP_          "STOP"
 
-#define _LP_XPAK_INT_LEN_     sizeof(lpxpak_int)
-
 typedef uint32_t lpxpak_int;
 
 typedef struct _lpxpak_{
@@ -107,11 +105,11 @@ lpxpak_parse_data(const void *data, size_t len)
      }
      count += _LP_XPAK_INTRO_LEN_;
 
-     memcpy(&index_len, data+count, _LP_XPAK_INT_LEN_);
-     count+=_LP_XPAK_INT_LEN_;
+     memcpy(&index_len, data+count, sizeof(lpxpak_int));
+     count+=sizeof(lpxpak_int);
      index_len = ntohl(index_len);
-     memcpy(&data_len, data+count, _LP_XPAK_INT_LEN_);
-     count += _LP_XPAK_INT_LEN_;
+     memcpy(&data_len, data+count, sizeof(lpxpak_int));
+     count += sizeof(lpxpak_int);
      data_len = ntohl(data_len);
 
      /* check if the sum of count, index_len, data_len and _LP_XPAK_OUTRO_LEN
@@ -165,7 +163,7 @@ lpxpak_parse_fd(int fd)
      /* seek to the start of the xpak_offset value, read in the offset and
       * convert it to local byteorder */
      lseek(fd, _LP_XPAK_OFFSET_*-1, SEEK_END);
-     read(fd, &xpakoffset, _LP_XPAK_INT_LEN_);
+     read(fd, &xpakoffset, sizeof(lpxpak_int));
      xpakoffset = ntohl(xpakoffset);
         
      /* allocate <xpakoffset> bytes of data and read the xpak_blob in. */
@@ -203,14 +201,17 @@ lpxpak_get_index(const void *data, size_t len)
      lpxpak_int count = 0;
      lpxpak_int name_len = 0;
      index = (lpxpakindex_t *)malloc(sizeof(lpxpakindex_t));
+     index->next = NULL;
      t=index;
+
+     /* Do this til we reach the end of the index blob  */
      while (count < len) {
-          /* read _LP_XPAK_INT_LEN_ bytes from data into name_len, convert it
+          /* read sizeof(lpxpak_int) bytes from data into name_len, convert it
            * to host byteorder and increase the counter by
-           * _LP_XPAK_INT_LEN_ */
+           * sizeof(lpxpak_int) */
           name_len = *(lpxpak_int *)(data+count);
           name_len = ntohl(name_len);
-          count += _LP_XPAK_INT_LEN_;
+          count += sizeof(lpxpak_int);
 
           /* allocate name_len+1 bytes on the heap, read name_len bytes from
            * data into t->name, null terminate t->name and increase the
@@ -223,17 +224,18 @@ lpxpak_get_index(const void *data, size_t len)
           /* read t->offset from data in local byteorder and increase counter */
           t->offset = *(lpxpak_int *)(data+count);
           t->offset = ntohl(t->offset);
-          count += _LP_XPAK_INT_LEN_;
+          count += sizeof(lpxpak_int);
 
           /* read t->len from data in local byteorder and increase counter */
           t->len = *(lpxpak_int *)(data+count);
           t->len = htonl(t->len);
-          count += _LP_XPAK_INT_LEN_;
+          count += sizeof(lpxpak_int);
 
           /* allocate sizeof(lpxpakindex_t) bytes on the heap, point t->next
            * to that newly allocated memory and set t to t->next */
           t->next = (lpxpakindex_t *)malloc(sizeof(lpxpakindex_t));
           t = t->next;
+          t->next = NULL;
      }
      return index;
 }
