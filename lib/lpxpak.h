@@ -20,7 +20,7 @@
 
 
 #define __LP_XPAK_STOP_OFFSET__         4
-#define __LP_XPAK_OFFSET_OFFSET__       8
+#define __LP_XPAK_OFFSET__       8
 
 typedef struct {
      char *name;
@@ -94,7 +94,7 @@ lpxpak_parse_fd(int fd)
      free(tmp);
         
      /* seek to the start of the xpak_offset value */
-     lseek(fd, __LP_XPAK_OFFSET_OFFSET__*-1, SEEK_END);
+     lseek(fd, __LP_XPAK_OFFSET__*-1, SEEK_END);
         
      /* read the offset */
      read(fd, &xpakoffset, 4);
@@ -104,7 +104,7 @@ lpxpak_parse_fd(int fd)
         
      /* allocate <xpakoffset> bytes of data and read the xpak_blob in. */
      xpakdata = malloc(xpakoffset);
-     lseek(fd, (off_t)(xpakoffset+__LP_XPAK_OFFSET_OFFSET__)*-1, SEEK_END);
+     lseek(fd, (off_t)(xpakoffset+__LP_XPAK_OFFSET__)*-1, SEEK_END);
      read(fd, xpakdata, (size_t)xpakoffset);
         
      xpak = lpxpak_parse_data(xpakdata, (size_t)xpakoffset);
