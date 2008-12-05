@@ -94,10 +94,10 @@ lpxpak_parse_data(const void *data, size_t len)
      const void *index_data, *data_data;
      lpxpakindex_t *index;
         
-     /* check if the first 8 bytes of the xpak data read "XPAKPACK" and the
-      * last 8 bytes of of the data read "XPAKSTOP" to make sure we have a
-      * valid xpak, afterward increase count which we will be using as an seek
-      * counter */
+     /* check if the first _LP_XPAK_INTRO_LEN_ bytes of the xpak data read
+      * _LP_XPAK_INTRO_ and the last _LP_XPAK_OUTRO_LEN_ bytes of of the data
+      * read _LP_XPAK_OUTRO_ to make sure we have a valid xpak, afterward
+      * increase count which we will be using as an seek counter */
      if ((memcmp(data, _LP_XPAK_INTRO_, _LP_XPAK_INTRO_LEN_) != 0) ||
          (memcmp(data+len-8, _LP_XPAK_OUTRO_, _LP_XPAK_OUTRO_LEN_ != 0))) {
           errno = EINVAL;
@@ -204,7 +204,7 @@ lpxpak_get_index(const void *data, size_t len)
      index->next = NULL;
      t=index;
 
-     /* Do this til we reach the end of the index blob  */
+     /* Do this until we reach the end of the index blob  */
      while (count < len) {
           /* read sizeof(lpxpak_int) bytes from data into name_len, convert it
            * to host byteorder and increase the counter by
