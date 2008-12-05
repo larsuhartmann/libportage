@@ -8,15 +8,16 @@
 
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <arpa/inet.h>
+
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <stdbool.h>
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
-#include <arpa/inet.h>
+
 
 #define __LP_XPAK_STOP_OFFSET__         4
 #define __LP_XPAK_OFFSET_OFFSET__       8
