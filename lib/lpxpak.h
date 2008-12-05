@@ -40,21 +40,21 @@ lpxpak_t *
 lpxpak_parse_path(const char *path);
 
 lpxpak_t *
-lpxpak_parse_data(const void *data, size_t n)
+lpxpak_parse_data(const void *data, size_t len)
 {
      lpxpak_t *xpak;
-     const void *temp = NULL;
      uint32_t count = 0;
-     char tmp[9];
-     temp = data;
-     /* get the first 8 bytes ("XPAKPACK") and check if they read "XPAKPACK"
-      * to make sure we have a valid xpak string */
-     memcpy(tmp, temp, 8);
-     if (! strcmp(tmp, "XPAKPACK") == 0) {
+        
+     /* check if the first 8 bytes of the xpak data read "XPAKPACK" and the
+      * last 8 bytes of of the data read "XPAKSTOP" to make sure we have a
+      * valid xpak */
+     if ((memcmp(data, "XPAKPACK", 8) != 0) ||
+         (memcmp(data+len-8, "XPAKSTOP", 8 != 0))) {
           errno = EINVAL;
           return NULL;
      }
-     temp += 8; count += 8;
+     count += 8;
+        
      /* allocate the needed memory from the Heap */
      xpak = (lpxpak_t *)malloc(sizeof(lpxpak_t));
      data = NULL;
@@ -69,10 +69,10 @@ lpxpak_parse_fd(int fd)
      void *tmp;
      uint32_t xpakoffset;
      lpxpak_t *xpak;
-
+        
      if (fstat(fd, &xpakstat) == -1)
           return NULL;
-
+        
      if (! S_ISREG(xpakstat.st_mode) ) {
           errno = EINVAL;
           return NULL;
@@ -80,7 +80,7 @@ lpxpak_parse_fd(int fd)
 
      /* seek to the start of the STOP string */
      lseek(fd, __LP_XPAK_STOP_OFFSET__*-1, SEEK_END);
-
+        
      /* allocate 4bytes from the heap, read in 4bytes, check if the read in
       * data is "STOP"(encoded as an ASCII String) - otherwise this would be
       * an invalid xpak and finally free that piece of memory */
@@ -92,21 +92,21 @@ lpxpak_parse_fd(int fd)
           return NULL;
      }
      free(tmp);
-
+        
      /* seek to the start of the xpak_offset value */
      lseek(fd, __LP_XPAK_OFFSET_OFFSET__*-1, SEEK_END);
-
+        
      /* read the offset */
      read(fd, &xpakoffset, 4);
-
+        
      /* convert it from network to local byteorder */
      xpakoffset = ntohl(xpakoffset);
-
+        
      /* allocate <xpakoffset> bytes of data and read the xpak_blob in. */
      xpakdata = malloc(xpakoffset);
      lseek(fd, (off_t)(xpakoffset+__LP_XPAK_OFFSET_OFFSET__)*-1, SEEK_END);
      read(fd, xpakdata, (size_t)xpakoffset);
-     
+        
      xpak = lpxpak_parse_data(xpakdata, (size_t)xpakoffset);
 
      free(xpakdata);
@@ -128,6 +128,5 @@ lpxpak_parse_path(const char *path)
      int fd;
 
      fd = open(path, O_RDONLY);
-
      return lpxpak_parse_fd(fd);
 }
