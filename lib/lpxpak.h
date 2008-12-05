@@ -93,7 +93,8 @@ lpxpak_parse_data(const void *data, size_t len)
      lpxpak_t *xpak;
      lpxpak_int count = 0;
      lpxpak_int index_len, data_len;
-     void *index_data, *data_data;
+     const void *index_data, *data_data;
+     lpxpakindex_t *index;
         
      /* check if the first 8 bytes of the xpak data read "XPAKPACK" and the
       * last 8 bytes of of the data read "XPAKSTOP" to make sure we have a
@@ -119,6 +120,11 @@ lpxpak_parse_data(const void *data, size_t len)
           errno = EINVAL;
           return NULL;
      }
+
+     index_data = data+count;
+     data_data = data+count+index_len;
+
+     index = lpxpak_get_index(index_data, (size_t)index_len);
 
      xpak = NULL;
      return xpak;
@@ -193,7 +199,43 @@ lpxpak_parse_path(const char *path)
 lpxpakindex_t *
 lpxpak_get_index(const void *data, size_t len)
 {
-     return NULL;
+     lpxpakindex_t *index, *t;
+     lpxpak_int count = 0;
+     lpxpak_int name_len = 0;
+     index = (lpxpakindex_t *)malloc(sizeof(lpxpakindex_t));
+     t=index;
+     while (count < len) {
+          /* read _LP_XPAK_INT_LEN_ bytes from data into name_len, convert it
+           * to host byteorder and increase the counter by
+           * _LP_XPAK_INT_LEN_ */
+          name_len = *(lpxpak_int *)(data+count);
+          name_len = ntohl(name_len);
+          count += _LP_XPAK_INT_LEN_;
+
+          /* allocate name_len+1 bytes on the heap, read name_len bytes from
+           * data into t->name, null terminate t->name and increase the
+           * counter by name_len bytes */
+          t->name = (char *)malloc(name_len+1);
+          memcpy(t->name, data+count, name_len);
+          t->name[name_len] = '\0';
+          count += name_len;
+          
+          /* read t->offset from data in local byteorder and increase counter */
+          t->offset = *(lpxpak_int *)(data+count);
+          t->offset = ntohl(t->offset);
+          count += _LP_XPAK_INT_LEN_;
+
+          /* read t->len from data in local byteorder and increase counter */
+          t->len = *(lpxpak_int *)(data+count);
+          t->len = htonl(t->len);
+          count += _LP_XPAK_INT_LEN_;
+
+          /* allocate sizeof(lpxpakindex_t) bytes on the heap, point t->next
+           * to that newly allocated memory and set t to t->next */
+          t->next = (lpxpakindex_t *)malloc(sizeof(lpxpakindex_t));
+          t = t->next;
+     }
+     return index;
 }
 
 lpxpak_t *
