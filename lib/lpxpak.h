@@ -26,48 +26,54 @@ typedef struct {
 } lpxpak_t;
 
 lpxpak_t *
-lpgetxpakstr(const char *s);
+lpxpak_parse_data(const void *s, size_t length);
 
 lpxpak_t *
-lpgetxpakfd(int fd);
+lpxpak_parse_fd(int fd);
 
 lpxpak_t *
-lpgetxpakfile(FILE *file);
+lpxpak_parse_file(FILE *file);
 
 lpxpak_t *
-lpgetxpakpath(char *path);
+lpxpak_parse_path(char *path);
 
 lpxpak_t *
-lpgetxpakstr(const char *s)
+lpxpak_parse_data(const void *s, size_t length)
 {
      lpxpak_t *xpak;
+     const void *temp = NULL;
+     uint32_t count = 0;
      char tmp[9];
-     
-     memcpy(tmp, s, 8);
+     temp = s;
+     /* get the first 8 bytes ("XPAKPACK") and check if they read "XPAKPACK"
+      * to make sure we have a valid xpak string */
+     memcpy(tmp, temp, 8);
      if (! strcmp(tmp, "XPAKPACK") == 0) {
           errno = EINVAL;
           return NULL;
      }
+     temp += 8; count += 8;
+     /* allocate the needed memory from the Heap */
      xpak = (lpxpak_t *)malloc(sizeof(lpxpak_t));
      return xpak;
 }
 
 lpxpak_t *
-lpgetxpakfd(int fd)
+lpxpak_parse_fd(int fd)
 {
      FILE *file;
      lpxpak_t *xpak;
 
      file = fdopen(fd, "r");
-     xpak = lpgetxpakfile(file);
+     xpak = lpxpak_parse_file(file);
      return xpak;
 }
 
 lpxpak_t *
-lpgetxpakfile(FILE *file)
+lpxpak_parse_file(FILE *file)
 {
      lpxpak_t *xpak;
-     char *xpakstr;
+     void *xpakdata;
      char tmp[5];
      uint32_t xpakoffset;
 
@@ -95,17 +101,16 @@ lpgetxpakfile(FILE *file)
      xpakoffset = ntohl(xpakoffset);
 
      /* read xpak-blob into xpakstr  */
-     xpakstr = (char *)malloc(xpakoffset+1);
+     xpakdata = malloc(xpakoffset+1);
      fseek(file, (long)(xpakoffset+__LP_XPAK_OFFSET_OFFSET__)*-1, SEEK_END);
+     fread(xpakdata, (size_t)xpakoffset, 1, file);
 
-     fread(xpakstr, (size_t)xpakoffset, 1, file);
-
-     xpak = lpgetxpakstr(xpakstr);
+     xpak = lpxpak_parse_data(xpakdata, (size_t)xpakoffset);
      return xpak;
 }
 
 lpxpak_t *
-lpgetxpakpath(char *path)
+lpxpak_parse_path(char *path)
 {
      struct stat ststr;
      lpxpak_t *xpak;
@@ -121,6 +126,6 @@ lpgetxpakpath(char *path)
      /* open the file read-only*/
      xpakfile = fopen(path, "r");
 
-     xpak = lpgetxpakfile(xpakfile);
+     xpak = lpxpak_parse_file(xpakfile);
      return xpak;
 }
