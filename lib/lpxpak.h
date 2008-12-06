@@ -295,7 +295,8 @@ lpxpak_parse_path(const char *path)
 {
      int fd;
 
-     fd = open(path, O_RDONLY)
+     if ( (fd = open(path, O_RDONLY)) == -1)
+          return NULL;
      return lpxpak_parse_fd(fd);
 }
 
