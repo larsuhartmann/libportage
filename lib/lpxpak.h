@@ -86,6 +86,18 @@ lpxpak_get_index(const void *data, size_t len);
 lpxpak_t *
 lpxpak_get_data(const void *data, lpxpakindex_t *index);
 
+/* 
+ * lpxpak_parse_data: reads the xpak data out of a xpak binary blob
+ *
+ * gets the actual xpak-blob (see doc/xpak.txt) and returns an pointer to an
+ * lpxpak object with its data. If an error occurs, NULL is returned and errno
+ * is set to indicate the error
+ *
+ * Errors:
+ *
+ * EINVAL The provided data (*data) is no valid xpak.
+ * ENOMEM Could not allocate enough memory.
+ */
 lpxpak_t *
 lpxpak_parse_data(const void *data, size_t len)
 {
@@ -127,6 +139,31 @@ lpxpak_parse_data(const void *data, size_t len)
      return lpxpak_get_data(data_data, index);
 }
 
+/* 
+ * lpxpak_parse_fd: reads the xpak data out of a file-descriptor which points
+ *                  to an gentoo binary package
+ *
+ * gets an file-descriptor (fd) for a gentoo binary package and returns an
+ * pointer to an lpxpak object with the xpak data. If an error occurs, NULL is
+ * returned and errno is set to indicate the error
+ *
+ * Errors:
+ *
+ * EBADF  the provided fd is bad.
+ *
+ * EACCES permission to acces the file was denied.
+ *
+ * ENAMETOOLONG
+ *        File name too long.
+ *
+ * EINVAL The fd does not point to an file,or the File does not contain a
+ *        valid xpak.
+ *           
+ * ENOMEM Could not allocate enough memory.
+ *
+ * ENOTDIR
+ *        A component of the path is not a directory.
+ */
 lpxpak_t *
 lpxpak_parse_fd(int fd)
 {
@@ -189,6 +226,31 @@ lpxpak_parse_fd(int fd)
      return xpak;
 }
 
+/* 
+ * lpxpak_parse_file: reads the xpak data out of a FILE * buffer which points
+ *                    to an gentoo binary package
+ *
+ * gets an FILE * buffer for a gentoo binary package and returns an pointer to
+ * an lpxpak object with the xpak data. If an error occurs, NULL is returned
+ * and errno is set to indicate the error
+ *
+ * Errors:
+ *
+ * EBADF  the provided file buffer is bad.
+ *
+ * EACCES permission to acces the file was denied.
+ *
+ * ENAMETOOLONG
+ *        File name too long.
+ *
+ * EINVAL The fd does not point to an file, or the File does not contain a
+ *        valid xpak.
+ *           
+ * ENOMEM Could not allocate enough memory.
+ *
+ * ENOTDIR
+ *        A component of the path is not a directory.
+ */
 lpxpak_t *
 lpxpak_parse_file(FILE *file)
 {
@@ -199,12 +261,41 @@ lpxpak_parse_file(FILE *file)
      return lpxpak_parse_fd(fd);
 }
 
+/* 
+ * lpxpak_parse_path: reads the xpak data out of a which path it was called
+ *                    with.
+ *
+ * gets an path to a gentoo binary package and returns an pointer to an lpxpak
+ * object with the xpak data. If an error occurs, NULL is returned and errno
+ * is set to indicate the error
+ *
+ * Errors:
+ *
+ * EBADF  the provided file buffer is bad.
+ *
+ * EACCES permission to acces the file was denied.
+ *
+ * ENAMETOOLONG
+ *        File name too long.
+ *
+ * ELOOP  Too many symbolic links were encountered.
+ *
+ * ENFILE The system limit on the total number of open files has been reached.
+ *
+ * EINVAL The fd does not point to an file, or the File does not contain a
+ *        valid xpak.
+ *           
+ * ENOMEM Could not allocate enough memory.
+ *
+ * ENOTDIR
+ *        A component of the path is not a directory.
+ */
 lpxpak_t *
 lpxpak_parse_path(const char *path)
 {
      int fd;
 
-     fd = open(path, O_RDONLY);
+     fd = open(path, O_RDONLY)
      return lpxpak_parse_fd(fd);
 }
 
