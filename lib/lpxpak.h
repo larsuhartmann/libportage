@@ -112,6 +112,7 @@ lpxpak_parse_data(const void *data, size_t len)
      const void *index_data = NULL;
      const void *data_data = NULL;
      _lpxpak_index_t_ *index = NULL;
+     lpxpak_t *xpak = NULL;
      
      /* check if the first _LP_XPAK_INTRO_LEN_ bytes of the xpak data read
       * _LP_XPAK_INTRO_ and the last _LP_XPAK_OUTRO_LEN_ bytes of of the xpak
@@ -143,7 +144,12 @@ lpxpak_parse_data(const void *data, size_t len)
      data_data = data+count+index_len;
 
      index = _lpxpak_parse_index_(index_data, (size_t)index_len);
-     return _lpxpak_parse_data_(data_data, index);
+     xpak = _lpxpak_parse_data_(data_data, index);
+
+     /* free up index */
+     _lpxpak_destroy_index_(index);
+
+     return xpak;
 }
 
 /* 
