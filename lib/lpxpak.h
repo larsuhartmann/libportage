@@ -170,7 +170,7 @@ lpxpak_parse_fd(int fd)
      struct stat xpakstat;
      void *xpakdata;
      void *tmp;
-     lpxpak_int xpakoffset;
+     lpxpak_int *xpakoffset;
      lpxpak_t *xpak;
         
      if ( fstat(fd, &xpakstat) == -1 )
@@ -181,39 +181,38 @@ lpxpak_parse_fd(int fd)
           return NULL;
      }
 
-     /* seek to the start of the STOP string */
+     /* seek to the start of the xpak offset */
      if ( lseek(fd, _LP_XPAK_STOP_OFFSET_*-1, SEEK_END) == -1 )
           return NULL;
         
-     /* allocate _LPXPAK_STOP_LEN_ bytes from the heap, assign it to tmp, read
-      * in the _LPXPAK_STOP_ string, check if the read in data equals
-      * _LPXPAK_STOP_ - otherwise set errno and return NULL as this is an
-      * invalid xpak, finally, free the memory that we assigned to tmp */
-     if ( (tmp = malloc(_LP_XPAK_STOP_LEN_)) == NULL ) {
-          errno = ENOMEM;
-          return NULL;
+     /* allocate _LPXPAK_STOP_LEN_+sizeof(lpxpak_int) bytes from the heap,
+      * assign it to tmp, read in the xpak offset plus the_LPXPAK_STOP_
+      * string. */
+     if ( (tmp = malloc(_LP_XPAK_STOP_LEN_+sizeof(lpxpak_int))) == NULL ) {
+               errno = ENOMEM;
+               return NULL;
      }
-     read(fd, tmp, _LP_XPAK_STOP_LEN_);
-     if ( memcmp(tmp, _LP_XPAK_STOP_, _LP_XPAK_STOP_LEN_) != 0 ) {
+     read(fd, tmp, _LP_XPAK_STOP_LEN_+sizeof(lpxpak_int));
+     
+     /* check if the read in _LP_XPAK_STOP_ string equals _LPXPAK_STOP_.  If
+      * not, free the allocated memory, set errno and return NULL as this is
+      * an invalid xpak. */
+     if ( memcmp(tmp+sizeof(lpxpak_int), _LP_XPAK_STOP_, _LP_XPAK_STOP_LEN_)
+         != 0 ) {
           free(tmp);
           errno = EINVAL;
           return NULL;
      }
-     free(tmp);
-     tmp = NULL;
-        
-     /* seek to the start of the xpak_offset value, read in the offset and
-      * convert it to local byteorder */
-     if ( lseek(fd, _LP_XPAK_OFFSET_*-1, SEEK_END) == -1 )
-          return NULL;
-     if ( read(fd, &xpakoffset, sizeof(lpxpak_int)) == -1 )
-          return NULL;
-     xpakoffset = ntohl(xpakoffset);
+
+     /* assign a pointer to the xpak offset data to xpakoffset and convert it
+      * to local byteorder */
+     xpakoffset = (lpxpak_int *)tmp;
+     *xpakoffset = ntohl(*xpakoffset);
         
      /* allocate <xpakoffset> bytes on the heap, assign it to xpakdata, seek
       * to to the start of the xpak data, read in the xpak data and store it
       * in xpakdata. */
-     if ( (xpakdata = malloc(xpakoffset)) == NULL ) {
+     if ( (xpakdata = malloc(*xpakoffset)) == NULL ) {
           errno = ENOMEM;
           return NULL;
      }
@@ -221,7 +220,15 @@ lpxpak_parse_fd(int fd)
           return NULL;
      if ( read(fd, xpakdata, (size_t)xpakoffset) == -1 )
           return NULL;
-     xpak = lpxpak_parse_data(xpakdata, (size_t)xpakoffset);
+
+     free(tmp);
+     tmp = NULL;
+     xpakoffset = NULL;
+
+     xpak = lpxpak_parse_data(xpakdata, (size_t)(*xpakoffset));
+     
+     /* clear up what we allocated */
+     free(tmp);
      free(xpakdata);
      return xpak;
 }
