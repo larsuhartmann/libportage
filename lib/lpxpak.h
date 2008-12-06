@@ -106,7 +106,7 @@ lpxpak_parse_data(const void *data, size_t len)
      const void *index_data = NULL;
      const void *data_data = NULL;
      lpxpakindex_t *index = NULL;
-        
+     
      /* check if the first _LP_XPAK_INTRO_LEN_ bytes of the xpak data read
       * _LP_XPAK_INTRO_ and the last _LP_XPAK_OUTRO_LEN_ bytes of of the xpak
       * read _LP_XPAK_OUTRO_ to make sure we have a valid xpak, if not, set
@@ -173,7 +173,7 @@ lpxpak_parse_fd(int fd)
      void *tmp = NULL;
      lpxpak_int *xpakoffset = NULL;
      lpxpak_t *xpak = NULL;
-        
+     
      if ( fstat(fd, &xpakstat) == -1 )
           return NULL;
         
@@ -183,9 +183,9 @@ lpxpak_parse_fd(int fd)
      }
 
      /* seek to the start of the xpak offset */
-     if ( lseek(fd, _LP_XPAK_STOP_OFFSET_*-1, SEEK_END) == -1 )
+     if ( lseek(fd, (_LP_XPAK_STOP_OFFSET_+sizeof(lpxpak_int))*-1, SEEK_END) == -1 )
           return NULL;
-        
+
      /* allocate _LPXPAK_STOP_LEN_+sizeof(lpxpak_int) bytes from the heap,
       * assign it to tmp, read in the xpak offset plus the_LPXPAK_STOP_
       * string. */
@@ -194,7 +194,6 @@ lpxpak_parse_fd(int fd)
                return NULL;
      }
      read(fd, tmp, _LP_XPAK_STOP_LEN_+sizeof(lpxpak_int));
-     
      /* check if the read in _LP_XPAK_STOP_ string equals _LPXPAK_STOP_.  If
       * not, free the allocated memory, set errno and return NULL as this is
       * an invalid xpak. */
@@ -213,18 +212,14 @@ lpxpak_parse_fd(int fd)
      /* allocate <xpakoffset> bytes on the heap, assign it to xpakdata, seek
       * to to the start of the xpak data, read in the xpak data and store it
       * in xpakdata. */
-     if ( (xpakdata = malloc(*xpakoffset)) == NULL ) {
+     if ( (xpakdata = malloc((size_t)*xpakoffset)) == NULL ) {
           errno = ENOMEM;
           return NULL;
      }
-     if ( lseek(fd, (off_t)(xpakoffset+_LP_XPAK_OFFSET_)*-1, SEEK_END) == -1 )
+     if ( lseek(fd, (off_t)((off_t)*xpakoffset+_LP_XPAK_OFFSET_)*-1, SEEK_END) == -1 )
           return NULL;
-     if ( read(fd, xpakdata, (size_t)xpakoffset) == -1 )
+     if ( read(fd, xpakdata, (size_t)(*xpakoffset)) == -1 )
           return NULL;
-
-     free(tmp);
-     tmp = NULL;
-     xpakoffset = NULL;
 
      xpak = lpxpak_parse_data(xpakdata, (size_t)(*xpakoffset));
      
