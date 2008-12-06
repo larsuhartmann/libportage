@@ -325,15 +325,13 @@ _lpxpak_parse_index_(const void *data, size_t len)
 
           /* allocate name_len+1 bytes on the heap, assign it to t->name, read
            * name_len bytes from data into t->name, apply name_len+1 to
-           * t->name_len, null terminate t->name and increase the counter by
-           * name_len bytes */
+           * t->name_len, and increase the counter by name_len bytes */
           if ( (t->name = (char *)malloc((size_t)name_len)) == NULL ) {
                errno = ENOMEM;
                return NULL;
           }
           memcpy(t->name, data+count, name_len);
           t->name_len = name_len;
-          t->name[name_len] = '\0';
           count += name_len;
           
           /* read t->offset from data in local byteorder and increase counter */
@@ -390,8 +388,7 @@ _lpxpak_parse_data_(const void *data, lpxpakindex_t *index)
                return NULL;
           }
           memcpy(tx->value, data+ti->offset, ti->len);
-          tx->value[ti->len] = '\0';
-          
+
           /* allocate sizeof(lpxpak_t) bytes on the hap, assign it to
            * tx->next, set tx to tx->next and tx->next to NULL  */
           if ( (tx->next = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL ) {
