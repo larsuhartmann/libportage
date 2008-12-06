@@ -107,7 +107,7 @@ lpxpak_parse_data(const void *data, size_t len)
      lpxpakindex_t *index;
         
      /* check if the first _LP_XPAK_INTRO_LEN_ bytes of the xpak data read
-      * _LP_XPAK_INTRO_ and the last _LP_XPAK_OUTRO_LEN_ bytes of of the data
+      * _LP_XPAK_INTRO_ and the last _LP_XPAK_OUTRO_LEN_ bytes of of the xpak
       * read _LP_XPAK_OUTRO_ to make sure we have a valid xpak, if not, set
       * errno and return. Otherwise increase count which we will be using as
       * an seek counter */
@@ -151,7 +151,7 @@ lpxpak_parse_data(const void *data, size_t len)
  *
  * EBADF  the provided fd is bad.
  *
- * EACCES permission to acces the file was denied.
+ * EACCES permission to access the file was denied.
  *
  * ENAMETOOLONG
  *        File name too long.
@@ -238,7 +238,7 @@ lpxpak_parse_fd(int fd)
  *
  * EBADF  the provided file buffer is bad.
  *
- * EACCES permission to acces the file was denied.
+ * EACCES permission to access the file was denied.
  *
  * ENAMETOOLONG
  *        File name too long.
@@ -273,7 +273,7 @@ lpxpak_parse_file(FILE *file)
  *
  * EBADF  the provided file buffer is bad.
  *
- * EACCES permission to acces the file was denied.
+ * EACCES permission to access the file was denied.
  *
  * ENAMETOOLONG
  *        File name too long.
@@ -316,9 +316,7 @@ _lpxpak_parse_index_(const void *data, size_t len)
 
      /* Do this until we reach the end of the index blob  */
      while (count < len) {
-          /* read sizeof(lpxpak_int) bytes from data into name_len, convert it
-           * to host byteorder and increase the counter by
-           * sizeof(lpxpak_int) */
+          /* read name_len from data and increase the counter */
           name_len = *(lpxpak_int *)(data+count);
           name_len = ntohl(name_len);
           count += sizeof(lpxpak_int);
@@ -389,7 +387,7 @@ _lpxpak_parse_data_(const void *data, lpxpakindex_t *index)
           }
           memcpy(tx->value, data+ti->offset, ti->len);
 
-          /* allocate sizeof(lpxpak_t) bytes on the hap, assign it to
+          /* allocate sizeof(lpxpak_t) bytes on the heap, assign it to
            * tx->next, set tx to tx->next and tx->next to NULL  */
           if ( (tx->next = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL ) {
                errno = ENOMEM;
