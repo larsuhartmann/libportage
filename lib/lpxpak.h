@@ -193,7 +193,9 @@ lpxpak_parse_fd(int fd)
                errno = ENOMEM;
                return NULL;
      }
-     read(fd, tmp, _LP_XPAK_STOP_LEN_+sizeof(lpxpak_int_t));
+     if (read(fd, tmp, _LP_XPAK_STOP_LEN_+sizeof(lpxpak_int_t)) == -1)
+          return NULL;
+     
      /* check if the read in _LP_XPAK_STOP_ string equals _LPXPAK_STOP_.  If
       * not, free the allocated memory, set errno and return NULL as this is
       * an invalid xpak. */
