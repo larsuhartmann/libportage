@@ -225,7 +225,7 @@ lpxpak_parse_fd(int fd)
 
      xpak = lpxpak_parse_data(xpakdata, (size_t)(*xpakoffset));
      
-     /* clear up */
+     /* clear up allocated memory*/
      free(tmp);
      free(xpakdata);
      return xpak;
