@@ -152,8 +152,10 @@ lpxpak_parse_fd(int fd)
       * in the _LPXPAK_STOP_ string, check if the read in data equals
       * _LPXPAK_STOP_ - otherwise set errno and return NULL as this is an
       * invalid xpak, finally, free the memory that we assigned to tmp */
-     if ( (tmp = malloc(_LP_XPAK_STOP_LEN_)) == NULL )
+     if ( (tmp = malloc(_LP_XPAK_STOP_LEN_)) == NULL ) {
+          errno = ENOMEM;
           return NULL;
+     }
      read(fd, tmp, _LP_XPAK_STOP_LEN_);
      if ( memcmp(tmp, _LP_XPAK_STOP_, _LP_XPAK_STOP_LEN_) != 0 ) {
           free(tmp);
@@ -174,8 +176,10 @@ lpxpak_parse_fd(int fd)
      /* allocate <xpakoffset> bytes on the heap, assign it to xpakdata, seek
       * to to the start of the xpak data, read in the xpak data and store it
       * in xpakdata. */
-     if ( (xpakdata = malloc(xpakoffset)) == NULL )
+     if ( (xpakdata = malloc(xpakoffset)) == NULL ) {
+          errno = ENOMEM;
           return NULL;
+     }
      if ( lseek(fd, (off_t)(xpakoffset+_LP_XPAK_OFFSET_)*-1, SEEK_END) == -1 )
           return NULL;
      if ( read(fd, xpakdata, (size_t)xpakoffset) == -1 )
@@ -211,8 +215,10 @@ lpxpak_get_index(const void *data, size_t len)
      lpxpak_int count = 0;
      lpxpak_int name_len = 0;
 
-     if ( (index = (lpxpakindex_t *)malloc(sizeof(lpxpakindex_t))) == NULL )
+     if ( (index = (lpxpakindex_t *)malloc(sizeof(lpxpakindex_t))) == NULL ) {
+          errno = ENOMEM;
           return NULL;
+     }
      index->next = NULL;
      t=index;
 
@@ -229,8 +235,10 @@ lpxpak_get_index(const void *data, size_t len)
            * name_len bytes from data into t->name, apply name_len+1 to
            * t->name_len, null terminate t->name and increase the counter by
            * name_len bytes */
-          if ( (t->name = (char *)malloc((size_t)name_len)) == NULL )
+          if ( (t->name = (char *)malloc((size_t)name_len)) == NULL ) {
+               errno = ENOMEM;
                return NULL;
+          }
           memcpy(t->name, data+count, name_len);
           t->name_len = name_len;
           t->name[name_len] = '\0';
@@ -248,8 +256,11 @@ lpxpak_get_index(const void *data, size_t len)
 
           /* allocate sizeof(lpxpakindex_t) bytes on the heap, assign it to
            * t->next, set t to t->next and set t->next to NULL */
-          if ( (t->next = (lpxpakindex_t *)malloc(sizeof(lpxpakindex_t)))==NULL )
+          if ( (t->next = (lpxpakindex_t *)malloc(sizeof(lpxpakindex_t)))
+              == NULL) {
+               errno = ENOMEM;
                return NULL;
+          }
           t = t->next;
           t->next = NULL;
      }
@@ -263,30 +274,38 @@ lpxpak_get_data(const void *data, lpxpakindex_t *index)
      lpxpak_t *xpak;
      lpxpak_t *tx;
      
-     if ( (xpak = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL )
+     if ( (xpak = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL ) {
+          errno = ENOMEM;
           return NULL;
+     }
      tx = xpak;
      
      /* operate over all index elements */
      for (ti = index; ti->next != NULL; ti = ti->next) {
           /* allocate ti->name_len bytes on the heap, assign it to tx->nem and
            * copy ti->name_len bytes from ti->nem to tx->name */
-          if ( (tx->name = (char *)malloc((size_t)ti->name_len)) == NULL )
+          if ( (tx->name = (char *)malloc((size_t)ti->name_len)) == NULL ) {
+               errno = ENOMEM;
                return NULL;
+          }
           memcpy(tx->name, ti->name, ti->name_len);
 
           /* allocate ti->len+1 bytes on the heap, assign it to tx->value,
            * copy tx->len data from data+offset to tx->value and
            * null-terminate tx->value  */
-          if ( (tx->value = (char *)malloc((size_t)ti->len+1)) == NULL )
+          if ( (tx->value = (char *)malloc((size_t)ti->len+1)) == NULL ) {
+               errno = ENOMEM;
                return NULL;
+          }
           memcpy(tx->value, data+ti->offset, ti->len);
           tx->value[ti->len] = '\0';
           
           /* allocate sizeof(lpxpak_t) bytes on the hap, assign it to
            * tx->next, set tx to tx->next and tx->next to NULL  */
-          if ( (tx->next = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL )
+          if ( (tx->next = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL ) {
+               errno = ENOMEM;
                return NULL;
+          }
           tx = tx->next;
      }
      return xpak;
