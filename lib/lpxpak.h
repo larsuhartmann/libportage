@@ -87,9 +87,9 @@ lpxpak_t *
 _lpxpak_parse_data_(const void *data, lpxpakindex_t *index);
 
 /* 
- * lpxpak_parse_data: reads the xpak data out of a xpak binary blob
+ * lpxpak_parse_data: Reads the xpak data out of a xpak binary blob
  *
- * gets the actual xpak-blob (see doc/xpak.txt) and returns an pointer to an
+ * Gets the actual xpak-blob (see doc/xpak.txt) and returns an pointer to an
  * lpxpak object with its data. If an error occurs, NULL is returned and errno
  * is set to indicate the error
  *
@@ -140,10 +140,10 @@ lpxpak_parse_data(const void *data, size_t len)
 }
 
 /* 
- * lpxpak_parse_fd: reads the xpak data out of a file-descriptor which points
- *                  to an gentoo binary package
+ * lpxpak_parse_fd: Reads the xpak data out of a file-descriptor which points
+ *                  to an Gentoo binary package
  *
- * gets an file-descriptor (fd) for a gentoo binary package and returns an
+ * Gets an file-descriptor (fd) for a Gentoo binary package and returns an
  * pointer to an lpxpak object with the xpak data. If an error occurs, NULL is
  * returned and errno is set to indicate the error
  *
@@ -227,10 +227,10 @@ lpxpak_parse_fd(int fd)
 }
 
 /* 
- * lpxpak_parse_file: reads the xpak data out of a FILE * buffer which points
- *                    to an gentoo binary package
+ * lpxpak_parse_file: Reads the xpak data out of a FILE * buffer which points
+ *                    to an Gentoo binary package
  *
- * gets an FILE * buffer for a gentoo binary package and returns an pointer to
+ * Gets an FILE buffer for a Gentoo binary package and returns an pointer to
  * an lpxpak object with the xpak data. If an error occurs, NULL is returned
  * and errno is set to indicate the error
  *
@@ -262,10 +262,10 @@ lpxpak_parse_file(FILE *file)
 }
 
 /* 
- * lpxpak_parse_path: reads the xpak data out of a which path it was called
- *                    with.
+ * lpxpak_parse_path: Reads the xpak data out of a Gentoo binary package with
+ *                    which's path it was called with.
  *
- * gets an path to a gentoo binary package and returns an pointer to an lpxpak
+ * Gets an path to a Gentoo binary package and returns an pointer to an lpxpak
  * object with the xpak data. If an error occurs, NULL is returned and errno
  * is set to indicate the error
  *
@@ -280,9 +280,9 @@ lpxpak_parse_file(FILE *file)
  *
  * ELOOP  Too many symbolic links were encountered.
  *
- * ENFILE The system limit on the total number of open files has been reached.
+ * ENFILE The system's limit on the total number of open files has been reached.
  *
- * EINVAL The fd does not point to an file, or the File does not contain a
+ * EINVAL The fd does not point to an file, or the file does not contain a
  *        valid xpak.
  *           
  * ENOMEM Could not allocate enough memory.
