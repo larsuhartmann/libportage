@@ -96,8 +96,9 @@ lpxpak_parse_data(const void *data, size_t len)
         
      /* check if the first _LP_XPAK_INTRO_LEN_ bytes of the xpak data read
       * _LP_XPAK_INTRO_ and the last _LP_XPAK_OUTRO_LEN_ bytes of of the data
-      * read _LP_XPAK_OUTRO_ to make sure we have a valid xpak, afterward
-      * increase count which we will be using as an seek counter */
+      * read _LP_XPAK_OUTRO_ to make sure we have a valid xpak, if not, set
+      * errno and return. Otherwise increase count which we will be using as
+      * an seek counter */
      if ( ( memcmp(data, _LP_XPAK_INTRO_, _LP_XPAK_INTRO_LEN_) != 0 ) ||
          ( memcmp(data+len-8, _LP_XPAK_OUTRO_, _LP_XPAK_OUTRO_LEN_ != 0) ) ) {
           errno = EINVAL;
@@ -147,10 +148,10 @@ lpxpak_parse_fd(int fd)
      if ( lseek(fd, _LP_XPAK_STOP_OFFSET_*-1, SEEK_END) == -1 )
           return NULL;
         
-     /* allocate 4bytes from the heap, assign it to tmp, read in the STOP
-      * string, check if the read in data is "STOP"(encoded as an ASCII
-      * String) - otherwise this would be an invalid xpak, free the memory
-      * that we assigned to tmp and set tmp to NULL */
+     /* allocate _LPXPAK_STOP_LEN_ bytes from the heap, assign it to tmp, read
+      * in the _LPXPAK_STOP_ string, check if the read in data equals
+      * _LPXPAK_STOP_ - otherwise set errno and return NULL as this is an
+      * invalid xpak, finally, free the memory that we assigned to tmp */
      if ( (tmp = malloc(_LP_XPAK_STOP_LEN_)) == NULL )
           return NULL;
      read(fd, tmp, _LP_XPAK_STOP_LEN_);
