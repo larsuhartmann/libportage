@@ -86,6 +86,9 @@ _lpxpak_parse_index_(const void *data, size_t len);
 lpxpak_t *
 _lpxpak_parse_data_(const void *data, lpxpakindex_t *index);
 
+void
+_lpxpak_destroy_index_(lpxpakindex_t *index);
+
 /* 
  * lpxpak_parse_data: Reads the xpak data out of a xpak binary blob
  *
@@ -402,4 +405,17 @@ _lpxpak_parse_data_(const void *data, lpxpakindex_t *index)
           tx = tx->next;
      }
      return xpak;
+}
+
+void
+_lpxpak_destroy_index_(lpxpakindex_t *index)
+{
+     lpxpakindex_t *t;
+     t=index;
+     while (index!=NULL) {
+          t=index->next;
+          free(index);
+          index=t;
+          puts("yuhu");
+     }
 }
