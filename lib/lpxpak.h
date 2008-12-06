@@ -144,13 +144,15 @@ lpxpak_parse_fd(int fd)
      }
 
      /* seek to the start of the STOP string */
-     lseek(fd, _LP_XPAK_STOP_OFFSET_*-1, SEEK_END);
+     if (lseek(fd, _LP_XPAK_STOP_OFFSET_*-1, SEEK_END) == -1)
+          return NULL;
         
      /* allocate 4bytes from the heap, assign it to tmp, read in the STOP
       * string, check if the read in data is "STOP"(encoded as an ASCII
       * String) - otherwise this would be an invalid xpak, free the memory
       * that we assigned to tmp and set tmp to NULL */
-     tmp = malloc(_LP_XPAK_STOP_LEN_);
+     if ( (tmp = malloc(_LP_XPAK_STOP_LEN_)) == NULL)
+          return NULL;
      read(fd, tmp, _LP_XPAK_STOP_LEN_);
      if (memcmp(tmp, _LP_XPAK_STOP_, _LP_XPAK_STOP_LEN_) != 0) {
           free(tmp);
@@ -163,17 +165,21 @@ lpxpak_parse_fd(int fd)
         
      /* seek to the start of the xpak_offset value, read in the offset and
       * convert it to local byteorder */
-     lseek(fd, _LP_XPAK_OFFSET_*-1, SEEK_END);
-     read(fd, &xpakoffset, sizeof(lpxpak_int));
+     if (lseek(fd, _LP_XPAK_OFFSET_*-1, SEEK_END) == -1)
+          return NULL;
+     if (read(fd, &xpakoffset, sizeof(lpxpak_int)) == -1)
+          return NULL;
      xpakoffset = ntohl(xpakoffset);
         
      /* allocate <xpakoffset> bytes on the heap, assign it to xpakdata, seek
       * to to the start of the xpak data, read in the xpak data and store it
       * in xpakdata. */
-     xpakdata = malloc(xpakoffset);
-     lseek(fd, (off_t)(xpakoffset+_LP_XPAK_OFFSET_)*-1, SEEK_END);
-     read(fd, xpakdata, (size_t)xpakoffset);
-
+     if ( (xpakdata = malloc(xpakoffset)) == NULL)
+          return NULL;
+     if (lseek(fd, (off_t)(xpakoffset+_LP_XPAK_OFFSET_)*-1, SEEK_END) == -1)
+          return NULL;
+     if (read(fd, xpakdata, (size_t)xpakoffset) == -1)
+          return NULL;
      xpak = lpxpak_parse_data(xpakdata, (size_t)xpakoffset);
      free(xpakdata);
      return xpak;
@@ -184,7 +190,8 @@ lpxpak_parse_file(FILE *file)
 {
      int fd;
 
-     fd = fileno(file);
+     if ( (fd = fileno(file)) == -1)
+          return NULL;
      return lpxpak_parse_fd(fd);
 }
 
@@ -203,7 +210,9 @@ lpxpak_get_index(const void *data, size_t len)
      lpxpakindex_t *index, *t;
      lpxpak_int count = 0;
      lpxpak_int name_len = 0;
-     index = (lpxpakindex_t *)malloc(sizeof(lpxpakindex_t));
+
+     if ( (index = (lpxpakindex_t *)malloc(sizeof(lpxpakindex_t))) == NULL)
+          return NULL;
      index->next = NULL;
      t=index;
 
@@ -220,7 +229,8 @@ lpxpak_get_index(const void *data, size_t len)
            * name_len bytes from data into t->name, apply name_len+1 to
            * t->name_len, null terminate t->name and increase the counter by
            * name_len bytes */
-          t->name = (char *)malloc((size_t)name_len);
+          if ( (t->name = (char *)malloc((size_t)name_len)) == NULL)
+               return NULL;
           memcpy(t->name, data+count, name_len);
           t->name_len = name_len;
           t->name[name_len] = '\0';
@@ -238,7 +248,8 @@ lpxpak_get_index(const void *data, size_t len)
 
           /* allocate sizeof(lpxpakindex_t) bytes on the heap, assign it to
            * t->next, set t to t->next and set t->next to NULL */
-          t->next = (lpxpakindex_t *)malloc(sizeof(lpxpakindex_t));
+          if ((t->next = (lpxpakindex_t *)malloc(sizeof(lpxpakindex_t)))==NULL)
+               return NULL;
           t = t->next;
           t->next = NULL;
      }
@@ -252,25 +263,29 @@ lpxpak_get_data(const void *data, lpxpakindex_t *index)
      lpxpak_t *xpak;
      lpxpak_t *tx;
      
-     xpak = (lpxpak_t *)malloc(sizeof(lpxpak_t));
+     if ( (xpak = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL )
+          return NULL;
      tx = xpak;
      
      /* operate over all index elements */
      for (ti = index; ti->next != NULL; ti = ti->next) {
           /* allocate ti->name_len bytes on the heap, assign it to tx->nem and
            * copy ti->name_len bytes from ti->nem to tx->name */
-          tx->name = (char *)malloc((size_t)ti->name_len);
+          if ( (tx->name = (char *)malloc((size_t)ti->name_len)) == NULL )
+               return NULL;
           memcpy(tx->name, ti->name, ti->name_len);
 
           /* allocate ti->len+1 bytes on the heap, assign it to tx->value,
            * copy tx->len data from data+offset to tx->value and
            * null-terminate tx->value  */
-          tx->value = (char *)malloc((size_t)ti->len+1);
+          if ( (tx->value = (char *)malloc((size_t)ti->len+1)) == NULL )
+               return NULL;
           memcpy(tx->value, data+ti->offset, ti->len);
           tx->value[ti->len] = '\0';
           /* allocate sizeof(lpxpak_t) bytes on the hap, assign it to
            * tx->next, set tx to tx->next and tx->next to NULL  */
-          tx->next = (lpxpak_t *)malloc(sizeof(lpxpak_t));
+          if ( (tx->next = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL )
+               return NULL;
           tx = tx->next;
      }
      return xpak;
