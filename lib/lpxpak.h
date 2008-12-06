@@ -372,18 +372,18 @@ _lpxpak_parse_data_(const void *data, lpxpakindex_t *index)
      
      /* operate over all index elements */
      for (ti = index; ti->next != NULL; ti = ti->next) {
-          /* allocate ti->name_len bytes on the heap, assign it to tx->nem and
-           * copy ti->name_len bytes from ti->nem to tx->name */
+          /* allocate ti->name_len bytes on the heap, assign it to tx->name
+           * and copy ti->name_len bytes from ti->name to tx->name */
           if ( (tx->name = (char *)malloc((size_t)ti->name_len)) == NULL ) {
                errno = ENOMEM;
                return NULL;
           }
           memcpy(tx->name, ti->name, ti->name_len);
 
-          /* allocate ti->len+1 bytes on the heap, assign it to tx->value,
-           * copy tx->len data from data+offset to tx->value and
-           * null-terminate tx->value  */
-          if ( (tx->value = (char *)malloc((size_t)ti->len+1)) == NULL ) {
+          /* allocate ti->len bytes on the heap, assign it to tx->value, copy
+           * ti->len data from data+offset to tx->value and null-terminate
+           * tx->value  */
+          if ( (tx->value = (char *)malloc((size_t)ti->len)) == NULL ) {
                errno = ENOMEM;
                return NULL;
           }
