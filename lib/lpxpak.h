@@ -103,8 +103,9 @@ lpxpak_parse_data(const void *data, size_t len)
 {
      lpxpak_int count = 0;
      lpxpak_int index_len, data_len;
-     const void *index_data, *data_data;
-     lpxpakindex_t *index;
+     const void *index_data = NULL;
+     const void *data_data = NULL;
+     lpxpakindex_t *index = NULL;
         
      /* check if the first _LP_XPAK_INTRO_LEN_ bytes of the xpak data read
       * _LP_XPAK_INTRO_ and the last _LP_XPAK_OUTRO_LEN_ bytes of of the xpak
@@ -168,10 +169,10 @@ lpxpak_t *
 lpxpak_parse_fd(int fd)
 {
      struct stat xpakstat;
-     void *xpakdata;
-     void *tmp;
-     lpxpak_int *xpakoffset;
-     lpxpak_t *xpak;
+     void *xpakdata = NULL;
+     void *tmp = NULL;
+     lpxpak_int *xpakoffset = NULL;
+     lpxpak_t *xpak = NULL;
         
      if ( fstat(fd, &xpakstat) == -1 )
           return NULL;
@@ -227,7 +228,7 @@ lpxpak_parse_fd(int fd)
 
      xpak = lpxpak_parse_data(xpakdata, (size_t)(*xpakoffset));
      
-     /* clear up what we allocated */
+     /* clear up */
      free(tmp);
      free(xpakdata);
      return xpak;
@@ -310,7 +311,8 @@ lpxpak_parse_path(const char *path)
 lpxpakindex_t *
 _lpxpak_parse_index_(const void *data, size_t len)
 {
-     lpxpakindex_t *index, *t;
+     lpxpakindex_t *index = NULL;
+     lpxpakindex_t *t = NULL;
      lpxpak_int count = 0;
      lpxpak_int name_len = 0;
 
@@ -365,9 +367,9 @@ _lpxpak_parse_index_(const void *data, size_t len)
 lpxpak_t *
 _lpxpak_parse_data_(const void *data, lpxpakindex_t *index)
 {
-     lpxpakindex_t *ti;
-     lpxpak_t *xpak;
-     lpxpak_t *tx;
+     lpxpakindex_t *ti = NULL;;
+     lpxpak_t *xpak = NULL;;
+     lpxpak_t *tx = NULL;
      
      if ( (xpak = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL ) {
           errno = ENOMEM;
