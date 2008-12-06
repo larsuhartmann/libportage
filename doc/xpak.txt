@@ -42,7 +42,11 @@ Notes
            unsigned 32bit integer in big endian byte order(32bit unsigned big
            int or uint32(big) ).
 
-  String:  All Strings, Mentioned in this Documentation are ASCII encoded.
+  String:  All Strings, Mentioned in this Documentation are ASCII encoded, and
+           not Null terminated
+
+  Values:  The actual values of the individual xpak entries are stored as
+           Strings.
 
  Vertical Bars
  =============
