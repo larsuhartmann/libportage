@@ -52,7 +52,7 @@
 #define _LP_XPAK_STOP_LEN_      4
 #define _LP_XPAK_STOP_          "STOP"
 
-typedef uint32_t lpxpak_int;
+typedef uint32_t lpxpak_int_t;
 
 typedef struct _lpxpak_{
      char *name;
@@ -101,8 +101,8 @@ _lpxpak_parse_data_(const void *data, lpxpakindex_t *index);
 lpxpak_t *
 lpxpak_parse_data(const void *data, size_t len)
 {
-     lpxpak_int count = 0;
-     lpxpak_int index_len, data_len;
+     lpxpak_int_t count = 0;
+     lpxpak_int_t index_len, data_len;
      const void *index_data = NULL;
      const void *data_data = NULL;
      lpxpakindex_t *index = NULL;
@@ -119,11 +119,11 @@ lpxpak_parse_data(const void *data, size_t len)
      }
      count += _LP_XPAK_INTRO_LEN_;
 
-     memcpy(&index_len, data+count, sizeof(lpxpak_int));
-     count+=sizeof(lpxpak_int);
+     memcpy(&index_len, data+count, sizeof(lpxpak_int_t));
+     count+=sizeof(lpxpak_int_t);
      index_len = ntohl(index_len);
-     memcpy(&data_len, data+count, sizeof(lpxpak_int));
-     count += sizeof(lpxpak_int);
+     memcpy(&data_len, data+count, sizeof(lpxpak_int_t));
+     count += sizeof(lpxpak_int_t);
      data_len = ntohl(data_len);
 
      /* check if the sum of count, index_len, data_len and _LP_XPAK_OUTRO_LEN
@@ -171,7 +171,7 @@ lpxpak_parse_fd(int fd)
      struct stat xpakstat;
      void *xpakdata = NULL;
      void *tmp = NULL;
-     lpxpak_int *xpakoffset = NULL;
+     lpxpak_int_t *xpakoffset = NULL;
      lpxpak_t *xpak = NULL;
      
      if ( fstat(fd, &xpakstat) == -1 )
@@ -183,21 +183,21 @@ lpxpak_parse_fd(int fd)
      }
 
      /* seek to the start of the xpak offset */
-     if ( lseek(fd, (_LP_XPAK_STOP_OFFSET_+sizeof(lpxpak_int))*-1, SEEK_END) == -1 )
+     if ( lseek(fd, (_LP_XPAK_STOP_OFFSET_+sizeof(lpxpak_int_t))*-1, SEEK_END) == -1 )
           return NULL;
 
-     /* allocate _LPXPAK_STOP_LEN_+sizeof(lpxpak_int) bytes from the heap,
+     /* allocate _LPXPAK_STOP_LEN_+sizeof(lpxpak_int_t) bytes from the heap,
       * assign it to tmp, read in the xpak offset plus the_LPXPAK_STOP_
       * string. */
-     if ( (tmp = malloc(_LP_XPAK_STOP_LEN_+sizeof(lpxpak_int))) == NULL ) {
+     if ( (tmp = malloc(_LP_XPAK_STOP_LEN_+sizeof(lpxpak_int_t))) == NULL ) {
                errno = ENOMEM;
                return NULL;
      }
-     read(fd, tmp, _LP_XPAK_STOP_LEN_+sizeof(lpxpak_int));
+     read(fd, tmp, _LP_XPAK_STOP_LEN_+sizeof(lpxpak_int_t));
      /* check if the read in _LP_XPAK_STOP_ string equals _LPXPAK_STOP_.  If
       * not, free the allocated memory, set errno and return NULL as this is
       * an invalid xpak. */
-     if ( memcmp(tmp+sizeof(lpxpak_int), _LP_XPAK_STOP_, _LP_XPAK_STOP_LEN_)
+     if ( memcmp(tmp+sizeof(lpxpak_int_t), _LP_XPAK_STOP_, _LP_XPAK_STOP_LEN_)
          != 0 ) {
           free(tmp);
           errno = EINVAL;
@@ -206,7 +206,7 @@ lpxpak_parse_fd(int fd)
 
      /* assign a pointer to the xpak offset data to xpakoffset and convert it
       * to local byteorder */
-     xpakoffset = (lpxpak_int *)tmp;
+     xpakoffset = (lpxpak_int_t *)tmp;
      *xpakoffset = ntohl(*xpakoffset);
         
      /* allocate <xpakoffset> bytes on the heap, assign it to xpakdata, seek
@@ -308,8 +308,8 @@ _lpxpak_parse_index_(const void *data, size_t len)
 {
      lpxpakindex_t *index = NULL;
      lpxpakindex_t *t = NULL;
-     lpxpak_int count = 0;
-     lpxpak_int name_len = 0;
+     lpxpak_int_t count = 0;
+     lpxpak_int_t name_len = 0;
 
      if ( (index = (lpxpakindex_t *)malloc(sizeof(lpxpakindex_t))) == NULL ) {
           errno = ENOMEM;
@@ -321,9 +321,9 @@ _lpxpak_parse_index_(const void *data, size_t len)
      /* Do this until we reach the end of the index blob  */
      while (count < len) {
           /* read name_len from data and increase the counter */
-          name_len = *(lpxpak_int *)(data+count);
+          name_len = *(lpxpak_int_t *)(data+count);
           name_len = ntohl(name_len);
-          count += sizeof(lpxpak_int);
+          count += sizeof(lpxpak_int_t);
 
           /* allocate name_len+1 bytes on the heap, assign it to t->name, read
            * name_len bytes from data into t->name, apply name_len+1 to
@@ -337,14 +337,14 @@ _lpxpak_parse_index_(const void *data, size_t len)
           count += name_len;
           
           /* read t->offset from data in local byteorder and increase counter */
-          t->offset = *(lpxpak_int *)(data+count);
+          t->offset = *(lpxpak_int_t *)(data+count);
           t->offset = ntohl(t->offset);
-          count += sizeof(lpxpak_int);
+          count += sizeof(lpxpak_int_t);
 
           /* read t->len from data in local byteorder and increase counter */
-          t->len = *(lpxpak_int *)(data+count);
+          t->len = *(lpxpak_int_t *)(data+count);
           t->len = htonl(t->len);
-          count += sizeof(lpxpak_int);
+          count += sizeof(lpxpak_int_t);
 
           /* allocate sizeof(lpxpakindex_t) bytes on the heap, assign it to
            * t->next, set t to t->next and set t->next to NULL */
