@@ -261,7 +261,6 @@ lpxpak_get_data(const void *data, lpxpakindex_t *index)
            * copy ti->name_len bytes from ti->nem to tx->name */
           tx->name = (char *)malloc((size_t)ti->name_len);
           memcpy(tx->name, ti->name, ti->name_len);
-          puts(tx->name);
 
           /* allocate ti->len+1 bytes on the heap, assign it to tx->value,
            * copy tx->len data from data+offset to tx->value and
@@ -269,7 +268,6 @@ lpxpak_get_data(const void *data, lpxpakindex_t *index)
           tx->value = (char *)malloc((size_t)ti->len+1);
           memcpy(tx->value, data+ti->offset, ti->len);
           tx->value[ti->len] = '\0';
-
           /* allocate sizeof(lpxpak_t) bytes on the hap, assign it to
            * tx->next, set tx to tx->next and tx->next to NULL  */
           tx->next = (lpxpak_t *)malloc(sizeof(lpxpak_t));
