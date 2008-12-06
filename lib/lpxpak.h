@@ -281,6 +281,7 @@ lpxpak_get_data(const void *data, lpxpakindex_t *index)
                return NULL;
           memcpy(tx->value, data+ti->offset, ti->len);
           tx->value[ti->len] = '\0';
+          
           /* allocate sizeof(lpxpak_t) bytes on the hap, assign it to
            * tx->next, set tx to tx->next and tx->next to NULL  */
           if ( (tx->next = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL )
