@@ -367,8 +367,8 @@ _lpxpak_parse_index_(const void *data, size_t len)
 lpxpak_t *
 _lpxpak_parse_data_(const void *data, lpxpakindex_t *index)
 {
-     lpxpakindex_t *ti = NULL;;
-     lpxpak_t *xpak = NULL;;
+     lpxpakindex_t *ti = NULL;
+     lpxpak_t *xpak = NULL;
      lpxpak_t *tx = NULL;
      
      if ( (xpak = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL ) {
