@@ -3,15 +3,20 @@
 libs
 ====
 
-lpversionatom.h
+  *lpversionatom.h
   
 doc
 ===
-  xpak.txt
-  package-naming.txt
+
+  *package-naming.txt
 
                                     DONE:
 libs
 ====
 
-lpxpak.h
+  *lpxpak.h
+
+doc
+===
+
+  *xpak.txt
