@@ -415,11 +415,10 @@ _lpxpak_destroy_index_(lpxpakindex_t *index)
 {
      lpxpakindex_t *t;
      t=index;
-     while (index!=NULL) {
+     while ( index != NULL ) {
           t=index->next;
           free(index);
           index=t;
-          puts("yuhu");
      }
 }
 
