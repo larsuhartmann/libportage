@@ -81,10 +81,10 @@ lpxpak_t *
 lpxpak_parse_path(const char *path);
 
 lpxpakindex_t *
-lpxpak_get_index(const void *data, size_t len);
+_lpxpak_parse_index_(const void *data, size_t len);
 
 lpxpak_t *
-lpxpak_get_data(const void *data, lpxpakindex_t *index);
+_lpxpak_parse_data_(const void *data, lpxpakindex_t *index);
 
 /* 
  * lpxpak_parse_data: reads the xpak data out of a xpak binary blob
@@ -135,8 +135,8 @@ lpxpak_parse_data(const void *data, size_t len)
      index_data = data+count;
      data_data = data+count+index_len;
 
-     index = lpxpak_get_index(index_data, (size_t)index_len);
-     return lpxpak_get_data(data_data, index);
+     index = _lpxpak_parse_index_(index_data, (size_t)index_len);
+     return _lpxpak_parse_data_(data_data, index);
 }
 
 /* 
@@ -301,7 +301,7 @@ lpxpak_parse_path(const char *path)
 }
 
 lpxpakindex_t *
-lpxpak_get_index(const void *data, size_t len)
+_lpxpak_parse_index_(const void *data, size_t len)
 {
      lpxpakindex_t *index, *t;
      lpxpak_int count = 0;
@@ -360,7 +360,7 @@ lpxpak_get_index(const void *data, size_t len)
 }
 
 lpxpak_t *
-lpxpak_get_data(const void *data, lpxpakindex_t *index)
+_lpxpak_parse_data_(const void *data, lpxpakindex_t *index)
 {
      lpxpakindex_t *ti;
      lpxpak_t *xpak;
