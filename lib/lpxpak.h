@@ -428,6 +428,14 @@ _lpxpak_destroy_index_(_lpxpak_index_t_ *index)
      }
 }
 
+
+/*
+ * lpxpak_destroy_xpak: free() up all memory used by the xpak object given as
+ * argument.
+ *
+ * ATTENTION: Do not try to use a destroye'd xpak object or unexpected things
+ *            can happen.
+ */
 void
 lpxpak_destroy_xpak_(lpxpak_t *xpak)
 {
