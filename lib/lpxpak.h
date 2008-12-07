@@ -437,7 +437,6 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
 
 
 /*
- *
  * __lpxpak_destroy_index: free() up all memory used by the xpak object given
  *                         as argument.
  *
@@ -447,7 +446,6 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
  *
  * ATTENTION: Do not try to use a destroyed __lpxpak_index_t object or
  *            unexpected things will happen
- *
  */
 void
 __lpxpak_destroy_index(__lpxpak_index_t *index)
