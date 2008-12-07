@@ -93,16 +93,18 @@ void
 lpxpak_destroy_xpak(lpxpak_t *xpak);
 
 /* 
- * lpxpak_parse_data: Reads the xpak data out of a xpak binary blob
+ * lpxpak_parse_data: Reads the xpak data out of a xpak binary blob.
  *
  * Gets the actual xpak-blob (see doc/xpak.txt) and returns an pointer to an
  * lpxpak object with its data. If an error occurs, NULL is returned and errno
- * is set to indicate the error
+ * is set to indicate the error.
  *
  * Errors:
+ *         EINVAL The file either is no valid gentoo binary package or has an
+ *                invalid xpak.
  *
- * EINVAL The provided data (*data) is no valid xpak.
- * ENOMEM Could not allocate enough memory.
+ *         The lpxpak_parse_data() function may also fail and set errno for
+ *         any of the errors specified for the routine malloc(3).
  */
 lpxpak_t *
 lpxpak_parse_data(const void *data, size_t len)
@@ -154,28 +156,24 @@ lpxpak_parse_data(const void *data, size_t len)
 
 /* 
  * lpxpak_parse_fd: Reads the xpak data out of a file-descriptor which points
- *                  to an Gentoo binary package
+ *                  to an Gentoo binary package.
  *
  * Gets an file-descriptor (fd) for a Gentoo binary package and returns an
  * pointer to an lpxpak object with the xpak data. If an error occurs, NULL is
- * returned and errno is set to indicate the error
+ * returned and errno is set to indicate the error.
  *
  * Errors:
+ *         EINVAL The file either is no valid gentoo binary package or has an
+ *                invalid xpak.
  *
- * EBADF  the provided fd is bad.
+ *         The lpxpak_parse_fd() function may also fail and set errno for any
+ *         of the errors specified for the routine malloc(3).
  *
- * EACCES permission to access the file was denied.
+ *         The lpxpak_parse_fd() function may also fail and set errno for any
+ *         of the errors specified for the routine lseek(2).
  *
- * ENAMETOOLONG
- *        File name too long.
- *
- * EINVAL The fd does not point to an file,or the File does not contain a
- *        valid xpak.
- *           
- * ENOMEM Could not allocate enough memory.
- *
- * ENOTDIR
- *        A component of the path is not a directory.
+ *         The lpxpak_parse_fd() function may also fail and set errno for any
+ *         of the errors specified for the routine read(2).
  */
 lpxpak_t *
 lpxpak_parse_fd(int fd)
@@ -202,10 +200,8 @@ lpxpak_parse_fd(int fd)
      /* allocate _LPXPAK_STOP_LEN_+sizeof(__lpxpak_int_t) bytes from the heap,
       * assign it to tmp, read in the xpak offset plus the_LPXPAK_STOP_
       * string. */
-     if ( (tmp = malloc(__LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t))) == NULL ) {
-               errno = ENOMEM;
+     if ( (tmp = malloc(__LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t))) == NULL )
                return NULL;
-     }
      if (read(fd, tmp, __LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t)) == -1)
           return NULL;
      
@@ -227,10 +223,8 @@ lpxpak_parse_fd(int fd)
      /* allocate <xpakoffset> bytes on the heap, assign it to xpakdata, seek
       * to the start of the xpak data, read in the xpak data and store it in
       * xpakdata. */
-     if ( (xpakdata = malloc((size_t)*xpakoffset)) == NULL ) {
-          errno = ENOMEM;
+     if ( (xpakdata = malloc((size_t)*xpakoffset)) == NULL )
           return NULL;
-     }
      if ( lseek(fd, (off_t)((off_t)*xpakoffset+__LPXPAK_OFFSET)*-1, SEEK_END) == -1 )
           return NULL;
      if ( read(fd, xpakdata, (size_t)(*xpakoffset)) == -1 )
@@ -253,21 +247,20 @@ lpxpak_parse_fd(int fd)
  * and errno is set to indicate the error
  *
  * Errors:
+ *         EINVAL The file either is no valid gentoo binary package or has an
+ *                invalid xpak.
  *
- * EBADF  the provided file buffer is bad.
+ *         The lpxpak_parse_file() function may also fail and set errno for
+ *         any of the errors specified for the routine malloc(3).
  *
- * EACCES permission to access the file was denied.
+ *         The lpxpak_parse_file() function may also fail and set errno for
+ *         any of the errors specified for the routine lseek(2).
  *
- * ENAMETOOLONG
- *        File name too long.
+ *         The lpxpak_parse_file() function may also fail and set errno for
+ *         any of the errors specified for the routine read(2).
  *
- * EINVAL The fd does not point to an file, or the File does not contain a
- *        valid xpak.
- *           
- * ENOMEM Could not allocate enough memory.
- *
- * ENOTDIR
- *        A component of the path is not a directory.
+ *         The lpxpak_parse_file() function may also fail and set errno for
+ *         any of the errors specified for the routine fileno(3).
  */
 lpxpak_t *
 lpxpak_parse_file(FILE *file)
@@ -288,25 +281,20 @@ lpxpak_parse_file(FILE *file)
  * is set to indicate the error
  *
  * Errors:
+ *         EINVAL The file either is no valid gentoo binary package or has an
+ *                invalid xpak.
  *
- * EBADF  the provided file buffer is bad.
+ *         The lpxpak_parse_path() function may also fail and set errno for
+ *         any of the errors specified for the routine malloc(3).
  *
- * EACCES permission to access the file was denied.
+ *         The lpxpak_parse_path() function may also fail and set errno for
+ *         any of the errors specified for the routine lseek(2).
  *
- * ENAMETOOLONG
- *        File name too long.
+ *         The lpxpak_parse_path() function may also fail and set errno for
+ *         any of the errors specified for the routine read(2).
  *
- * ELOOP  Too many symbolic links were encountered.
- *
- * ENFILE The system's limit on the total number of open files has been reached.
- *
- * EINVAL The fd does not point to an file, or the file does not contain a
- *        valid xpak.
- *           
- * ENOMEM Could not allocate enough memory.
- *
- * ENOTDIR
- *        A component of the path is not a directory.
+ *         The lpxpak_parse_path() function may also fail and set errno for
+ *         any of the errors specified in the routine open(2).
  */
 lpxpak_t *
 lpxpak_parse_path(const char *path)
@@ -326,11 +314,8 @@ _lpxpak_parse_index_(const void *data, size_t len)
      __lpxpak_int_t count = 0;
      __lpxpak_int_t name_len = 0;
 
-     if ( (index = (__lpxpak_index_t *)malloc(sizeof(__lpxpak_index_t)))
-          == NULL ) {
-          errno = ENOMEM;
+     if ((index = (__lpxpak_index_t *)malloc(sizeof(__lpxpak_index_t)))==NULL)
           return NULL;
-     }
      index->next = NULL;
      t=index;
 
@@ -344,10 +329,8 @@ _lpxpak_parse_index_(const void *data, size_t len)
           /* allocate name_len+1 bytes on the heap, assign it to t->name, read
            * name_len bytes from data into t->name, apply name_len+1 to
            * t->name_len, and increase the counter by name_len bytes */
-          if ( (t->name = (char *)malloc((size_t)name_len)) == NULL ) {
-               errno = ENOMEM;
+          if ( (t->name = (char *)malloc((size_t)name_len)) == NULL )
                return NULL;
-          }
           memcpy(t->name, data+count, name_len);
           t->name_len = name_len;
           count += name_len;
@@ -366,10 +349,8 @@ _lpxpak_parse_index_(const void *data, size_t len)
           /* allocate sizeof(__lpxpak_index_t) bytes on the heap, assign it to
            * t->next, set t to t->next and set t->next to NULL */
           if ((t->next = (__lpxpak_index_t *)malloc(sizeof(__lpxpak_index_t)))
-              == NULL) {
-               errno = ENOMEM;
+              ==NULL)
                return NULL;
-          }
           t = t->next;
           t->next = NULL;
      }
@@ -388,9 +369,9 @@ _lpxpak_parse_index_(const void *data, size_t len)
  *          directly from outside the API, as the way this function works
  *          can be changed regularly.
  *
- * Errors:
- *
- * ENOMEM Could not allocate enough memory.
+ * Errors: 
+ *         The __lpxpak_parse_data() function may fail and set errno for any
+ *         of the errors specified for the routine malloc(3).
  */
 lpxpak_t *
 __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
@@ -399,37 +380,29 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
      lpxpak_t *xpak = NULL;
      lpxpak_t *tx = NULL;
      
-     if ( (xpak = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL ) {
-          errno = ENOMEM;
+     if ( (xpak = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL )
           return NULL;
-     }
      tx = xpak;
      
      /* operate over all index elements */
      for (ti = index; ti->next != NULL; ti = ti->next) {
           /* allocate ti->name_len bytes on the heap, assign it to tx->name
            * and copy ti->name_len bytes from ti->name to tx->name */
-          if ( (tx->name = (char *)malloc((size_t)ti->name_len)) == NULL ) {
-               errno = ENOMEM;
+          if ( (tx->name = (char *)malloc((size_t)ti->name_len)) == NULL )
                return NULL;
-          }
           memcpy(tx->name, ti->name, ti->name_len);
 
           /* allocate ti->len bytes on the heap, assign it to tx->value, copy
            * ti->len data from data+offset to tx->value and null-terminate
            * tx->value  */
-          if ( (tx->value = (char *)malloc((size_t)ti->len)) == NULL ) {
-               errno = ENOMEM;
+          if ( (tx->value = (char *)malloc((size_t)ti->len)) == NULL )
                return NULL;
-          }
           memcpy(tx->value, data+ti->offset, ti->len);
 
           /* allocate sizeof(lpxpak_t) bytes on the heap, assign it to
            * tx->next, set tx to tx->next and tx->next to NULL  */
-          if ( (tx->next = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL ) {
-               errno = ENOMEM;
+          if ( (tx->next = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL )
                return NULL;
-          }
           tx = tx->next;
      }
      return xpak;
