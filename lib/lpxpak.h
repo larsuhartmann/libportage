@@ -337,7 +337,7 @@ __lpxpak_parse_index(const void *data, size_t len)
      index->next = NULL;
      t=index;
 
-     /* Do this until we reach the end of the index blob  */
+     /* iterate over the index block  */
      while (count < len) {
           /* read name_len from data and increase the counter */
           name_len = *(__lpxpak_int_t *)(data+count);
