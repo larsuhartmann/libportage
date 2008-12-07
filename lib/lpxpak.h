@@ -426,8 +426,11 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
 
 
 /*
- * __lpxpak_destroy_index: free() up all memory used by the xpak object given
- *                         as argument.
+ * __lpxpak_destroy_index: destroy an __lpxpak_index_t object
+ *
+ * Gets an pointer to an __lpxpak_index_t object and free(2)s up all memory of
+ * that object. If a NULL pointer was given, __lpxpak_destroy_index will just
+ * return.
  *
  * PRIVATE: This is a private function and thus should not be called directly
  *          from outside the API, as the way this function works can be
@@ -441,6 +444,12 @@ __lpxpak_destroy_index(__lpxpak_index_t *index)
 {
      __lpxpak_index_t *t;
      t=index;
+
+     /* do nothing if the given pointer is NULL */
+     if (index == NULL)
+          return;
+
+     /* iterate over the whole index and free(2) every single object */
      while ( index != NULL ) {
           t=index->next;
           free(index);
@@ -450,8 +459,10 @@ __lpxpak_destroy_index(__lpxpak_index_t *index)
 
 
 /*
- * lpxpak_destroy_xpak: free() up all memory used by the xpak object given as
- *                      argument.
+ * lpxpak_destroy_xpak: destroy an xpak object
+ *
+ * Gets an pointer to an lpxpak_t object and free(2)s up all memory of that
+ * object. If a NULL pointer was given, lpxpak_destroy_xpak will just return.
  *
  * ATTENTION: Do not try to use a destroyed xpak object or unexpected things
  *            will happen.
@@ -461,6 +472,12 @@ lpxpak_destroy_xpak(lpxpak_t *xpak)
 {
      lpxpak_t *t;
      t=xpak;
+
+     /* do nothing if the given pointer is NULL */
+     if ( xpak == NULL )
+          return;
+
+     /* iterate over the whole xpak and free(2) every single object */
      while ( xpak != NULL ) {
           t=xpak->next;
           free(xpak);
