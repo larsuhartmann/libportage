@@ -240,11 +240,11 @@ lpxpak_parse_fd(int fd)
 
 /* 
  * lpxpak_parse_file: Reads the xpak data out of a FILE * buffer which points
- *                    to an Gentoo binary package
+ *                    to an Gentoo binary package.
  *
  * Gets an FILE buffer for a Gentoo binary package and returns an pointer to
  * an lpxpak object with the xpak data. If an error occurs, NULL is returned
- * and errno is set to indicate the error
+ * and errno is set to indicate the error.
  *
  * Errors:
  *         EINVAL The file either is no valid gentoo binary package or has an
@@ -278,7 +278,7 @@ lpxpak_parse_file(FILE *file)
  *
  * Gets an path to a Gentoo binary package and returns an pointer to an lpxpak
  * object with the xpak data. If an error occurs, NULL is returned and errno
- * is set to indicate the error
+ * is set to indicate the error.
  *
  * Errors:
  *         EINVAL The file either is no valid gentoo binary package or has an
@@ -378,8 +378,8 @@ __lpxpak_parse_index(const void *data, size_t len)
  *
  * Gets an pointer to the data block of an xpak and a pointer to the index of
  * the same xpak as an __lpxpak_index_t struct and returns and returns an
- * pointer to an lpxpak object with the xpak data. If an error occurred, NULL
- * is returned and errno is set to indicate the error.
+ * pointer to an lpxpak_t object with the xpak data. If an error occurred,
+ * NULL is returned and errno is set to indicate the error.
  *
  * PRIVATE: This is a private function and thus should not be called
  *          directly from outside the API, as the way this function works
