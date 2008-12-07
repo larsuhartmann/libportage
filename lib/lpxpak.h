@@ -306,6 +306,22 @@ lpxpak_parse_path(const char *path)
      return lpxpak_parse_fd(fd);
 }
 
+/*
+ * __lpxpak_parse_index: parses an data block according to the provided index
+ *
+ * Gets an pointer to the index block of an xpak and the length of that index
+ * block and returns and returns an pointer to an __lpxpak_index_t object with
+ * the xpak index data. If an error occurred, NULL is returned and errno is
+ * set to indicate the error.
+ *
+ * PRIVATE: This is a private function and thus should not be called
+ *          directly from outside the API, as the way this function works
+ *          can be changed regularly.
+ *
+ * Errors: 
+ *         The __lpxpak_parse_index() function may fail and set errno for any
+ *         of the errors specified for the routine malloc(3).
+ */
 __lpxpak_index_t *
 __lpxpak_parse_index(const void *data, size_t len)
 {
