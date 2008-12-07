@@ -384,9 +384,9 @@ _lpxpak_parse_index_(const void *data, size_t len)
  * pointer to an lpxpak object with the xpak data. If an error occurred, NULL
  * is returned and errno is set to indicate the error.
  *
- * ATTENTION: This is a private function and thus should not be called
- *            directly from outside the API, as the way this function works
- *            can be changed regularly.
+ * PRIVATE: This is a private function and thus should not be called
+ *          directly from outside the API, as the way this function works
+ *          can be changed regularly.
  *
  * Errors:
  *
@@ -438,18 +438,14 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
 
 /*
  *
- * __lpxpak_parse_data: parses an data block according to the provided index
+ * __lpxpak_destroy_index: free() up all memory used by the xpak object given
+ *                         as argument.
  *
- * Gets an pointer to the data block of an xpak and a pointer to the index of
- * the same xpak as an __lpxpak_index_t struct and returns and returns an
- * pointer to an lpxpak object with the xpak data. If an error occurred, NULL
- * is returned and errno is set to indicate the error.
+ * PRIVATE: This is a private function and thus should not be called directly
+ *          from outside the API, as the way this function works can be
+ *          changed regularly.
  *
- * ATTENTION: This is a private function and thus should not be called
- *            directly from outside the API, as the way this function works
- *            can be changed regularly.
- *
- *            Do not try to use a destroyed __lpxpak_index_t object or
+ * ATTENTION: Do not try to use a destroyed __lpxpak_index_t object or
  *            unexpected things will happen
  *
  */
