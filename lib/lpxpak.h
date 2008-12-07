@@ -455,6 +455,7 @@ __lpxpak_destroy_index(__lpxpak_index_t *index)
           free(index);
           index=t;
      }
+     return;
 }
 
 
