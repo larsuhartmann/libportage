@@ -90,7 +90,7 @@ void
 __lpxpak_destroy_index(__lpxpak_index_t *index);
 
 void
-lpxpak_destroy_xpak_(lpxpak_t *xpak);
+lpxpak_destroy_xpak(lpxpak_t *xpak);
 
 /* 
  * lpxpak_parse_data: Reads the xpak data out of a xpak binary blob
@@ -433,14 +433,14 @@ __lpxpak_destroy_index(__lpxpak_index_t *index)
 
 
 /*
- * lpxpak_destroy_xpak_: free() up all memory used by the xpak object given as
+ * lpxpak_destroy_xpak: free() up all memory used by the xpak object given as
  *                      argument.
  *
  * ATTENTION: Do not try to use a destroye'd xpak object or unexpected things
  *            will happen.
  */
 void
-lpxpak_destroy_xpak_(lpxpak_t *xpak)
+lpxpak_destroy_xpak(lpxpak_t *xpak)
 {
      lpxpak_t *t;
      t=xpak;
