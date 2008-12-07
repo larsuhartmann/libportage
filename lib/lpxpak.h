@@ -81,7 +81,7 @@ lpxpak_t *
 lpxpak_parse_path(const char *path);
 
 __lpxpak_index_t *
-_lpxpak_parse_index_(const void *data, size_t len);
+__lpxpak_parse_index(const void *data, size_t len);
 
 lpxpak_t *
 __lpxpak_parse_data(const void *data, __lpxpak_index_t *index);
@@ -145,7 +145,7 @@ lpxpak_parse_data(const void *data, size_t len)
      index_data = data+count;
      data_data = data+count+index_len;
 
-     index = _lpxpak_parse_index_(index_data, (size_t)index_len);
+     index = __lpxpak_parse_index(index_data, (size_t)index_len);
      xpak = __lpxpak_parse_data(data_data, index);
 
      /* free up index */
@@ -307,7 +307,7 @@ lpxpak_parse_path(const char *path)
 }
 
 __lpxpak_index_t *
-_lpxpak_parse_index_(const void *data, size_t len)
+__lpxpak_parse_index(const void *data, size_t len)
 {
      __lpxpak_index_t *index = NULL;
      __lpxpak_index_t *t = NULL;
