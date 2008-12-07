@@ -226,7 +226,8 @@ lpxpak_parse_fd(int fd)
       * xpakdata. */
      if ( (xpakdata = malloc((size_t)*xpakoffset)) == NULL )
           return NULL;
-     if ( lseek(fd, (off_t)((off_t)*xpakoffset+__LPXPAK_OFFSET)*-1, SEEK_END) == -1 )
+     if ( lseek(fd, (off_t)((off_t)*xpakoffset+__LPXPAK_OFFSET)*-1, SEEK_END)
+          == -1 )
           return NULL;
      if ( read(fd, xpakdata, (size_t)(*xpakoffset)) == -1 )
           return NULL;
