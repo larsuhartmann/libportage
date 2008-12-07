@@ -445,15 +445,14 @@ __lpxpak_destroy_index(__lpxpak_index_t *index)
      __lpxpak_index_t *t;
      t=index;
 
-     /* do nothing if the given pointer is NULL */
-     if (index == NULL)
-          return;
-
-     /* iterate over the whole index and free(2) every single object */
-     while ( index != NULL ) {
-          t=index->next;
-          free(index);
-          index=t;
+     /* do something if index isnt a NULL pointer */
+     if (index != NULL) {
+          /* iterate over the whole index and free(2) every single object */
+          while ( index != NULL ) {
+               t=index->next;
+               free(index);
+               index=t;
+          }
      }
 }
 
@@ -473,14 +472,13 @@ lpxpak_destroy_xpak(lpxpak_t *xpak)
      lpxpak_t *t;
      t=xpak;
 
-     /* do nothing if the given pointer is NULL */
-     if ( xpak == NULL )
-          return;
-
-     /* iterate over the whole xpak and free(2) every single object */
-     while ( xpak != NULL ) {
-          t=xpak->next;
-          free(xpak);
-          xpak=t;
+     /* do something if index isnt a NULL pointer */
+     if (index != NULL) {
+          /* iterate over the whole index and free(2) every single object */
+          while ( index != NULL ) {
+               t=index->next;
+               free(index);
+               index=t;
+          }
      }
 }
