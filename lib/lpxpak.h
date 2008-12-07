@@ -123,7 +123,7 @@ lpxpak_parse_data(const void *data, size_t len)
       * counter */
      if ((memcmp(data, __LPXPAK_INTRO, __LPXPAK_INTRO_LEN) != 0) ||
          (memcmp(data+len-__LPXPAK_OUTRO_LEN, __LPXPAK_OUTRO,
-                 _LPXPAK_OUTRO_LEN != 0))) {
+                 __LPXPAK_OUTRO_LEN != 0))) {
           errno = EINVAL;
           return NULL;
      }
@@ -445,16 +445,15 @@ void
 __lpxpak_destroy_index(__lpxpak_index_t *index)
 {
      __lpxpak_index_t *t;
+     
      t=index;
 
-     /* do something if index isnt a NULL pointer */
-     if (index != NULL) {
-          /* iterate over the whole index and free(2) every single object */
-          while ( index != NULL ) {
-               t=index->next;
-               free(index);
-               index=t;
-          }
+     /* iterate over the whole index and free(2) every single object */
+     while ( index != NULL ) {
+          /* assign index->next to t, free up index and assign t to index */
+          t=index->next;
+          free(index);
+          index=t;
      }
 }
 
@@ -472,15 +471,15 @@ void
 lpxpak_destroy_xpak(lpxpak_t *xpak)
 {
      lpxpak_t *t;
+
      t=xpak;
 
-     /* do something if index isnt a NULL pointer */
-     if (index != NULL) {
-          /* iterate over the whole index and free(2) every single object */
-          while ( index != NULL ) {
-               t=index->next;
-               free(index);
-               index=t;
-          }
+     /* iterate over the whole index and free(2) every single object */
+     while ( index != NULL ) {
+          /* assign xpak->next to t, free up xpak and assign t to xpak */
+          t=xpak->next;
+          free(index);
+          xpak=t;
      }
+     return;
 }
