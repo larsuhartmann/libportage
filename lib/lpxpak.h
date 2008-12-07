@@ -54,10 +54,10 @@
 
 typedef uint32_t _lpxpak_int_t_;
 
-typedef struct _lpxpak_{
+typedef struct lpxpak{
      char *name;
      char *value;
-     struct _lpxpak_ *next;
+     struct lpxpak *next;
 } lpxpak_t;
 
 typedef struct __lpxpak_index_t__{
@@ -119,8 +119,8 @@ lpxpak_parse_data(const void *data, size_t len)
       * read _LP_XPAK_OUTRO_ to make sure we have a valid xpak, if not, set
       * errno and return. Otherwise increase count which we will be using as
       * an seek counter */
-     if ( ( memcmp(data, _LP_XPAK_INTRO_, _LP_XPAK_INTRO_LEN_) != 0 ) ||
-         ( memcmp(data+len-8, _LP_XPAK_OUTRO_, _LP_XPAK_OUTRO_LEN_ != 0) ) ) {
+     if ((memcmp(data, _LP_XPAK_INTRO_, _LP_XPAK_INTRO_LEN_) != 0) ||
+         (memcmp(data+len-8, _LP_XPAK_OUTRO_, _LP_XPAK_OUTRO_LEN_ != 0))) {
           errno = EINVAL;
           return NULL;
      }
@@ -326,7 +326,8 @@ _lpxpak_parse_index_(const void *data, size_t len)
      _lpxpak_int_t_ count = 0;
      _lpxpak_int_t_ name_len = 0;
 
-     if ( (index = (_lpxpak_index_t_ *)malloc(sizeof(_lpxpak_index_t_))) == NULL ) {
+     if ( (index = (_lpxpak_index_t_ *)malloc(sizeof(_lpxpak_index_t_)))
+          == NULL ) {
           errno = ENOMEM;
           return NULL;
      }
@@ -351,7 +352,8 @@ _lpxpak_parse_index_(const void *data, size_t len)
           t->name_len = name_len;
           count += name_len;
           
-          /* read t->offset from data in local byteorder and increase counter */
+          /* read t->offset from data in local byteorder and increase
+           * counter */
           t->offset = *(_lpxpak_int_t_ *)(data+count);
           t->offset = ntohl(t->offset);
           count += sizeof(_lpxpak_int_t_);
@@ -363,7 +365,7 @@ _lpxpak_parse_index_(const void *data, size_t len)
 
           /* allocate sizeof(_lpxpak_index_t_) bytes on the heap, assign it to
            * t->next, set t to t->next and set t->next to NULL */
-          if ( (t->next = (_lpxpak_index_t_ *)malloc(sizeof(_lpxpak_index_t_)))
+          if ((t->next = (_lpxpak_index_t_ *)malloc(sizeof(_lpxpak_index_t_)))
               == NULL) {
                errno = ENOMEM;
                return NULL;
@@ -432,10 +434,10 @@ _lpxpak_destroy_index_(_lpxpak_index_t_ *index)
 
 /*
  * lpxpak_destroy_xpak: free() up all memory used by the xpak object given as
- * argument.
+ *                      argument.
  *
  * ATTENTION: Do not try to use a destroye'd xpak object or unexpected things
- *            can happen.
+ *            will happen.
  */
 void
 lpxpak_destroy_xpak_(lpxpak_t *xpak)
