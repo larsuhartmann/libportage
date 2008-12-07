@@ -115,10 +115,10 @@ lpxpak_parse_data(const void *data, size_t len)
      lpxpak_t *xpak = NULL;
      
      /* check if the first __LPXPAK_INTRO_LEN bytes of the xpak data read
-      * __LPXPAK_INTRO and the last __LPXPAK_OUTRO_LEN bytes of of the xpak
-      * read __LPXPAK_OUTRO to make sure we have a valid xpak, if not, set
-      * errno and return. Otherwise increase count which we will be using as
-      * an seek counter */
+      * __LPXPAK_INTRO and the last __LPXPAK_OUTRO_LEN bytes of the xpak read
+      * __LPXPAK_OUTRO to make sure we have a valid xpak, if not, set errno
+      * and return. Otherwise increase count which we will be using as an seek
+      * counter */
      if ((memcmp(data, __LPXPAK_INTRO, __LPXPAK_INTRO_LEN) != 0) ||
          (memcmp(data+len-8, __LPXPAK_OUTRO, __LPXPAK_OUTRO_LEN != 0))) {
           errno = EINVAL;
@@ -220,13 +220,13 @@ lpxpak_parse_fd(int fd)
      }
 
      /* assign a pointer to the xpak offset data to xpakoffset and convert it
-      * to local byteorder */
+      * to local byte order */
      xpakoffset = (__lpxpak_int_t *)tmp;
      *xpakoffset = ntohl(*xpakoffset);
         
      /* allocate <xpakoffset> bytes on the heap, assign it to xpakdata, seek
-      * to to the start of the xpak data, read in the xpak data and store it
-      * in xpakdata. */
+      * to the start of the xpak data, read in the xpak data and store it in
+      * xpakdata. */
      if ( (xpakdata = malloc((size_t)*xpakoffset)) == NULL ) {
           errno = ENOMEM;
           return NULL;
@@ -280,8 +280,8 @@ lpxpak_parse_file(FILE *file)
 }
 
 /* 
- * lpxpak_parse_path: Reads the xpak data out of a Gentoo binary package with
- *                    which's path it was called with.
+ * lpxpak_parse_path: Reads the xpak data out of a Gentoo binary packages'
+ *                    path it was called with.
  *
  * Gets an path to a Gentoo binary package and returns an pointer to an lpxpak
  * object with the xpak data. If an error occurs, NULL is returned and errno
@@ -352,13 +352,13 @@ _lpxpak_parse_index_(const void *data, size_t len)
           t->name_len = name_len;
           count += name_len;
           
-          /* read t->offset from data in local byteorder and increase
+          /* read t->offset from data in local byte order and increase
            * counter */
           t->offset = *(__lpxpak_int_t *)(data+count);
           t->offset = ntohl(t->offset);
           count += sizeof(__lpxpak_int_t);
 
-          /* read t->len from data in local byteorder and increase counter */
+          /* read t->len from data in local byte order and increase counter */
           t->len = *(__lpxpak_int_t *)(data+count);
           t->len = htonl(t->len);
           count += sizeof(__lpxpak_int_t);
@@ -376,6 +376,22 @@ _lpxpak_parse_index_(const void *data, size_t len)
      return index;
 }
 
+/*
+ * __lpxpak_parse_data: parses an data block according to the provided index
+ *
+ * Gets an pointer to the data block of an xpak and a pointer to the index of
+ * the same xpak as an __lpxpak_index_t struct and returns and returns an
+ * pointer to an lpxpak object with the xpak data. If an error occurred, NULL
+ * is returned and errno is set to indicate the error.
+ *
+ * ATTENTION: This is a private function and thus should not be called
+ *            directly from outside the API, as the way this function works
+ *            can be changed regularly.
+ *
+ * Errors:
+ *
+ * ENOMEM Could not allocate enough memory.
+ */
 lpxpak_t *
 __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
 {
@@ -419,6 +435,24 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
      return xpak;
 }
 
+
+/*
+ *
+ * __lpxpak_parse_data: parses an data block according to the provided index
+ *
+ * Gets an pointer to the data block of an xpak and a pointer to the index of
+ * the same xpak as an __lpxpak_index_t struct and returns and returns an
+ * pointer to an lpxpak object with the xpak data. If an error occurred, NULL
+ * is returned and errno is set to indicate the error.
+ *
+ * ATTENTION: This is a private function and thus should not be called
+ *            directly from outside the API, as the way this function works
+ *            can be changed regularly.
+ *
+ *            Do not try to use a destroyed __lpxpak_index_t object or
+ *            unexpected things will happen
+ *
+ */
 void
 __lpxpak_destroy_index(__lpxpak_index_t *index)
 {
@@ -436,7 +470,7 @@ __lpxpak_destroy_index(__lpxpak_index_t *index)
  * lpxpak_destroy_xpak: free() up all memory used by the xpak object given as
  *                      argument.
  *
- * ATTENTION: Do not try to use a destroye'd xpak object or unexpected things
+ * ATTENTION: Do not try to use a destroyed xpak object or unexpected things
  *            will happen.
  */
 void
