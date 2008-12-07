@@ -122,7 +122,8 @@ lpxpak_parse_data(const void *data, size_t len)
       * and return. Otherwise increase count which we will be using as an seek
       * counter */
      if ((memcmp(data, __LPXPAK_INTRO, __LPXPAK_INTRO_LEN) != 0) ||
-         (memcmp(data+len-8, __LPXPAK_OUTRO, __LPXPAK_OUTRO_LEN != 0))) {
+         (memcmp(data+len-__LPXPAK_OUTRO_LEN, __LPXPAK_OUTRO,
+                 _LPXPAK_OUTRO_LEN != 0))) {
           errno = EINVAL;
           return NULL;
      }
