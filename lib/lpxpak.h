@@ -202,7 +202,7 @@ lpxpak_parse_fd(int fd)
       * assign it to tmp, read in the xpak offset plus the_LPXPAK_STOP_
       * string. */
      if ( (tmp = malloc(__LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t))) == NULL )
-               return NULL;
+          return NULL;
      if (read(fd, tmp, __LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t)) == -1)
           return NULL;
      
