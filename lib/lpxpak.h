@@ -437,9 +437,10 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
           /* allocate ti->len bytes on the heap, assign it to tx->value, copy
            * ti->len data from data+offset to tx->value and null-terminate
            * tx->value  */
-          if ( (tx->value = (char *)malloc((size_t)ti->len)) == NULL )
+          if ( (tx->value = (char *)malloc((size_t)ti->len+1)) == NULL )
                return NULL;
           memcpy(tx->value, data+ti->offset, ti->len);
+          tx->value[ti->len] = '\0';
      }
      return xpak;
 }
