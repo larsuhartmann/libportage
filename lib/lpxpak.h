@@ -347,7 +347,7 @@ __lpxpak_parse_index(const void *data, size_t len)
            * on the heap and assign it to index and t, otherwise assign that
            * memory to t->next and t->next to t */
           if (index == NULL) {
-               if ( (index = (__lpxpak_index_t *)malloc(indexsize))) == NULL)
+               if ( (index = (__lpxpak_index_t *)malloc(indexsize)) == NULL)
                     return NULL;
                t = index;
           }
