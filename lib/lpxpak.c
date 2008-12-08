@@ -82,6 +82,8 @@ lpxpak_parse_data(const void *data, size_t len)
      const void *index_data = NULL;
      const void *data_data = NULL;
      __lpxpak_index_t *index = NULL;
+     __lpxpak_index_t *ti;
+     size_t tl = 0;
      lpxpak_t *xpak = NULL;
      
      /* check if the first __LPXPAK_INTRO_LEN bytes of the xpak data read
@@ -115,6 +117,20 @@ lpxpak_parse_data(const void *data, size_t len)
      data_data = data+count+index_len;
 
      index = __lpxpak_parse_index(index_data, (size_t)index_len);
+     /* get the total length from the index and check if it is the same as
+      * data_len, if not, return NULL and set errno to EINVAL, as in this case
+      * the xpak is b0rked  */
+     ti = index;
+     while (ti!=NULL) {
+          tl += ti->len;
+          ti = ti->next;
+     }
+     if (tl != data_len) {
+          errno = EINVAL;
+          return NULL;
+     }
+     ti = NULL;
+     
      xpak = __lpxpak_parse_data(data_data, index);
 
      /* free up index */
