@@ -268,10 +268,13 @@ lpxpak_t *
 lpxpak_parse_file(FILE *file)
 {
      int fd;
+     lpxpak_t *xpak = NULL;
 
      if ( (fd = fileno(file)) == -1 )
           return NULL;
-     return lpxpak_parse_fd(fd);
+     xpak = lpxpak_parse_fd(fd);
+     close(fd);
+     return xpak;
 }
 
 /* 
@@ -302,10 +305,13 @@ lpxpak_t *
 lpxpak_parse_path(const char *path)
 {
      int fd;
+     lpxpak_t *xpak = NULL;
 
      if ( (fd = open(path, O_RDONLY)) == -1)
           return NULL;
-     return lpxpak_parse_fd(fd);
+     xpak = lpxpak_parse_fd(fd);
+     close(fd);
+     return xpak;
 }
 
 /*
