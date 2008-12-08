@@ -337,14 +337,27 @@ __lpxpak_parse_index(const void *data, size_t len)
      __lpxpak_index_t *t = NULL;
      __lpxpak_int_t count = 0;
      __lpxpak_int_t name_len = 0;
+     size_t indexsize;
 
-     if ((index = (__lpxpak_index_t *)malloc(sizeof(__lpxpak_index_t)))==NULL)
-          return NULL;
-     index->next = NULL;
-     t=index;
+     indexsize = sizeof(__lpxpak_index_t);
 
      /* iterate over the index block  */
      while (count < len) {
+          /* check if index is initialized, if not, allocate indexsize bytes
+           * on the heap and assign it to index and t, otherwise assign that
+           * memory to t->next and t->next to t */
+          if (index == NULL) {
+               if ( (index = (__lpxpak_index_t *)malloc(indexsize))) == NULL)
+                    return NULL;
+               t = index;
+          }
+          else {
+               if( (t->next = (__lpxpak_index_t *)malloc(indexsize)) == NULL)
+                    return NULL;
+               t = t->next;
+          }
+          t->next = NULL;
+
           /* read name_len from data and increase the counter */
           name_len = *(__lpxpak_int_t *)(data+count);
           name_len = ntohl(name_len);
@@ -370,14 +383,6 @@ __lpxpak_parse_index(const void *data, size_t len)
           t->len = *(__lpxpak_int_t *)(data+count);
           t->len = htonl(t->len);
           count += sizeof(__lpxpak_int_t);
-
-          /* allocate sizeof(__lpxpak_index_t) bytes on the heap, assign it to
-           * t->next, set t to t->next and set t->next to NULL */
-          if ((t->next = (__lpxpak_index_t *)malloc(sizeof(__lpxpak_index_t)))
-              ==NULL)
-               return NULL;
-          t = t->next;
-          t->next = NULL;
      }
      return index;
 }
@@ -404,13 +409,24 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
      __lpxpak_index_t *ti = NULL;
      lpxpak_t *xpak = NULL;
      lpxpak_t *tx = NULL;
-     
-     if ( (xpak = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL )
-          return NULL;
-     tx = xpak;
+     size_t xpaksize;
+
+     xpaksize = sizeof(lpxpak_t);
      
      /* operate over all index elements */
      for (ti = index; ti->next != NULL; ti = ti->next) {
+          /* check if xpak is initialized, if not, allocate xpaksize bytes
+           * on the heap and assign it to xpak and tx, otherwise assign that
+           * memory to tx->next and tx->next to tx */
+          if (xpak == NULL) {
+               if ( (xpak = (lpxpak_t *)malloc(xpaksize)) == NULL )
+                    return NULL;
+               tx=xpak;
+          } else {
+               if ( (tx->next = (lpxpak_t *)malloc(xpaksize)) == NULL )
+                    return NULL;
+               tx = tx->next;
+          }
           /* allocate ti->name_len bytes on the heap, assign it to tx->name
            * and copy ti->name_len bytes from ti->name to tx->name */
           if ( (tx->name = (char *)malloc((size_t)ti->name_len+1)) == NULL )
@@ -424,12 +440,6 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
           if ( (tx->value = (char *)malloc((size_t)ti->len)) == NULL )
                return NULL;
           memcpy(tx->value, data+ti->offset, ti->len);
-
-          /* allocate sizeof(lpxpak_t) bytes on the heap, assign it to
-           * tx->next, set tx to tx->next and tx->next to NULL  */
-          if ( (tx->next = (lpxpak_t *)malloc(sizeof(lpxpak_t))) == NULL )
-               return NULL;
-          tx = tx->next;
      }
      return xpak;
 }
