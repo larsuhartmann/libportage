@@ -444,7 +444,7 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
 void
 __lpxpak_destroy_index(__lpxpak_index_t *index)
 {
-     __lpxpak_index_t *t;
+     __lpxpak_index_t *t = NULL;
      
      t=index;
 
