@@ -347,10 +347,11 @@ __lpxpak_parse_index(const void *data, size_t len)
           /* allocate name_len+1 bytes on the heap, assign it to t->name, read
            * name_len bytes from data into t->name, apply name_len+1 to
            * t->name_len, and increase the counter by name_len bytes */
-          if ( (t->name = (char *)malloc((size_t)name_len)) == NULL )
+          if ( (t->name = (char *)malloc((size_t)name_len+1)) == NULL )
                return NULL;
           memcpy(t->name, data+count, name_len);
-          t->name_len = name_len;
+          t->name[name_len] = '\0';
+          t->name_len = name_len+1;
           count += name_len;
           
           /* read t->offset from data in local byte order and increase
@@ -406,9 +407,10 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
      for (ti = index; ti->next != NULL; ti = ti->next) {
           /* allocate ti->name_len bytes on the heap, assign it to tx->name
            * and copy ti->name_len bytes from ti->name to tx->name */
-          if ( (tx->name = (char *)malloc((size_t)ti->name_len)) == NULL )
+          if ( (tx->name = (char *)malloc((size_t)ti->name_len+1)) == NULL )
                return NULL;
           memcpy(tx->name, ti->name, ti->name_len);
+          tx->name[ti->name_len] = '\0';
 
           /* allocate ti->len bytes on the heap, assign it to tx->value, copy
            * ti->len data from data+offset to tx->value and null-terminate
@@ -445,7 +447,7 @@ void
 __lpxpak_destroy_index(__lpxpak_index_t *index)
 {
      __lpxpak_index_t *t = NULL;
-     
+
      t=index;
 
      /* iterate over the whole index and free(2) every single object */
@@ -472,7 +474,7 @@ __lpxpak_destroy_index(__lpxpak_index_t *index)
 void
 lpxpak_destroy_xpak(lpxpak_t *xpak)
 {
-     lpxpak_t *t;
+     lpxpak_t *t = NULL;
 
      t=xpak;
 
