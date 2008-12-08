@@ -452,6 +452,7 @@ __lpxpak_destroy_index(__lpxpak_index_t *index)
      while ( index != NULL ) {
           /* assign index->next to t, free up index and assign t to index */
           t=index->next;
+          free(index->name);
           free(index);
           index=t;
      }
@@ -479,6 +480,8 @@ lpxpak_destroy_xpak(lpxpak_t *xpak)
      while ( xpak != NULL ) {
           /* assign xpak->next to t, free up xpak and assign t to xpak */
           t=xpak->next;
+          free(xpak->name);
+          free(xpak->value);
           free(xpak);
           xpak=t;
      }
