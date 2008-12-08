@@ -492,14 +492,12 @@ lpxpak_destroy_xpak(lpxpak_t *xpak)
 {
      lpxpak_t *t = NULL;
 
-     t=xpak;
-
      /* iterate over the whole index and free(2) every single object */
      while ( xpak != NULL ) {
           /* assign xpak->next to t, free up xpak and assign t to xpak */
-          t=xpak->next;
           free(xpak->name);
           free(xpak->value);
+          t=xpak->next;
           free(xpak);
           xpak=t;
      }
