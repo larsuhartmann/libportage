@@ -30,7 +30,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "lpxpak.h"
+#include "liblpxpak.h"
 
 #define __LPXPAK_STOP_OFFSET    4
 #define __LPXPAK_OFFSET         8
@@ -107,7 +107,7 @@ lpxpak_parse_data(const void *data, size_t len)
      data_len = ntohl(data_len);
 
      /* check if the sum of count, index_len, data_len and __LPXPAK_OUTRO_LEN
-      * are equal to len to make sure the len values are correct */
+      * is equal to len to make sure the len values are correct */
      if ( count+index_len+data_len+__LPXPAK_OUTRO_LEN != len ) {
           errno = EINVAL;
           return NULL;
@@ -116,10 +116,10 @@ lpxpak_parse_data(const void *data, size_t len)
      index_data = data+count;
      data_data = data+count+index_len;
 
+     /* get index */
      index = __lpxpak_parse_index(index_data, (size_t)index_len);
-     /* get the total length from the index and check if it is the same as
-      * data_len, if not, return NULL and set errno to EINVAL, as in this case
-      * the xpak is b0rked  */
+     /* check if the sum of all len entries of all data elements is equal to
+      * data_len to make sure the len values are correct  */
      ti = index;
      while (ti!=NULL) {
           tl += ti->len;
@@ -130,7 +130,8 @@ lpxpak_parse_data(const void *data, size_t len)
           return NULL;
      }
      ti = NULL;
-     
+
+     /* get xpak-data  */
      xpak = __lpxpak_parse_data(data_data, index);
 
      /* free up index */
@@ -488,3 +489,4 @@ lpxpak_destroy_xpak(lpxpak_t *xpak)
      }
      return;
 }
+
