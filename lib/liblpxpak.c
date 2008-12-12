@@ -160,6 +160,9 @@ lpxpak_parse_data(const void *data, size_t len)
  *
  *         The lpxpak_parse_fd() function may also fail and set errno for any
  *         of the errors specified for the routine read(2).
+ *
+ *         The lpxpak_parse_fd() function may also fail and set errno for any
+ *         of the errors specified for the routine fstat(2).
  */
 lpxpak_t *
 lpxpak_parse_fd(int fd)
@@ -248,6 +251,9 @@ lpxpak_parse_fd(int fd)
  *
  *         The lpxpak_parse_file() function may also fail and set errno for
  *         any of the errors specified for the routine fileno(3).
+ *
+ *         The lpxpak_parse_file() function may also fail and set errno for any
+ *         of the errors specified for the routine fstat(2).
  */
 lpxpak_t *
 lpxpak_parse_file(FILE *file)
@@ -285,6 +291,9 @@ lpxpak_parse_file(FILE *file)
  *
  *         The lpxpak_parse_path() function may also fail and set errno for
  *         any of the errors specified in the routine open(2).
+ *
+ *         The lpxpak_parse_path() function may also fail and set errno for any
+ *         of the errors specified for the routine fstat(2).
  */
 lpxpak_t *
 lpxpak_parse_path(const char *path)
