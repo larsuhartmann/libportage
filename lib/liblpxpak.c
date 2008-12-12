@@ -172,10 +172,10 @@ lpxpak_parse_fd(int fd)
      void *tmp = NULL;
      __lpxpak_int_t *xpakoffset = NULL;
      lpxpak_t *xpak = NULL;
-     
+
+     /* check if the given fd belongs to a file */
      if ( fstat(fd, &xpakstat) == -1 )
           return NULL;
-        
      if (! S_ISREG(xpakstat.st_mode) ) {
           errno = EINVAL;
           return NULL;
