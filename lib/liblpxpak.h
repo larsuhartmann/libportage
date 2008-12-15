@@ -30,20 +30,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <arpa/inet.h>
-
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <string.h>
-
 #ifndef __LPXPAK
 #define __LPXPAK
+
+#include <sys/types.h>
+#include <stdint.h>
+#include <stdio.h>
 
 typedef struct lpxpak{
      char *name;
@@ -157,4 +149,5 @@ lpxpak_parse_path(const char *path);
  */
 void
 lpxpak_destroy_xpak(lpxpak_t *xpak);
+
 #endif

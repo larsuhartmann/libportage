@@ -32,6 +32,17 @@
 
 #include "liblpxpak.h"
 
+#include <sys/stat.h>
+#include <arpa/inet.h>
+
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <errno.h>
+#include <stdio.h>
+#include <string.h>
+
+
 #define __LPXPAK_STOP_OFFSET    4
 #define __LPXPAK_OFFSET         8
 #define __LPXPAK_INTRO_LEN      8
