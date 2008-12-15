@@ -42,6 +42,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#ifndef __LPXPAK
+#define __LPXPAK
 
 typedef struct lpxpak{
      char *name;
@@ -155,3 +157,4 @@ lpxpak_parse_path(const char *path);
  */
 void
 lpxpak_destroy_xpak(lpxpak_t *xpak);
+#endif
