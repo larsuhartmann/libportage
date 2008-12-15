@@ -51,13 +51,13 @@ typedef struct __lpxpak_index{
      struct __lpxpak_index *next;
 } __lpxpak_index_t;
 
-__lpxpak_index_t *
+static __lpxpak_index_t *
 __lpxpak_parse_index(const void *data, size_t len);
 
-lpxpak_t *
+static lpxpak_t *
 __lpxpak_parse_data(const void *data, __lpxpak_index_t *index);
 
-void
+static void
 __lpxpak_destroy_index(__lpxpak_index_t *index);
 
 /* 
@@ -324,7 +324,7 @@ lpxpak_parse_path(const char *path)
  *         The __lpxpak_parse_index() function may fail and set errno for any
  *         of the errors specified for the routine malloc(3).
  */
-__lpxpak_index_t *
+static __lpxpak_index_t *
 __lpxpak_parse_index(const void *data, size_t len)
 {
      __lpxpak_index_t *index = NULL;
@@ -397,7 +397,7 @@ __lpxpak_parse_index(const void *data, size_t len)
  *         The __lpxpak_parse_data() function may fail and set errno for any
  *         of the errors specified for the routine malloc(3).
  */
-lpxpak_t *
+static lpxpak_t *
 __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
 {
      __lpxpak_index_t *ti = NULL;
@@ -454,7 +454,7 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
  * ATTENTION: Do not try to use a destroyed __lpxpak_index_t object or
  *            unexpected things will happen
  */
-void
+static void
 __lpxpak_destroy_index(__lpxpak_index_t *index)
 {
      __lpxpak_index_t *t = NULL;
