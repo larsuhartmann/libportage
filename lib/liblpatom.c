@@ -58,7 +58,8 @@ lpatom_parse(const char *s)
      char *name_re =
           "([-_+a-z0-9]+)-([0-9\\.]+[a-zA-Z]?)((_(alpha|beta|pre|rc|p)[0-9]+)?(-r[0-9]*)?)?";
 
-     atom = (lpatom_t *)malloc(sizeof(lpatom_t));
+     if ((atom = (lpatom_t *)malloc(sizeof(lpatom_t))) == NULL)
+          return NULL;
 
      regcomp (&regexp, name_re, REG_EXTENDED);
 
@@ -93,10 +94,11 @@ lpatom_parse(const char *s)
      }
 
      suf = __lpatom_suffix_parse(suff);
+     atom->suffix = suf->suf;
+     atom->release = suf->rel;
      
      return atom;
 }
-
 
 static __lpatom_suf_t *
 __lpatom_suffix_parse(const char *s)
@@ -108,8 +110,12 @@ __lpatom_suffix_parse(const char *s)
      regex_t regexp;
      __lpatom_suf_t *suf;
 
-     suf = (__lpatom_suf_t *)malloc(sizeof(__lpatom_suf_t));
+     if ((suf = (__lpatom_suf_t *)malloc(sizeof(__lpatom_suf_t)))
+         == NULL)
+          return NULL;
 
+     suf->suf = NULL;
+     suf->rel = NULL;
 
      regcomp (&regexp, suf_re, REG_EXTENDED);
      if (regexec(&regexp, s, 2, regmatch, 0) == 0) {
@@ -128,5 +134,5 @@ __lpatom_suffix_parse(const char *s)
           memcpy(suf->rel, s+rm_so, rm_eo-rm_so);
           suf->rel[rm_eo-rm_so] = '\0';
      }
-     return NULL;
+     return suf;
 }
