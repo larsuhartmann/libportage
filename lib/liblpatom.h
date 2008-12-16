@@ -40,4 +40,7 @@ typedef struct {
      char *release;
 } lpatom_t;
 
+lpatom_t *
+lpatom_parse(const char *s);
+
 #endif
