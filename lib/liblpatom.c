@@ -38,6 +38,11 @@
 #include <errno.h>
 #include <string.h>
 
+#define __LP_ATOM_RE    "([-_+a-z0-9]+)-([0-9\\.]+[a-zA-Z]?)((_(alpha|beta|pre|rc|p)[0-9]+)?(-r[0-9]*)?)?"
+#define __LP_SUF_RE     "^_((alpha|beta|pre|rc|p)([0-9]+))"
+#define __LP_REL_RE     "-r([0-9]+)$"
+
+
 typedef struct {
      char *suf;
      char *rel;
@@ -61,13 +66,12 @@ lpatom_parse(const char *s)
      char *suff;
      lpatom_t *atom;
      __lpatom_suf_t *suf;
-     char *name_re =
-          "([-_+a-z0-9]+)-([0-9\\.]+[a-zA-Z]?)((_(alpha|beta|pre|rc|p)[0-9]+)?(-r[0-9]*)?)?";
 
      if ((atom = (lpatom_t *)malloc(sizeof(lpatom_t))) == NULL)
           return NULL;
+     __lpatom_init(atom);
 
-     regcomp (&regexp, name_re, REG_EXTENDED);
+     regcomp (&regexp, __LP_ATOM_RE, REG_EXTENDED);
 
      /* check if this is a valid ebuild version atom */
      if (! (regexec(&regexp, s, 4, regmatch, 0) == 0)) {
@@ -111,8 +115,6 @@ lpatom_parse(const char *s)
 static __lpatom_suf_t *
 __lpatom_suffix_parse(const char *s)
 {
-     char *suf_re = "^_((alpha|beta|pre|rc|p)([0-9]+))";
-     char *rel_re = "-r([0-9]+)$";
      regmatch_t regmatch[2];
      regoff_t rm_so, rm_eo;
      regex_t regexp;
@@ -121,11 +123,9 @@ __lpatom_suffix_parse(const char *s)
      if ((suf = (__lpatom_suf_t *)malloc(sizeof(__lpatom_suf_t)))
          == NULL)
           return NULL;
-
-     suf->suf = NULL;
-     suf->rel = NULL;
-
-     regcomp (&regexp, suf_re, REG_EXTENDED);
+     __lpatom_suffix_init(suf);
+     
+     regcomp (&regexp, __LP_SUF_RE, REG_EXTENDED);
      if (regexec(&regexp, s, 2, regmatch, 0) == 0) {
           rm_so = regmatch[1].rm_so;
           rm_eo = regmatch[1].rm_eo;
@@ -134,7 +134,7 @@ __lpatom_suffix_parse(const char *s)
           suf->suf[rm_eo-rm_so] = '\0';
      }
 
-     regcomp(&regexp, rel_re, REG_EXTENDED);
+     regcomp(&regexp, __LP_REL_RE, REG_EXTENDED);
      if (regexec(&regexp, s, 2, regmatch, 0) == 0) {
           rm_so = regmatch[1].rm_so;
           rm_eo = regmatch[1].rm_eo;
