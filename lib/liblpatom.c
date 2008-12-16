@@ -46,6 +46,12 @@ typedef struct {
 static __lpatom_suf_t *
 __lpatom_suffix_parse(const char *s);
 
+static void
+__lpatom_suffix_init(__lpatom_suf_t *suf);
+
+static void
+__lpatom_init(lpatom_t *atom);
+
 lpatom_t *
 lpatom_parse(const char *s)
 {
@@ -137,4 +143,26 @@ __lpatom_suffix_parse(const char *s)
           suf->rel[rm_eo-rm_so] = '\0';
      }
      return suf;
+}
+
+static void
+__lpatom_suffix_init(__lpatom_suf_t *suf)
+{
+     if (suf != NULL) {
+          suf->suf = NULL;
+          suf->rel = NULL;
+     }
+     return;
+}
+
+static void
+__lpatom_init(lpatom_t *atom)
+{
+     if(atom != NULL) {
+          atom->name = NULL;
+          atom->version = NULL;
+          atom->suffix = NULL;
+          atom->release = NULL;
+     }
+     return;
 }
