@@ -71,6 +71,12 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index);
 static void
 __lpxpak_destroy_index(__lpxpak_index_t *index);
 
+static void
+__lpxpak_init_index(__lpxpak_index_t *index);
+
+static void
+__lpxpak_init(lpxpak_t *xpak);
+
 /* 
  * lpxpak_parse_data: Reads the xpak data out of a xpak binary blob.
  *
@@ -354,14 +360,15 @@ __lpxpak_parse_index(const void *data, size_t len)
           if (index == NULL) {
                if ( (index = (__lpxpak_index_t *)malloc(indexsize)) == NULL)
                     return NULL;
+               __lpxpak_init_index(index);
                t = index;
           }
           else {
                if( (t->next = (__lpxpak_index_t *)malloc(indexsize)) == NULL)
                     return NULL;
+               __lpxpak_init_index(t->next);
                t = t->next;
           }
-          t->next = NULL;
 
           /* read name_len from data and increase the counter */
           name_len = *(__lpxpak_int_t *)(data+count);
@@ -426,10 +433,12 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
           if (xpak == NULL) {
                if ( (xpak = (lpxpak_t *)malloc(xpaksize)) == NULL )
                     return NULL;
+               __lpxpak_init(xpak);
                tx=xpak;
           } else {
                if ( (tx->next = (lpxpak_t *)malloc(xpaksize)) == NULL )
                     return NULL;
+               __lpxpak_init(tx->next);
                tx = tx->next;
           }
           /* allocate ti->name_len bytes on the heap, assign it to tx->name
@@ -510,3 +519,36 @@ lpxpak_destroy_xpak(lpxpak_t *xpak)
      return;
 }
 
+
+/*
+ * __lpxpak_init_index: initialize an __lpxpak_index_t object
+ *
+ * Gets an pointer to an lpxpak_index_t object and sets all of its pointers to
+ * NULL. If a NULL pointer was given, __lpxpak_init_index will just return.
+ */ 
+static void
+__lpxpak_init_index(__lpxpak_index_t *index)
+{
+     if (index != NULL) {
+          index->name = NULL;
+          index->next = NULL;
+     }
+     return;
+}
+
+/*
+ * __lpxpak_init: initialize an xpak object
+ *
+ * Gets an pointer to an lpxpak_t object and sets all of its pointers to
+ * NULL. If a NULL pointer was given, __lpxpak_init will just return.
+ */
+static void
+__lpxpak_init(lpxpak_t *xpak)
+{
+     if (xpak != NULL) {
+          xpak->name = NULL;
+          xpak->value = NULL;
+          xpak->next = NULL;
+     }
+     return;
+}
