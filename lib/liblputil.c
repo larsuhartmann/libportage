@@ -35,14 +35,17 @@
 #include <errno.h>
 #include <stdlib.h>
 
+
+
 char *
-lputil_get_re_match(regmatch_t *match, int n, char *s)
+lputil_get_re_match(const regmatch_t *match, int n, const char *s)
 {
+     char *r;
+
      if (match == NULL) {
           errno = EINVAL;
           return NULL;
      }
-     char *r;
      regoff_t rm_so, rm_eo;
 
      rm_so = match[n].rm_so;

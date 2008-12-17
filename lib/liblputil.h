@@ -35,6 +35,6 @@
 #include <regex.h>
 
 char *
-lputil_get_re_match(regmatch_t *match, int n, char *s);
+lputil_get_re_match(const regmatch_t *match, int n, const char *s);
 
 #endif
