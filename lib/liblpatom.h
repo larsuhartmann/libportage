@@ -35,9 +35,11 @@
 
 typedef struct {
      char *name;
+     char *qname;
+     char *cat;
      char *ver;
      char *suffix;
-     char *release;
+     int release;
 } lpatom_t;
 
 lpatom_t *

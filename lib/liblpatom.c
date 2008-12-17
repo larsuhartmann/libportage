@@ -3,8 +3,7 @@
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions are
- * met:
+ * modification, are permitted provided that the following conditions are met:
  *
  *    1. Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
@@ -31,6 +30,7 @@
  */
 
 #include "liblpatom.h"
+#include "liblputil.h"
 
 #include <stdlib.h>
 #include <sys/types.h>
@@ -38,14 +38,16 @@
 #include <errno.h>
 #include <string.h>
 
-#define __LP_ATOM_RE    "([-_+a-z0-9]+)-([0-9\\.]+[a-zA-Z]?)((_(alpha|beta|pre|rc|p)[0-9]*)?(-r[0-9]*)?)?"
-#define __LP_SUF_RE     "^_((alpha|beta|pre|rc|p)([0-9]*))"
+
+#define __LP_ATOM_RE    "^(([A-Za-z0-9+_][A-Za-z0-9+_.-]*)/?([A-Za-z0-9+_-]*[A-Za-z+_-]|[A-Za-z+_][0-9]+))-([0-9]+([.][0-9]+)*[a-z]?)((_(alpha|beta|pre|rc|p)[0-9]*)?(-r[0-9]+)?)?$"
+#define __LP_SUF_RE     "((_(alpha|beta|pre|rc|p)[0-9]*)?(-r[0-9]+)?)$"
+#define __LP_VSUF_RE    "^_((alpha|beta|pre|rc|p)[0-9]*)"
 #define __LP_REL_RE     "-r([0-9]+)$"
 
 
 typedef struct {
      char *suf;
-     char *rel;
+     int rel;
 } __lpatom_suf_t;
 
 static __lpatom_suf_t *
@@ -60,53 +62,59 @@ __lpatom_init(lpatom_t *atom);
 lpatom_t *
 lpatom_parse(const char *s)
 {
-     regex_t regexp;
-     regmatch_t regmatch[4];
-     regoff_t rm_so, rm_eo;
-     char *suff;
-     lpatom_t *atom;
-     __lpatom_suf_t *suf;
+     regex_t *regexp = NULL;
+     regmatch_t regmatch[5];
+     char *ssuf = NULL;
+     int count = 1;
+     lpatom_t *atom = NULL;
+     __lpatom_suf_t *suf = NULL;
 
-     if ((atom = (lpatom_t *)malloc(sizeof(lpatom_t))) == NULL)
+     if ( (atom = (lpatom_t *)malloc(sizeof(lpatom_t))) == NULL)
           return NULL;
      __lpatom_init(atom);
+     
+     if ( (regexp = (regex_t *)malloc(sizeof(regex_t))) == NULL)
+          return NULL;
 
-     regcomp (&regexp, __LP_ATOM_RE, REG_EXTENDED);
+     regcomp (regexp, __LP_ATOM_RE, REG_EXTENDED);
 
      /* check if this is a valid ebuild version atom */
-     if (! (regexec(&regexp, s, 4, regmatch, 0) == 0)) {
+     if (! (regexec(regexp, s, 5, regmatch, 0) == 0)) {
           errno = EINVAL;
           return NULL;
      }
+     regfree(regexp);
+     if ( (atom->qname = lputil_get_re_match(regmatch, count, s)) == NULL)
+          return NULL;
+     ++count;
 
-     /* copy name string*/
-     rm_so = regmatch[1].rm_so;
-     rm_eo = regmatch[1].rm_eo;
-     atom->name = (char *)malloc(sizeof(char)*((rm_eo-rm_so)+1));
-     memcpy(atom->name, s+rm_so, rm_eo-rm_so);
-     atom->name[rm_eo-rm_so] = '\0';
-
-     /* copy version string*/
-     rm_so = regmatch[2].rm_so;
-     rm_eo = regmatch[2].rm_eo;
-     atom->ver = (char *)malloc(sizeof(char)*((rm_eo-rm_so)+1));
-     memcpy(atom->ver, s+rm_so, rm_eo-rm_so);
-     atom->ver[rm_eo-rm_so] = '\0';
-
-     /* check if this atom has a suffix */
-     if (regmatch[3].rm_so != -1 && regmatch[3].rm_eo != -1) {
-          /* copy suffix string */
-          rm_so = regmatch[3].rm_so;
-          rm_eo = regmatch[3].rm_eo;
-          if ((suff = (char *)malloc(sizeof(char)*((rm_eo-rm_so)+1))) == NULL)
+     /* check if the packet has a category prefix */
+     if(strstr(s, "/") != NULL) {
+          if ((atom->cat = lputil_get_re_match(regmatch, count, s))
+              ==NULL)
                return NULL;
-          memcpy(suff, s+rm_so, rm_eo-rm_so);
-          suff[rm_eo-rm_so] = '\0';
+          ++count;
      }
+     /* set the package name */
+     if ((atom->name = lputil_get_re_match(regmatch, count, s)) == NULL)
+          return NULL;
+     ++count;
 
-     suf = __lpatom_suffix_parse(suff);
+     /*set the package version */
+     if ((atom->ver = lputil_get_re_match(regmatch, count, s)) == NULL)
+          return NULL;
+      /* get the package suffix if one exists */
+     regcomp (regexp, __LP_SUF_RE, REG_EXTENDED);
+     if ( regexec(regexp, s, 5, regmatch, 0) == 0 ) {
+          if ( (ssuf = lputil_get_re_match(regmatch, 1, s)) == NULL )
+               return NULL;
+     }
+     regfree(regexp);
+     free(regexp);
+     suf = __lpatom_suffix_parse(ssuf);
      atom->suffix = suf->suf;
      atom->release = suf->rel;
+     
      
      return atom;
 }
@@ -115,30 +123,27 @@ static __lpatom_suf_t *
 __lpatom_suffix_parse(const char *s)
 {
      regmatch_t regmatch[2];
-     regoff_t rm_so, rm_eo;
-     regex_t regexp;
+     regex_t *regexp;
+     char *rs;
      __lpatom_suf_t *suf;
 
-     if ((suf = (__lpatom_suf_t *)malloc(sizeof(__lpatom_suf_t))) == NULL)
+     if ( (suf = (__lpatom_suf_t *)malloc(sizeof(__lpatom_suf_t))) == NULL)
           return NULL;
      __lpatom_suffix_init(suf);
-     
-     regcomp (&regexp, __LP_SUF_RE, REG_EXTENDED);
-     if (regexec(&regexp, s, 2, regmatch, 0) == 0) {
-          rm_so = regmatch[1].rm_so;
-          rm_eo = regmatch[1].rm_eo;
-          suf->suf = (char *)malloc(sizeof(char)*((rm_eo-rm_so)+1));
-          memcpy(suf->suf, s+rm_so, rm_eo-rm_so);
-          suf->suf[rm_eo-rm_so] = '\0';
-     }
 
-     regcomp(&regexp, __LP_REL_RE, REG_EXTENDED);
-     if (regexec(&regexp, s, 2, regmatch, 0) == 0) {
-          rm_so = regmatch[1].rm_so;
-          rm_eo = regmatch[1].rm_eo;
-          suf->rel = (char *)malloc(sizeof(char)*((rm_eo-rm_so)+1));
-          memcpy(suf->rel, s+rm_so, rm_eo-rm_so);
-          suf->rel[rm_eo-rm_so] = '\0';
+     if ( (regexp = (regex_t *)malloc(sizeof(regex_t))) == NULL)
+          return NULL;
+     
+     regcomp (regexp, __LP_VSUF_RE, REG_EXTENDED);
+     if (regexec(regexp, s, 2, regmatch, 0) == 0)
+          if ( (suf->suf = lputil_get_re_match(regmatch, 1, s)) == NULL)
+               return NULL;
+
+     regcomp(regexp, __LP_REL_RE, REG_EXTENDED);
+     if (regexec(regexp, s, 2, regmatch, 0) == 0) {
+          if ( (rs = lputil_get_re_match(regmatch, 1, s)) == NULL)
+               return NULL;
+          suf->rel = atoi(rs);
      }
      return suf;
 }
@@ -148,7 +153,7 @@ __lpatom_suffix_init(__lpatom_suf_t *suf)
 {
      if (suf != NULL) {
           suf->suf = NULL;
-          suf->rel = NULL;
+          suf->rel = -1;
      }
      return;
 }
@@ -158,9 +163,11 @@ __lpatom_init(lpatom_t *atom)
 {
      if(atom != NULL) {
           atom->name = NULL;
-          atom->version = NULL;
+          atom->qname = NULL;
+          atom->cat = NULL;
+          atom->ver = NULL;
           atom->suffix = NULL;
-          atom->release = NULL;
+          atom->release = -1;
      }
      return;
 }
