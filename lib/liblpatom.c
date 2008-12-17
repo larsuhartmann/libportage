@@ -79,7 +79,7 @@ lpatom_t *
 lpatom_parse(const char *s)
 {
      regex_t *regexp = NULL;
-     regmatch_t regmatch[4];
+     regmatch_t regmatch[5];
      char *ssuf = NULL;
      int count = 1;
      lpatom_t *atom = NULL;
@@ -95,7 +95,7 @@ lpatom_parse(const char *s)
      regcomp (regexp, __LP_ATOM_RE, REG_EXTENDED);
 
      /* check if this is a valid ebuild version atom */
-     if (! (regexec(regexp, s, 4, regmatch, 0) == 0)) {
+     if (! (regexec(regexp, s, 5, regmatch, 0) == 0)) {
           errno = EINVAL;
           return NULL;
      }
@@ -121,7 +121,7 @@ lpatom_parse(const char *s)
           return NULL;
       /* get the package suffix if one exists */
      regcomp (regexp, __LP_SUF_RE, REG_EXTENDED);
-     if ( regexec(regexp, s, 4, regmatch, 0) == 0 ) {
+     if ( regexec(regexp, s, 5, regmatch, 0) == 0 ) {
           if ( (ssuf = lputil_get_re_match(regmatch, 1, s)) == NULL )
                return NULL;
      }
