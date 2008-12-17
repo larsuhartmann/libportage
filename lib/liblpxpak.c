@@ -136,9 +136,11 @@ lpxpak_parse_data(const void *data, size_t len)
      /* get index */
      index = __lpxpak_parse_index(index_data, (size_t)index_len);
      /* check if the sum of all len entries of all data elements is equal to
-      * data_len to make sure the len values are correct  */
+      * data_len to make sure the len values are correct, if not, clean up the
+      * heap, set errno and return.  */
      ti = index;
      while (ti!=NULL) {
+          __lpxpak_destroy_index(index);
           tl += ti->len;
           ti = ti->next;
      }
