@@ -44,4 +44,7 @@ typedef struct {
 lpatom_t *
 lpatom_parse(const char *s);
 
+void
+lpatom_destroy(lpatom_t *atom);
+
 #endif

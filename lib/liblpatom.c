@@ -59,6 +59,9 @@ __lpatom_suffix_init(__lpatom_suf_t *suf);
 static void
 __lpatom_init(lpatom_t *atom);
 
+static void
+__lpatom_destroy_suffix(__lpatom_suf_t *suffix);
+
 lpatom_t *
 lpatom_parse(const char *s)
 {
@@ -112,9 +115,11 @@ lpatom_parse(const char *s)
      regfree(regexp);
      free(regexp);
      suf = __lpatom_suffix_parse(ssuf);
+     free(ssuf);
      atom->suffix = suf->suf;
      atom->release = suf->rel;
-     
+
+     __lpatom_destroy_suffix(suf);
      
      return atom;
 }
@@ -138,6 +143,7 @@ __lpatom_suffix_parse(const char *s)
      if (regexec(regexp, s, 2, regmatch, 0) == 0)
           if ( (suf->suf = lputil_get_re_match(regmatch, 1, s)) == NULL)
                return NULL;
+     regfree(regexp);
 
      regcomp(regexp, __LP_REL_RE, REG_EXTENDED);
      if (regexec(regexp, s, 2, regmatch, 0) == 0) {
@@ -145,6 +151,9 @@ __lpatom_suffix_parse(const char *s)
                return NULL;
           suf->rel = atoi(rs);
      }
+     regfree(regexp);
+     free(regexp);
+     free(rs);
      return suf;
 }
 
@@ -168,6 +177,29 @@ __lpatom_init(lpatom_t *atom)
           atom->ver = NULL;
           atom->suffix = NULL;
           atom->release = -1;
+     }
+     return;
+}
+
+static void
+__lpatom_destroy_suffix(__lpatom_suf_t *suffix)
+{
+     if (suffix != NULL ){
+          free(suffix);
+     }
+     return;
+}
+
+void
+lpatom_destroy(lpatom_t *atom)
+{
+     if (atom != NULL) {
+          free(atom->name);
+          free(atom->qname);
+          free(atom->cat);
+          free(atom->ver);
+          free(atom->suffix);
+          free(atom);
      }
      return;
 }
