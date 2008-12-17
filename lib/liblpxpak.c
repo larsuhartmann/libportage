@@ -203,15 +203,15 @@ lpxpak_parse_fd(int fd)
          == -1 )
           return NULL;
 
-     /* allocate _LPXPAK_STOP_LEN_+sizeof(__lpxpak_int_t) bytes from the heap,
-      * assign it to tmp, read in the xpak offset plus the_LPXPAK_STOP_
+     /* allocate __LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t) bytes from the heap,
+      * assign it to tmp, read in the xpak offset plus the__LPXPAK_STOP
       * string. */
      if ( (tmp = malloc(__LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t))) == NULL )
           return NULL;
      if (read(fd, tmp, __LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t)) == -1)
           return NULL;
      
-     /* check if the read in __LPXPAK_STOP string equals _LPXPAK_STOP_.  If
+     /* check if the read in __LPXPAK_STOP string equals __LPXPAK_STOP.  If
       * not, free the allocated memory, set errno and return NULL as this is
       * an invalid xpak. */
      if ( memcmp(tmp+sizeof(__lpxpak_int_t), __LPXPAK_STOP, __LPXPAK_STOP_LEN)
