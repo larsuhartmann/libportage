@@ -185,6 +185,16 @@ __lpatom_suffix_parse(const char *s)
      return suf;
 }
 
+/*
+ * __lpatom_init_suffix: initialize an __lpatom_suf_t object
+ *
+ * Gets an pointer to an lpatom_suf_t object and sets all of its pointers to
+ * NULL. If a NULL pointer was given, __lpatom_init_suffix will just return.
+ *
+ * PRIVATE: This is a private function and thus should not be called directly
+ *          from outside the API, as the way this function works can be
+ *          changed regularly.
+ */
 static void
 __lpatom_init_suffix(__lpatom_suf_t *suf)
 {
@@ -195,6 +205,16 @@ __lpatom_init_suffix(__lpatom_suf_t *suf)
      return;
 }
 
+/*
+ * __lpatom_init: initialize an __lpatom_t object
+ *
+ * Gets an pointer to an lpatom_suf_t object and sets all of its pointers to
+ * NULL. If a NULL pointer was given, __lpatom_init will just return.
+ *
+ * PRIVATE: This is a private function and thus should not be called directly
+ *          from outside the API, as the way this function works can be
+ *          changed regularly.
+ */
 static void
 __lpatom_init(lpatom_t *atom)
 {
