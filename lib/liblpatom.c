@@ -62,11 +62,24 @@ __lpatom_init(lpatom_t *atom);
 static void
 __lpatom_destroy_suffix(__lpatom_suf_t *suffix);
 
+/* 
+ * lpatom_parse: Reads the atom data out of an packetname string
+ *
+ * Gets an version string and returns an pointer to an lpatom_t struct. If an
+ * error occured, Null is returned and errno is set to indicate the error.
+ *
+ * Errors:
+ *         EINVAL The file either is no valid gentoo binary package or has an
+ *                invalid xpak.
+ *
+ *         The lpatom_parse() function may also fail and set errno for any of
+ *         the errors specified for the routine malloc(3).
+ */
 lpatom_t *
 lpatom_parse(const char *s)
 {
      regex_t *regexp = NULL;
-     regmatch_t regmatch[5];
+     regmatch_t regmatch[4];
      char *ssuf = NULL;
      int count = 1;
      lpatom_t *atom = NULL;
@@ -82,7 +95,7 @@ lpatom_parse(const char *s)
      regcomp (regexp, __LP_ATOM_RE, REG_EXTENDED);
 
      /* check if this is a valid ebuild version atom */
-     if (! (regexec(regexp, s, 5, regmatch, 0) == 0)) {
+     if (! (regexec(regexp, s, 4, regmatch, 0) == 0)) {
           errno = EINVAL;
           return NULL;
      }
@@ -108,7 +121,7 @@ lpatom_parse(const char *s)
           return NULL;
       /* get the package suffix if one exists */
      regcomp (regexp, __LP_SUF_RE, REG_EXTENDED);
-     if ( regexec(regexp, s, 5, regmatch, 0) == 0 ) {
+     if ( regexec(regexp, s, 4, regmatch, 0) == 0 ) {
           if ( (ssuf = lputil_get_re_match(regmatch, 1, s)) == NULL )
                return NULL;
      }
@@ -124,6 +137,21 @@ lpatom_parse(const char *s)
      return atom;
 }
 
+/* 
+ * __lpatom_suffix_parse: Reads the suffix data out of an suffix string.
+ *
+ * Gets an suffix string and returns an pointer to an __lpatom_suf_t
+ * object. If an error occurred, NULL is returned and errno is set to indicate
+ * the error.
+ *
+ * PRIVATE: This is a private function and thus should not be called
+ *          directly from outside the API, as the way this function works
+ *          can be changed regularly.
+ *
+ * Errors:
+ *         The __lpatom_suffix_parse() function may also fail and set errno
+ *         for any of the errors specified for the routine malloc(3).
+ */
 static __lpatom_suf_t *
 __lpatom_suffix_parse(const char *s)
 {
@@ -181,6 +209,20 @@ __lpatom_init(lpatom_t *atom)
      return;
 }
 
+/*
+ * __lpatom_destroy_suffix: destroy an __lpatom_suffix_t object
+ *
+ * Gets an pointer to an __lpatom_suffix_t object and free(2)s up all memory
+ * of that object. If a NULL pointer was given, __lpatom_destroy_suffix will
+ * just return.
+ *
+ * PRIVATE: This is a private function and thus should not be called directly
+ *          from outside the API, as the way this function works can be
+ *          changed regularly.
+ *
+ * ATTENTION: Do not try to use a destroyed __lpatom_suffix_t object or
+ *            unexpected things will happen
+ */
 static void
 __lpatom_destroy_suffix(__lpatom_suf_t *suffix)
 {
@@ -190,6 +232,15 @@ __lpatom_destroy_suffix(__lpatom_suf_t *suffix)
      return;
 }
 
+/*
+ * lpatom_destroy: destroy an lpatom_t object
+ *
+ * Gets an pointer to an lpatom_t object and free(2)s up all memory of that
+ * object. If a NULL pointer was given, lpatom_destroy will just return.
+ *
+ * ATTENTION: Do not try to use a destroyed __lpatom_t object or unexpected
+ *            things will happen
+ */
 void
 lpatom_destroy(lpatom_t *atom)
 {

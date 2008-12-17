@@ -41,9 +41,31 @@ typedef struct {
      int release;
 } lpatom_t;
 
+/* 
+ * lpatom_parse: Reads the atom data out of an packetname string
+ *
+ * Gets an version string and returns an pointer to an lpatom_t struct. If an
+ * error occured, Null is returned and errno is set to indicate the error.
+ *
+ * Errors:
+ *         EINVAL The file either is no valid gentoo binary package or has an
+ *                invalid xpak.
+ *
+ *         The lpatom_parse() function may also fail and set errno for any of
+ *         the errors specified for the routine malloc(3).
+ */
 lpatom_t *
 lpatom_parse(const char *s);
 
+/*
+ * lpatom_destroy: destroy an lpatom_t object
+ *
+ * Gets an pointer to an lpatom_t object and free(2)s up all memory of that
+ * object. If a NULL pointer was given, lpatom_destroy will just return.
+ *
+ * ATTENTION: Do not try to use a destroyed __lpatom_t object or unexpected
+ *            things will happen
+ */
 void
 lpatom_destroy(lpatom_t *atom);
 
