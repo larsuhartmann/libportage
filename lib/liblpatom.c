@@ -38,8 +38,8 @@
 #include <errno.h>
 #include <string.h>
 
-#define __LP_ATOM_RE    "([-_+a-z0-9]+)-([0-9\\.]+[a-zA-Z]?)((_(alpha|beta|pre|rc|p)[0-9]+)?(-r[0-9]*)?)?"
-#define __LP_SUF_RE     "^_((alpha|beta|pre|rc|p)([0-9]+))"
+#define __LP_ATOM_RE    "([-_+a-z0-9]+)-([0-9\\.]+[a-zA-Z]?)((_(alpha|beta|pre|rc|p)[0-9]*)?(-r[0-9]*)?)?"
+#define __LP_SUF_RE     "^_((alpha|beta|pre|rc|p)([0-9]*))"
 #define __LP_REL_RE     "-r([0-9]+)$"
 
 
@@ -89,9 +89,9 @@ lpatom_parse(const char *s)
      /* copy version string*/
      rm_so = regmatch[2].rm_so;
      rm_eo = regmatch[2].rm_eo;
-     atom->version = (char *)malloc(sizeof(char)*((rm_eo-rm_so)+1));
-     memcpy(atom->version, s+rm_so, rm_eo-rm_so);
-     atom->version[rm_eo-rm_so] = '\0';
+     atom->ver = (char *)malloc(sizeof(char)*((rm_eo-rm_so)+1));
+     memcpy(atom->ver, s+rm_so, rm_eo-rm_so);
+     atom->ver[rm_eo-rm_so] = '\0';
 
      /* check if this atom has a suffix */
      if (regmatch[3].rm_so != -1 && regmatch[3].rm_eo != -1) {

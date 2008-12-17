@@ -35,7 +35,7 @@
 
 typedef struct {
      char *name;
-     char *version;
+     char *ver;
      char *suffix;
      char *release;
 } lpatom_t;
