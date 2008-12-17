@@ -98,8 +98,7 @@ lpatom_parse(const char *s)
           /* copy suffix string */
           rm_so = regmatch[3].rm_so;
           rm_eo = regmatch[3].rm_eo;
-          if ((suff = (char *)malloc(sizeof(char)*((rm_eo-rm_so)+1)))
-              == NULL)
+          if ((suff = (char *)malloc(sizeof(char)*((rm_eo-rm_so)+1))) == NULL)
                return NULL;
           memcpy(suff, s+rm_so, rm_eo-rm_so);
           suff[rm_eo-rm_so] = '\0';
@@ -120,8 +119,7 @@ __lpatom_suffix_parse(const char *s)
      regex_t regexp;
      __lpatom_suf_t *suf;
 
-     if ((suf = (__lpatom_suf_t *)malloc(sizeof(__lpatom_suf_t)))
-         == NULL)
+     if ((suf = (__lpatom_suf_t *)malloc(sizeof(__lpatom_suf_t))) == NULL)
           return NULL;
      __lpatom_suffix_init(suf);
      
