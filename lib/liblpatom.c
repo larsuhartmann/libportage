@@ -54,7 +54,7 @@ static __lpatom_suf_t *
 __lpatom_suffix_parse(const char *s);
 
 static void
-__lpatom_suffix_init(__lpatom_suf_t *suf);
+__lpatom_init_suffix(__lpatom_suf_t *suf);
 
 static void
 __lpatom_init(lpatom_t *atom);
@@ -162,7 +162,7 @@ __lpatom_suffix_parse(const char *s)
 
      if ( (suf = (__lpatom_suf_t *)malloc(sizeof(__lpatom_suf_t))) == NULL)
           return NULL;
-     __lpatom_suffix_init(suf);
+     __lpatom_init_suffix(suf);
 
      if ( (regexp = (regex_t *)malloc(sizeof(regex_t))) == NULL)
           return NULL;
@@ -186,7 +186,7 @@ __lpatom_suffix_parse(const char *s)
 }
 
 static void
-__lpatom_suffix_init(__lpatom_suf_t *suf)
+__lpatom_init_suffix(__lpatom_suf_t *suf)
 {
      if (suf != NULL) {
           suf->suf = NULL;
