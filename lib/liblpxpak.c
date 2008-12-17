@@ -526,6 +526,10 @@ lpxpak_destroy_xpak(lpxpak_t *xpak)
  *
  * Gets an pointer to an lpxpak_index_t object and sets all of its pointers to
  * NULL. If a NULL pointer was given, __lpxpak_init_index will just return.
+ *
+ * PRIVATE: This is a private function and thus should not be called directly
+ *          from outside the API, as the way this function works can be
+ *          changed regularly.
  */ 
 static void
 __lpxpak_init_index(__lpxpak_index_t *index)
@@ -542,6 +546,10 @@ __lpxpak_init_index(__lpxpak_index_t *index)
  *
  * Gets an pointer to an lpxpak_t object and sets all of its pointers to
  * NULL. If a NULL pointer was given, __lpxpak_init will just return.
+ * 
+ * PRIVATE: This is a private function and thus should not be called directly
+ *          from outside the API, as the way this function works can be
+ *          changed regularly.
  */
 static void
 __lpxpak_init(lpxpak_t *xpak)
