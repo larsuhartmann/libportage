@@ -85,53 +85,70 @@ lpatom_parse(const char *s)
      lpatom_t *atom = NULL;
      __lpatom_suf_t *suf = NULL;
 
+     /* get enough memory for the atom object and initialize it */
      if ( (atom = (lpatom_t *)malloc(sizeof(lpatom_t))) == NULL)
           return NULL;
      __lpatom_init(atom);
-     
+
+     /* get enough memory for the regex object and use it to compile the
+      * __LP_ATOM_RE regexp */
      if ( (regexp = (regex_t *)malloc(sizeof(regex_t))) == NULL)
           return NULL;
-
      regcomp (regexp, __LP_ATOM_RE, REG_EXTENDED);
 
-     /* check if this is a valid ebuild version atom */
+     /* check if this is a valid ebuild version atom by regexp matching */
      if (! (regexec(regexp, s, 5, regmatch, 0) == 0)) {
           errno = EINVAL;
           return NULL;
      }
+     /* clean up the regexp object */
      regfree(regexp);
+
+     /* assign the <count>th match of the previously applied regexp to
+      * atom->qname */
      if ( (atom->qname = lputil_get_re_match(regmatch, count, s)) == NULL)
           return NULL;
      ++count;
 
-     /* check if the packet has a category prefix */
+     /* check if the packet has a category prefix and assign that to atom->cat
+      * if possitive */
      if(strstr(s, "/") != NULL) {
           if ((atom->cat = lputil_get_re_match(regmatch, count, s))
               ==NULL)
                return NULL;
           ++count;
      }
-     /* set the package name */
+     
+     /* assign the <count>th match of the previously applied regexp to
+      * atom->name */
      if ((atom->name = lputil_get_re_match(regmatch, count, s)) == NULL)
           return NULL;
      ++count;
 
-     /*set the package version */
+     /* assign the <count>th match of the previously applied regexp to
+      * atom->ver */
      if ((atom->ver = lputil_get_re_match(regmatch, count, s)) == NULL)
           return NULL;
-      /* get the package suffix if one exists */
+
+      /* compile __LP_SUF_RE regexp, check if it matches and assign the
+       * matched string to ssuf if so */
      regcomp (regexp, __LP_SUF_RE, REG_EXTENDED);
      if ( regexec(regexp, s, 5, regmatch, 0) == 0 ) {
           if ( (ssuf = lputil_get_re_match(regmatch, 1, s)) == NULL )
                return NULL;
      }
+
+     /* free up the regexp object */
      regfree(regexp);
      free(regexp);
+
+     /* parse the suffix and assign the values to the atom object */
      suf = __lpatom_suffix_parse(ssuf);
      free(ssuf);
      atom->suffix = suf->suf;
-     atom->release = suf->rel;
+     atom->rel = suf->rel;
 
+     /* clean up the suf object  */
      __lpatom_destroy_suffix(suf);
      
      return atom;
@@ -161,28 +178,38 @@ __lpatom_suffix_parse(const char *s)
 
      __lpatom_suf_t *suf;
 
+     /* allocate memory for the suf object and initialize it */
      if ( (suf = (__lpatom_suf_t *)malloc(sizeof(__lpatom_suf_t))) == NULL)
           return NULL;
      __lpatom_init_suffix(suf);
 
+     /* allocate memory for the compiled regexp */
      if ( (regexp = (regex_t *)malloc(sizeof(regex_t))) == NULL)
           return NULL;
-     
+
+     /* compile the regexp with __LP_VSUF_RE, check if it matches and assign
+      * the matched string (actually the suffix) to suf->suf */
      regcomp (regexp, __LP_VSUF_RE, REG_EXTENDED);
      if (regexec(regexp, s, 2, regmatch, 0) == 0)
           if ( (suf->suf = lputil_get_re_match(regmatch, 1, s)) == NULL)
                return NULL;
+     /* clean up the compiled regexp */
      regfree(regexp);
 
+     /* compile the regexp with __LP_REL_RE, check if it matches, convert the
+      * matched string to decimal and assign it to suf->rel  */
      regcomp(regexp, __LP_REL_RE, REG_EXTENDED);
      if (regexec(regexp, s, 2, regmatch, 0) == 0) {
           if ( (rs = lputil_get_re_match(regmatch, 1, s)) == NULL)
                return NULL;
           suf->rel = atoi(rs);
      }
+
+     /* clean up */
      regfree(regexp);
      free(regexp);
      free(rs);
+     
      return suf;
 }
 
@@ -225,7 +252,7 @@ __lpatom_init(lpatom_t *atom)
           atom->cat = NULL;
           atom->ver = NULL;
           atom->suffix = NULL;
-          atom->release = 0;
+          atom->rel = 0;
      }
      return;
 }
