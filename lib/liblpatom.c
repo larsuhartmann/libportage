@@ -43,6 +43,8 @@
 #define __LP_SUF_RE     "((_(alpha|beta|pre|rc|p)[0-9]*)?(-r[0-9]+)?)$"
 #define __LP_VSUF_RE    "^_((alpha|beta|pre|rc|p)[0-9]*)"
 #define __LP_REL_RE     "-r([0-9]+)$"
+#define __LP_VER_RE     "([0-9]+([.][0-9]+)*)([a-z]?)"
+#define __LP_VER_SUF_RE "([a-z])$"
 
 
 typedef struct {
@@ -61,6 +63,9 @@ __lpatom_init(lpatom_t *atom);
 
 static void
 __lpatom_destroy_suffix(__lpatom_suf_t *suffix);
+
+static int *
+__lpatom_parse_version(const char *v);
 
 /* 
  * lpatom_parse: Reads the atom data out of an packetname string
@@ -81,6 +86,7 @@ lpatom_parse(const char *s)
      regex_t *regexp = NULL;
      regmatch_t regmatch[5];
      char *ssuf = NULL;
+     char *ver, *vers;
      int count = 1;
      lpatom_t *atom = NULL;
      __lpatom_suf_t *suf = NULL;
@@ -127,8 +133,22 @@ lpatom_parse(const char *s)
 
      /* assign the <count>th match of the previously applied regexp to
       * atom->ver */
-     if ((atom->ver = lputil_get_re_match(regmatch, count, s)) == NULL)
+     if ((ver = lputil_get_re_match(regmatch, count, s)) == NULL)
           return NULL;
+
+     regcomp(regexp, __LP_VER_RE, REG_EXTENDED);
+     regexec(regexp, ver, 2, regmatch, 0);
+     if ( (vers = lputil_get_re_match(regmatch, 1, ver)) == NULL)
+          return NULL;
+     regfree(regexp);
+     atom->ver = __lpatom_parse_version(vers);
+
+     regcomp(regexp, __LP_VER_SUF_RE, REG_EXTENDED);
+     if( regexec(regexp, ver, 2, regmatch, 0) == 0) {
+          if ( (ver = lputil_get_re_match(regmatch, 1, ver)) == NULL)
+               return NULL;
+          atom->verc = ver[0];
+     }
 
       /* compile __LP_SUF_RE regexp, check if it matches and assign the
        * matched string to ssuf if so */
@@ -251,7 +271,10 @@ __lpatom_init(lpatom_t *atom)
           atom->qname = NULL;
           atom->cat = NULL;
           atom->ver = NULL;
+          atom->verc = 0;
           atom->suffix = NULL;
+          atom->sufenum = no;
+          atom->sufv = 0;
           atom->rel = 0;
      }
      return;
@@ -301,4 +324,30 @@ lpatom_destroy(lpatom_t *atom)
           free(atom);
      }
      return;
+}
+
+static int *
+__lpatom_parse_version(const char *v)
+{
+     char **p;
+     int *r, i, len=10;
+
+     p = lputil_splitstr(v, ".");
+     r = malloc(sizeof(int)*len);
+     for (i=0; p[i] != NULL; ++i) {
+          if (i == len-1) {
+               len +=5;
+               if ( (r = (int *)realloc(r, sizeof(int)*len)) == NULL) {
+                    free(r);
+                    return NULL;
+               }
+          }
+          r[i] = atoi(p[i]);
+     }
+     r[i] = -1;
+     if ( (r = (int *)realloc(r, sizeof(int)*(i+1))) == NULL) {
+          free(r);
+          return NULL;
+     }
+     return r;
 }
