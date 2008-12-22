@@ -39,9 +39,7 @@
 char *
 lputil_get_re_match(const regmatch_t *match, int n, const char *s)
 {
-     char *r;
-
-     if (match == NULL) {
+     if (match == NULL|| s == NULL) {
           errno = EINVAL;
           return NULL;
      }
@@ -50,24 +48,20 @@ lputil_get_re_match(const regmatch_t *match, int n, const char *s)
      rm_so = match[n].rm_so;
      rm_eo = match[n].rm_eo;
 
-     if ( (r = (char *)malloc(sizeof(char)*((rm_eo-rm_so))+1)) == NULL)
-          return NULL;
-     memcpy(r, s+rm_so, rm_eo-rm_so);
-     r[rm_eo-rm_so] = '\0';
-     
-     return r;
+     return lputil_substr(s, rm_so, rm_eo-rm_so);
 }
 
 char *
 lputil_substr(const char *s, size_t os, size_t oe)
 {
      char *r;
-     if ( (r = (char *)malloc(sizeof(char)*(oe+1) )) == NULL)
-          return NULL;
-     if ( strlen(s) < (os+oe) ) {
+     if ( s == NULL || strlen(s) < (os+oe) ) {
           errno = EINVAL;
           return NULL;
      }
+     if ( (r = (char *)malloc(sizeof(char)*(oe+1) )) == NULL)
+          return NULL;
+
      memcpy(r, s+os, oe);
      r[oe] = '\0';
      return r;
