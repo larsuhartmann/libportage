@@ -39,4 +39,7 @@ lputil_get_re_match(const regmatch_t *match, int n, const char *s);
 char *
 lputil_substr(const char *s, size_t os, size_t oe);
 
+char **
+lputil_splitstr(const char *s, const char *delim);
+
 #endif

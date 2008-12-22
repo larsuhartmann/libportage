@@ -66,3 +66,31 @@ lputil_substr(const char *s, size_t os, size_t oe)
      r[oe] = '\0';
      return r;
 }
+
+char **
+lputil_splitstr(const char *s, const char *delim)
+{
+     char **r;
+     char *t = (char *)s;
+     size_t len = 10;
+     int i;
+     
+     if ( (r = (char **)malloc(sizeof(char *)*len)) == NULL)
+          return NULL;
+     for (i=0; (r[i] = strtok(t, delim)) != NULL; ++i) {
+          if (t != NULL)
+               t = NULL;
+          if (i == len-2) {
+               len += 5;
+               if ( (r = (char **)realloc(r, sizeof(char *)*len)) == NULL) {
+                    free(r);
+                    return NULL;
+               }
+          }
+     }
+     if ( (r=realloc(r, sizeof(char *)*(i+1))) == NULL) {
+          free(r);
+          return NULL;
+     }
+     return r;
+}
