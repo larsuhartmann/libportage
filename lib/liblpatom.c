@@ -53,7 +53,7 @@ typedef struct {
 } __lpatom_suf_t;
 
 static __lpatom_suf_t *
-__lpatom_suffix_parse(const char *s);
+__lpatom_parse_suffix(const char *s);
 
 static void
 __lpatom_init_suffix(__lpatom_suf_t *suf);
@@ -163,7 +163,7 @@ lpatom_parse(const char *s)
      free(regexp);
 
      /* parse the suffix and assign the values to the atom object */
-     suf = __lpatom_suffix_parse(ssuf);
+     suf = __lpatom_parse_suffix(ssuf);
      free(ssuf);
      atom->suffix = suf->suf;
      atom->rel = suf->rel;
@@ -175,7 +175,7 @@ lpatom_parse(const char *s)
 }
 
 /* 
- * __lpatom_suffix_parse: Reads the suffix data out of an suffix string.
+ * __lpatom_parse_suffix: Reads the suffix data out of an suffix string.
  *
  * Gets an suffix string and returns an pointer to an __lpatom_suf_t
  * object. If an error occurred, NULL is returned and errno is set to indicate
@@ -186,11 +186,11 @@ lpatom_parse(const char *s)
  *          can be changed regularly.
  *
  * Errors:
- *         The __lpatom_suffix_parse() function may also fail and set errno
+ *         The __lpatom_parse_suffix() function may also fail and set errno
  *         for any of the errors specified for the routine malloc(3).
  */
 static __lpatom_suf_t *
-__lpatom_suffix_parse(const char *s)
+__lpatom_parse_suffix(const char *s)
 {
      regmatch_t regmatch[2];
      regex_t *regexp;
