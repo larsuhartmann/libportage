@@ -59,16 +59,16 @@ lputil_get_re_match(const regmatch_t *match, int n, const char *s)
 }
 
 char *
-lputil_substr(const s, size_t os, size_t oe)
+lputil_substr(const char *s, size_t os, size_t oe)
 {
      char *r;
-     if ( (r = (char *)malloc(sizeof(char)*(eo+1) )) == NULL)
+     if ( (r = (char *)malloc(sizeof(char)*(oe+1) )) == NULL)
           return NULL;
      if ( strlen(s) < (os+oe) ) {
           errno = EINVAL;
           return NULL;
      }
-     memcpy(r, s+os, eo);
-     r[eo] = '\0';
+     memcpy(r, s+os, oe);
+     r[oe] = '\0';
      return r;
 }
