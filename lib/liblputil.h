@@ -36,4 +36,7 @@
 char *
 lputil_get_re_match(const regmatch_t *match, int n, const char *s);
 
+char *
+lputil_substr(const s, size_t os, size_t oe);
+
 #endif
