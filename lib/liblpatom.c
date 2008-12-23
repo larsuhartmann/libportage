@@ -349,7 +349,6 @@ lpatom_destroy(lpatom_t *atom)
           free(atom->qname);
           free(atom->cat);
           free(atom->ver);
-          free(atom->suffix);
           free(atom);
      }
      return;
