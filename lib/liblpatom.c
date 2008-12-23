@@ -357,15 +357,37 @@ lpatom_destroy(lpatom_t *atom)
      return;
 }
 
+/* 
+ * __lpatom_parse_version: Reads the suffix data out of an suffix string.
+ *
+ * Gets an suffix string and returns an pointer to an -1 terminated int
+ * array. If an error occurred, NULL is returned and errno is set to indicate
+ * the error.
+ *
+ * PRIVATE: This is a private function and thus should not be called
+ *          directly from outside the API, as the way this function works
+ *          can be changed regularly.
+ *
+ * Errors:
+ *         The __lpatom_parse_version() function may also fail and set errno
+ *         for any of the errors specified for the routine malloc(3).
+ */
 static int *
 __lpatom_parse_version(const char *v)
 {
      char **p;
      int *r, i, len=10;
 
-     p = lputil_splitstr(v, ".");
-     r = malloc(sizeof(int)*len);
+     /* split version string by '.' and return if lputil_splitstr fails */
+     if ( (p = lputil_splitstr(v, ".")) == NULL)
+          return NULL;
+     /* allocate memory and return if not successfull */
+     if ( (r = malloc(sizeof(int)*len)) == NULL)
+          return NULL;
+     /* iterate over the array of strings, we got from lputil_splitstr */
      for (i=0; p[i] != NULL; ++i) {
+          /* check if we got enough free space in r, if not reallocate it to
+           * gain more */
           if (i == len-1) {
                len +=5;
                if ( (r = (int *)realloc(r, sizeof(int)*len)) == NULL) {
@@ -373,9 +395,12 @@ __lpatom_parse_version(const char *v)
                     return NULL;
                }
           }
+          /* convert p[i] to int and assign that int to r[i] */
           r[i] = atoi(p[i]);
      }
+     /* terminate r with -1 */
      r[i] = -1;
+     /* resize r to save memory */
      if ( (r = (int *)realloc(r, sizeof(int)*(i+1))) == NULL) {
           free(r);
           return NULL;
