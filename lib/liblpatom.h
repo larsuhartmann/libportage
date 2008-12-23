@@ -32,6 +32,8 @@
 #ifndef __LPATOM
 #define __LPATOM
 
+#include <stdio.h>
+
 typedef enum {alpha, beta, pre, rc, no, p} lpatom_suf_t;
 
 typedef struct {
@@ -73,5 +75,8 @@ lpatom_parse(const char *s);
  */
 void
 lpatom_destroy(lpatom_t *atom);
+
+char *
+lpatom_get_suffix(const lpatom_t *atom);
 
 #endif

@@ -217,31 +217,32 @@ __lpatom_parse_suffix(const char *s)
      /* compile the regexp with __LP_VSUF_RE, check if it matches and assign
       * the matched string (actually the suffix) to suf->suf */
      regcomp (regexp, __LP_VSUF_RE, REG_EXTENDED);
-     if (regexec(regexp, s, 2, regmatch, 0) == 0)
+     if (regexec(regexp, s, 2, regmatch, 0) == 0) {
           if ( (sufs = lputil_get_re_match(regmatch, 1, s)) == NULL)
                return NULL;
      
-     switch(sufs[0]) {
-     case 'a':
-          suf->se = alpha;
-          break;
-     case 'b':
-          suf->se = beta;
-          break;
-     case 'p':
-          switch(sufs[1]) {
+          switch(sufs[0]) {
+          case 'a':
+               suf->se = alpha;
+               break;
+          case 'b':
+               suf->se = beta;
+               break;
+          case 'p':
+               switch(sufs[1]) {
+               case 'r':
+                    suf->se = pre;
+                    break;
+               default:
+                    suf->se = p;
+               }
+               break;
           case 'r':
-               suf->se = pre;
+               suf->se = rc;
                break;
           default:
-               suf->se = p;
+               break;
           }
-          break;
-     case 'r':
-          suf->se = rc;
-          break;
-     default:
-          break;
      }
      /* clean up the compiled regexp */
      regfree(regexp);
@@ -405,5 +406,61 @@ __lpatom_parse_version(const char *v)
           free(r);
           return NULL;
      }
+     return r;
+}
+
+char *
+lpatom_get_suffix(const lpatom_t *atom)
+{
+     char *suf;
+     char *sufv;
+     char *r;
+     size_t len;
+     switch(atom->sufenum){
+     case alpha:
+          if ( (suf = strdup("alpha")) == NULL)
+               return NULL;
+          break;
+     case beta:
+          if ( (suf = strdup("beta")) == NULL)
+               return NULL;
+          break;
+     case pre:
+          if ( (suf = strdup("pre")) == NULL)
+               return NULL;
+          break;
+     case rc:
+          if ( (suf = strdup("rc")) == NULL)
+               return NULL;
+          break;
+     case p:
+          if ( (suf = strdup("p")) == NULL)
+               return NULL;
+          break;
+     default:
+          if ( (suf = strdup("")) == NULL)
+               return NULL;
+          break;
+     }
+     if (atom->sufv > 0) {
+          if ( (sufv = (char *)malloc(sizeof(char)*11)) == NULL) {
+               free(suf);
+               return NULL;
+          }
+          sprintf(sufv, "%d", atom->sufv);
+     } else {
+          if ( (sufv = strdup("")) == NULL)
+               return NULL;
+     }
+     len = (strlen(suf)+strlen(sufv)+1);
+     if ( (r = (char *)malloc(sizeof(char)*len)) == NULL) {
+          free(suf);
+          free(sufv);
+          return NULL;
+     }
+     strcpy(r, suf);
+     strcat(r, sufv);
+     free(suf);
+     free(sufv);
      return r;
 }
