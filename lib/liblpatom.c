@@ -49,7 +49,7 @@
 
 typedef struct {
      char *suf;
-     lpatom_suf_enum_t se;
+     lpatom_suf_t se;
      int rel;
 } __lpatom_suf_t;
 
@@ -132,17 +132,22 @@ lpatom_parse(const char *s)
           return NULL;
      ++count;
 
-     /* assign the <count>th match of the previously applied regexp to
-      * atom->ver */
+     /* assign the <count>th match of the previously applied regexp (The
+      * package version to atom->ver */
      if ((ver = lputil_get_re_match(regmatch, count, s)) == NULL)
           return NULL;
 
      regcomp(regexp, __LP_VER_RE, REG_EXTENDED);
      regexec(regexp, ver, 2, regmatch, 0);
+     /* assign the first match of the previously applied regexp (The version
+      * number without the suffix to ver, parse ver and assign the resulting
+      * int-array to atom->ver */
      if ( (vers = lputil_get_re_match(regmatch, 1, ver)) == NULL)
           return NULL;
-     regfree(regexp);
      atom->ver = __lpatom_parse_version(vers);
+
+     /* free up the regexp object */
+     regfree(regexp);
 
      regcomp(regexp, __LP_VER_SUF_RE, REG_EXTENDED);
      if( regexec(regexp, ver, 2, regmatch, 0) == 0) {

@@ -32,7 +32,7 @@
 #ifndef __LPATOM
 #define __LPATOM
 
-typedef enum {alpha, beta, pre, rc, no, p} lpatom_suf_enum_t;
+typedef enum {alpha, beta, pre, rc, no, p} lpatom_suf_t;
 
 typedef struct {
      char *name;
@@ -40,7 +40,7 @@ typedef struct {
      char *cat;
      char verc;
      int *ver;
-     lpatom_suf_enum_t sufenum;
+     lpatom_suf_t sufenum;
      int sufv;
      char *suffix;
      int rel;
