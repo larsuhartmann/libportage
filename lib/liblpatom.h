@@ -44,7 +44,6 @@ typedef struct {
      int *ver;
      lpatom_suf_t sufenum;
      int sufv;
-     char *suffix;
      int rel;
 } lpatom_t;
 

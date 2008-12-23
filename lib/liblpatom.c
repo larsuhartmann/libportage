@@ -48,7 +48,6 @@
 
 
 typedef struct {
-     char *suf;
      lpatom_suf_t se;
      int rel;
 } __lpatom_suf_t;
@@ -278,7 +277,6 @@ static void
 __lpatom_init_suffix(__lpatom_suf_t *suf)
 {
      if (suf != NULL) {
-          suf->suf = NULL;
           suf->se = no;
           suf->rel = 0;
      }
@@ -304,7 +302,6 @@ __lpatom_init(lpatom_t *atom)
           atom->cat = NULL;
           atom->ver = NULL;
           atom->verc = 0;
-          atom->suffix = NULL;
           atom->sufenum = no;
           atom->sufv = 0;
           atom->rel = 0;
