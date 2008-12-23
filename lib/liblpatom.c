@@ -460,3 +460,20 @@ lpatom_get_suffix(const lpatom_t *atom)
      free(sufv);
      return r;
 }
+
+char *
+lpatom_get_release(const lpatom_t *atom)
+{
+     char *r;
+     char *t;
+     if (atom->rel > 0) {
+          if ( (t=(char *)malloc(sizeof(char)*12)) == NULL)
+               return NULL;
+          sprintf(t, "r%d", atom->rel);
+     } else
+          if ( (t = strdup("")) == NULL)
+               return NULL;
+     r = strdup(t);
+     free(t);
+     return r;
+}
