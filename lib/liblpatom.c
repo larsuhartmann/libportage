@@ -49,6 +49,7 @@
 
 typedef struct {
      char *suf;
+     lpatom_suf_enum_t se;
      int rel;
 } __lpatom_suf_t;
 
@@ -165,7 +166,7 @@ lpatom_parse(const char *s)
      /* parse the suffix and assign the values to the atom object */
      suf = __lpatom_parse_suffix(ssuf);
      free(ssuf);
-     atom->suffix = suf->suf;
+     atom->sufenum = suf->se;
      atom->rel = suf->rel;
 
      /* clean up the suf object  */
@@ -194,6 +195,7 @@ __lpatom_parse_suffix(const char *s)
 {
      regmatch_t regmatch[2];
      regex_t *regexp;
+     char *sufs;
      char *rs;
 
      __lpatom_suf_t *suf;
@@ -211,8 +213,31 @@ __lpatom_parse_suffix(const char *s)
       * the matched string (actually the suffix) to suf->suf */
      regcomp (regexp, __LP_VSUF_RE, REG_EXTENDED);
      if (regexec(regexp, s, 2, regmatch, 0) == 0)
-          if ( (suf->suf = lputil_get_re_match(regmatch, 1, s)) == NULL)
+          if ( (sufs = lputil_get_re_match(regmatch, 1, s)) == NULL)
                return NULL;
+     
+     switch(sufs[0]) {
+     case 'a':
+          suf->se = alpha;
+          break;
+     case 'b':
+          suf->se = beta;
+          break;
+     case 'p':
+          switch(sufs[1]) {
+          case 'r':
+               suf->se = pre;
+               break;
+          default:
+               suf->se = p;
+          }
+          break;
+     case 'r':
+          suf->se = rc;
+          break;
+     default:
+          break;
+     }
      /* clean up the compiled regexp */
      regfree(regexp);
 
@@ -248,6 +273,7 @@ __lpatom_init_suffix(__lpatom_suf_t *suf)
 {
      if (suf != NULL) {
           suf->suf = NULL;
+          suf->se = no;
           suf->rel = 0;
      }
      return;
