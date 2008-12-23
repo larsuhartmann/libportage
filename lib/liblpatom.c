@@ -110,12 +110,6 @@ lpatom_parse(const char *s)
      /* clean up the regexp object */
      regfree(regexp);
 
-     /* assign the <count>th match of the previously applied regexp to
-      * atom->qname */
-     if ( (atom->qname = lputil_get_re_match(regmatch, count, s)) == NULL)
-          return NULL;
-     ++count;
-
      /* check if the packet has a category prefix and assign that to atom->cat
       * if possitive */
      if(strstr(s, "/") != NULL) {
@@ -298,7 +292,6 @@ __lpatom_init(lpatom_t *atom)
 {
      if(atom != NULL) {
           atom->name = NULL;
-          atom->qname = NULL;
           atom->cat = NULL;
           atom->ver = NULL;
           atom->verc = 0;
@@ -346,7 +339,6 @@ lpatom_destroy(lpatom_t *atom)
 {
      if (atom != NULL) {
           free(atom->name);
-          free(atom->qname);
           free(atom->cat);
           free(atom->ver);
           free(atom);
@@ -448,7 +440,7 @@ lpatom_get_suffix(const lpatom_t *atom)
           if ( (sufv = strdup("")) == NULL)
                return NULL;
      }
-     len = (strlen(suf)+strlen(sufv)+1);
+     len = strlen(suf)+strlen(sufv)+1;
      if ( (r = (char *)malloc(sizeof(char)*len)) == NULL) {
           free(suf);
           free(sufv);

@@ -38,7 +38,6 @@ typedef enum {alpha, beta, pre, rc, no, p} lpatom_suf_t;
 
 typedef struct {
      char *name;
-     char *qname;
      char *cat;
      char verc;
      int *ver;
