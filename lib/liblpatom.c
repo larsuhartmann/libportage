@@ -159,7 +159,6 @@ lpatom_parse(const char *s)
 
      /* free up the regexp object */
      regfree(regexp);
-     free(regexp);
 
      /* parse the suffix and assign the values to the atom object */
      suf = __lpatom_parse_suffix(ssuf);
