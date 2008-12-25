@@ -80,4 +80,7 @@ lpatom_get_suffix(const lpatom_t *atom);
 char *
 lpatom_get_release(const lpatom_t *atom);
 
+char *
+lpatom_get_qname(const lpatom_t *atom);
+
 #endif

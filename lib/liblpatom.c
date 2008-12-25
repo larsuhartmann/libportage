@@ -37,7 +37,7 @@
 #include <regex.h>
 #include <errno.h>
 #include <string.h>
-
+#include <stdbool.h>
 
 #define __LP_ATOM_RE    "^(([A-Za-z0-9+_][A-Za-z0-9+_.-]*)/?([A-Za-z0-9+_-]*[A-Za-z+_-]|[A-Za-z+_][0-9]+))-([0-9]+([.][0-9]+)*[a-z]?)((_(alpha|beta|pre|rc|p)[0-9]*)?(-r[0-9]+)?)?$"
 #define __LP_SUF_RE     "((_(alpha|beta|pre|rc|p)[0-9]*)?(-r[0-9]+)?)$"
@@ -87,9 +87,10 @@ lpatom_parse(const char *s)
      regmatch_t regmatch[5];
      char *ssuf = NULL;
      char *ver, *vers;
-     int count = 1;
+     int count = 2;
      lpatom_t *atom = NULL;
      __lpatom_suf_t *suf = NULL;
+     bool has_cat = false;
 
      /* get enough memory for the atom object and initialize it */
      if ( (atom = (lpatom_t *)malloc(sizeof(lpatom_t))) == NULL)
@@ -117,28 +118,30 @@ lpatom_parse(const char *s)
               ==NULL)
                return NULL;
           ++count;
+          has_cat = true;
      }
-     
-     /* assign the <count>th match of the previously applied regexp to
-      * atom->name */
+     /* assign the <count>th match of the previously applied regexp (the name)
+      * to atom->name */
      if ((atom->name = lputil_get_re_match(regmatch, count, s)) == NULL)
           return NULL;
      ++count;
+     if (has_cat == false)
+          ++count;     
 
-     /* assign the <count>th match of the previously applied regexp (The
-      * package version to atom->ver */
+     /* assign the <count>th match (the version part)of the previously applied
+      * regexp (The package version to atom->ver */
      if ((ver = lputil_get_re_match(regmatch, count, s)) == NULL)
           return NULL;
-
      regcomp(regexp, __LP_VER_RE, REG_EXTENDED);
      regexec(regexp, ver, 2, regmatch, 0);
      /* assign the first match of the previously applied regexp (The version
       * number without the suffix to ver, parse ver and assign the resulting
       * int-array to atom->ver */
-     if ( (vers = lputil_get_re_match(regmatch, 1, ver)) == NULL)
+     if ( (vers = lputil_get_re_match(regmatch, 1, ver)) == NULL) {
+          puts("test");
           return NULL;
+     }
      atom->ver = __lpatom_parse_version(vers);
-
      /* free up the regexp object */
      regfree(regexp);
 
@@ -234,6 +237,7 @@ __lpatom_parse_suffix(const char *s)
                suf->se = rc;
                break;
           default:
+               suf->se = no;
                break;
           }
      }
@@ -467,5 +471,31 @@ lpatom_get_release(const lpatom_t *atom)
                return NULL;
      r = strdup(t);
      free(t);
+     return r;
+}
+
+char *
+lpatom_get_qname(const lpatom_t *atom)
+{
+     char *cat, *name, *r;
+     size_t len;
+     if (atom->cat != NULL) {
+          len = strlen(atom->cat);
+          if ( (cat = (char *)malloc(sizeof(char)*(len+2))) == NULL)
+               return NULL;
+          memcpy(cat, atom->cat, len);
+          cat[len] = '/';
+          cat[len+1] = '\0';
+          len += 2;
+     } else
+          if ( (cat = strdup("")) == NULL)
+               return NULL;
+     if ( (name = strdup(atom->name)) == NULL)
+          return NULL;
+     len += strlen(name);
+     if ( (r = (char *)malloc(sizeof(char)*len)) == NULL)
+          return NULL;
+     strcpy(r, cat);
+     strcat(r, name);
      return r;
 }
