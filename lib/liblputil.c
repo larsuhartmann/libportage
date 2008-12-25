@@ -39,7 +39,7 @@
 char *
 lputil_get_re_match(const regmatch_t *match, int n, const char *s)
 {
-     if (match == NULL|| s == NULL) {
+     if (match == NULL || s == NULL) {
           errno = EINVAL;
           return NULL;
      }
