@@ -83,7 +83,7 @@ __lpatom_parse_version(const char *v);
 lpatom_t *
 lpatom_parse(const char *s)
 {
-     regex_t *regexp = NULL;
+     regex_t regexp[1];
      regmatch_t regmatch[5];
      char *ssuf = NULL;
      char *ver, *vers;
@@ -97,10 +97,7 @@ lpatom_parse(const char *s)
           return NULL;
      __lpatom_init(atom);
 
-     /* get enough memory for the regex object and use it to compile the
-      * __LP_ATOM_RE regexp */
-     if ( (regexp = (regex_t *)malloc(sizeof(regex_t))) == NULL)
-          return NULL;
+     /* compile the __LP_ATOM_RE regexp */
      regcomp (regexp, __LP_ATOM_RE, REG_EXTENDED);
 
      /* check if this is a valid ebuild version atom by regexp matching */
@@ -195,7 +192,7 @@ static __lpatom_suf_t *
 __lpatom_parse_suffix(const char *s)
 {
      regmatch_t regmatch[2];
-     regex_t *regexp;
+     regex_t regexp[1];
      char *sufs;
      char *rs;
 
@@ -205,10 +202,6 @@ __lpatom_parse_suffix(const char *s)
      if ( (suf = (__lpatom_suf_t *)malloc(sizeof(__lpatom_suf_t))) == NULL)
           return NULL;
      __lpatom_init_suffix(suf);
-
-     /* allocate memory for the compiled regexp */
-     if ( (regexp = (regex_t *)malloc(sizeof(regex_t))) == NULL)
-          return NULL;
 
      /* compile the regexp with __LP_VSUF_RE, check if it matches and assign
       * the matched string (the suffix) to sufs */
@@ -257,7 +250,6 @@ __lpatom_parse_suffix(const char *s)
 
      /* clean up */
      regfree(regexp);
-     free(regexp);
      free(rs);
      return suf;
 }
