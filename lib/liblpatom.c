@@ -211,12 +211,14 @@ __lpatom_parse_suffix(const char *s)
           return NULL;
 
      /* compile the regexp with __LP_VSUF_RE, check if it matches and assign
-      * the matched string (actually the suffix) to suf->suf */
+      * the matched string (the suffix) to sufs */
      regcomp (regexp, __LP_VSUF_RE, REG_EXTENDED);
      if (regexec(regexp, s, 2, regmatch, 0) == 0) {
           if ( (sufs = lputil_get_re_match(regmatch, 1, s)) == NULL)
                return NULL;
-     
+          /* simple switch cases for parsing the suffix (yeah, i know this
+           * would allow other non-valid suffixes to be parsed, but this would
+           * have been detected by the regexp matching earlier  */
           switch(sufs[0]) {
           case 'a':
                suf->se = alpha;
@@ -257,7 +259,6 @@ __lpatom_parse_suffix(const char *s)
      regfree(regexp);
      free(regexp);
      free(rs);
-     
      return suf;
 }
 
