@@ -134,10 +134,8 @@ lpatom_parse(const char *s)
      /* assign the first match of the previously applied regexp (The version
       * number without the suffix to ver, parse ver and assign the resulting
       * int-array to atom->ver */
-     if ( (vers = lputil_get_re_match(regmatch, 1, ver)) == NULL) {
-          puts("test");
+     if ( (vers = lputil_get_re_match(regmatch, 1, ver)) == NULL)
           return NULL;
-     }
      atom->ver = __lpatom_parse_version(vers);
      /* free up the regexp object */
      regfree(regexp);
