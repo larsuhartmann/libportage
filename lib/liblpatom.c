@@ -436,7 +436,9 @@ lpatom_get_suffix(const lpatom_t *atom)
           if ( (sufv = strdup("")) == NULL)
                return NULL;
      }
-     len = strlen(suf)+strlen(sufv)+1;
+     len = strlen(suf);
+     len += strlen(sufv);
+     ++len;
      if ( (r = (char *)malloc(sizeof(char)*len)) == NULL) {
           free(suf);
           free(sufv);
