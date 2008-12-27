@@ -59,7 +59,7 @@ lputil_substr(const char *s, size_t os, size_t oe)
           errno = EINVAL;
           return NULL;
      }
-     if ( (r = (char *)malloc(sizeof(char)*(oe+1) )) == NULL)
+     if ( (r = malloc(sizeof(char)*(oe+1) )) == NULL )
           return NULL;
 
      memcpy(r, s+os, oe);
@@ -75,20 +75,20 @@ lputil_splitstr(const char *s, const char *delim)
      size_t len = 10;
      int i;
      
-     if ( (r = (char **)malloc(sizeof(char *)*len)) == NULL)
+     if ( (r = malloc(sizeof(char *)*len)) == NULL )
           return NULL;
      for (i=0; (r[i] = strtok(t, delim)) != NULL; ++i) {
           if (t != NULL)
                t = NULL;
           if (i == len-2) {
                len += 5;
-               if ( (r = (char **)realloc(r, sizeof(char *)*len)) == NULL) {
+               if ( (r = realloc(r, sizeof(char *)*len)) == NULL ) {
                     free(r);
                     return NULL;
                }
           }
      }
-     if ( (r=realloc(r, sizeof(char *)*(i+1))) == NULL) {
+     if ( (r = realloc(r, sizeof(char *)*(i+1))) == NULL ) {
           free(r);
           return NULL;
      }

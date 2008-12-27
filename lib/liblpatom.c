@@ -93,7 +93,7 @@ lpatom_parse(const char *s)
      bool has_cat = false;
 
      /* get enough memory for the atom object and initialize it */
-     if ( (atom = (lpatom_t *)malloc(sizeof(lpatom_t))) == NULL)
+     if ( (atom = malloc(sizeof(lpatom_t))) == NULL)
           return NULL;
      __lpatom_init(atom);
 
@@ -196,7 +196,7 @@ __lpatom_parse_suffix(const char *s)
      __lpatom_suf_t *suf;
 
      /* allocate memory for the suf object and initialize it */
-     if ( (suf = (__lpatom_suf_t *)malloc(sizeof(__lpatom_suf_t))) == NULL)
+     if ( (suf = malloc(sizeof(__lpatom_suf_t))) == NULL )
           return NULL;
      __lpatom_init_suffix(suf);
 
@@ -373,7 +373,7 @@ __lpatom_parse_version(const char *v)
            * gain more */
           if (i == len-1) {
                len +=5;
-               if ( (r = (int *)realloc(r, sizeof(int)*len)) == NULL) {
+               if ( (r = realloc(r, sizeof(int)*len)) == NULL ) {
                     free(r);
                     return NULL;
                }
@@ -384,7 +384,7 @@ __lpatom_parse_version(const char *v)
      /* terminate r with -1 */
      r[i] = -1;
      /* resize r to save memory */
-     if ( (r = (int *)realloc(r, sizeof(int)*(i+1))) == NULL) {
+     if ( (r = realloc(r, sizeof(int)*(i+1))) == NULL ) {
           free(r);
           return NULL;
      }
@@ -425,7 +425,7 @@ lpatom_get_suffix(const lpatom_t *atom)
           break;
      }
      if (atom->sufv > 0) {
-          if ( (sufv = (char *)malloc(sizeof(char)*11)) == NULL) {
+          if ( (sufv = malloc(sizeof(char)*11)) == NULL) {
                free(suf);
                return NULL;
           }
@@ -437,7 +437,7 @@ lpatom_get_suffix(const lpatom_t *atom)
      len = strlen(suf);
      len += strlen(sufv);
      ++len;
-     if ( (r = (char *)malloc(sizeof(char)*len)) == NULL) {
+     if ( (r = malloc(sizeof(char)*len)) == NULL) {
           free(suf);
           free(sufv);
           return NULL;
@@ -455,7 +455,7 @@ lpatom_get_release(const lpatom_t *atom)
      char *r;
      char *t;
      if (atom->rel > 0) {
-          if ( (t=(char *)malloc(sizeof(char)*12)) == NULL)
+          if ( (t = malloc(sizeof(char)*12)) == NULL )
                return NULL;
           sprintf(t, "r%d", atom->rel);
      } else
@@ -473,7 +473,7 @@ lpatom_get_qname(const lpatom_t *atom)
      size_t len;
      if (atom->cat != NULL) {
           len = strlen(atom->cat);
-          if ( (cat = (char *)malloc(sizeof(char)*(len+2))) == NULL)
+          if ( (cat = malloc(sizeof(char)*(len+2))) == NULL )
                return NULL;
           memcpy(cat, atom->cat, len);
           cat[len] = '/';
@@ -485,7 +485,7 @@ lpatom_get_qname(const lpatom_t *atom)
      if ( (name = strdup(atom->name)) == NULL)
           return NULL;
      len += strlen(name);
-     if ( (r = (char *)malloc(sizeof(char)*len)) == NULL)
+     if ( (r = malloc(sizeof(char)*len)) == NULL )
           return NULL;
      strcpy(r, cat);
      strcat(r, name);
