@@ -31,6 +31,9 @@
 
 #ifndef __LPUTIL
 #define __LPUTIL
+
+#define _XOPEN_SOURCE   600
+
 #include <regex.h>
 
 char *

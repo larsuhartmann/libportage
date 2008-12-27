@@ -32,6 +32,8 @@
 #ifndef __LPATOM
 #define __LPATOM
 
+#define _XOPEN_SOURCE   600
+
 #include <stdio.h>
 
 typedef enum {alpha, beta, pre, rc, no, p} lpatom_suf_t;
