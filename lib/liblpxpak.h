@@ -40,9 +40,10 @@
 #include <stdio.h>
 
 typedef struct lpxpak{
-     char *name;
-     char *value;
-     struct lpxpak *next;
+     const char *name;
+     size_t value_len;
+     const void *value;
+     const struct lpxpak *next;
 } lpxpak_t;
 
 /* 
