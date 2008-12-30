@@ -57,6 +57,8 @@ typedef struct lpxpak{
  *         EINVAL The file either is no valid gentoo binary package or has an
  *                invalid xpak.
  *
+ *         EBUSY The xpak could not be fully read in
+ *
  *         The lpxpak_parse_data() function may also fail and set errno for
  *         any of the errors specified for the routine malloc(3).
  */
@@ -74,6 +76,8 @@ lpxpak_parse_data(const void *data, size_t len);
  * Errors:
  *         EINVAL The file either is no valid gentoo binary package or has an
  *                invalid xpak.
+ *
+ *         EBUSY The xpak could not be fully read in
  *
  *         The lpxpak_parse_fd() function may also fail and set errno for any
  *         of the errors specified for the routine malloc(3).
@@ -98,6 +102,8 @@ lpxpak_parse_fd(int fd);
  * Errors:
  *         EINVAL The file either is no valid gentoo binary package or has an
  *                invalid xpak.
+ *
+ *         EBUSY The xpak could not be fully read in
  *
  *         The lpxpak_parse_file() function may also fail and set errno for
  *         any of the errors specified for the routine malloc(3).
@@ -125,6 +131,8 @@ lpxpak_parse_file(FILE *file);
  * Errors:
  *         EINVAL The file either is no valid gentoo binary package or has an
  *                invalid xpak.
+ *                
+ *         EBUSY The xpak could not be fully read in
  *
  *         The lpxpak_parse_path() function may also fail and set errno for
  *         any of the errors specified for the routine malloc(3).

@@ -86,6 +86,8 @@ __lpxpak_init(lpxpak_t *xpak);
  * Errors:
  *         EINVAL The file either is no valid gentoo binary package or has an
  *                invalid xpak.
+ *                
+ *         EBUSY The xpak could not be fully read in
  *
  *         The lpxpak_parse_data() function may also fail and set errno for
  *         any of the errors specified for the routine malloc(3).
@@ -169,6 +171,8 @@ lpxpak_parse_data(const void *data, size_t len)
  * Errors:
  *         EINVAL The file either is no valid gentoo binary package or has an
  *                invalid xpak.
+ *                
+ *         EBUSY The xpak could not be fully read in
  *
  *         The lpxpak_parse_fd() function may also fail and set errno for any
  *         of the errors specified for the routine malloc(3).
@@ -190,6 +194,7 @@ lpxpak_parse_fd(int fd)
      void *tmp = NULL;
      __lpxpak_int_t *xpakoffset = NULL;
      lpxpak_t *xpak = NULL;
+     ssize_t rs;
 
      /* check if the given fd belongs to a file */
      if ( fstat(fd, &xpakstat) == -1 )
@@ -209,8 +214,11 @@ lpxpak_parse_fd(int fd)
       * string. */
      if ( (tmp = malloc(__LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t))) == NULL )
           return NULL;
-     if (read(fd, tmp, __LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t)) == -1)
+     rs = read(fd, tmp, __LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t)); 
+     if ( rs == -1 || rs != __LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t) ){
+          free(tmp);
           return NULL;
+     }
      
      /* check if the read in __LPXPAK_STOP string equals __LPXPAK_STOP.  If
       * not, free the allocated memory, set errno and return NULL as this is
@@ -230,13 +238,31 @@ lpxpak_parse_fd(int fd)
      /* allocate <xpakoffset> bytes on the heap, assign it to xpakdata, seek
       * to the start of the xpak data, read in the xpak data and store it in
       * xpakdata. */
-     if ( (xpakdata = malloc((size_t)*xpakoffset)) == NULL )
-          return NULL;
      if ( lseek(fd, (off_t)((off_t)*xpakoffset+__LPXPAK_OFFSET)*-1, SEEK_END)
-          == -1 )
+          == -1 ) {
+          free(tmp);
+          free(xpakdata);
           return NULL;
-     if ( read(fd, xpakdata, (size_t)(*xpakoffset)) == -1 )
+     }
+     if ( (xpakdata = malloc((size_t)*xpakoffset)) == NULL ) {
+          free(tmp);
           return NULL;
+     }
+     rs = read(fd, xpakdata, (size_t)*xpakoffset);
+     /* check if a error occured while data was read in */
+     if ( rs == -1 ) {
+          free(tmp);
+          free(xpakdata);
+          return NULL;
+     }
+     /* check if all of the data was read, if not, set errno and return with
+      * failure  */
+     if ( rs != (size_t)*xpakoffset) {
+          free(tmp);
+          free(xpakdata);
+          errno = EBUSY;
+          return NULL;
+     }
 
      xpak = lpxpak_parse_data(xpakdata, (size_t)(*xpakoffset));
      
@@ -257,6 +283,8 @@ lpxpak_parse_fd(int fd)
  * Errors:
  *         EINVAL The file either is no valid gentoo binary package or has an
  *                invalid xpak.
+ *                
+ *         EBUSY The xpak could not be fully read in
  *
  *         The lpxpak_parse_file() function may also fail and set errno for
  *         any of the errors specified for the routine malloc(3).
@@ -297,6 +325,8 @@ lpxpak_parse_file(FILE *file)
  * Errors:
  *         EINVAL The file either is no valid gentoo binary package or has an
  *                invalid xpak.
+ *                
+ *         EBUSY The xpak could not be fully read in
  *
  *         The lpxpak_parse_path() function may also fail and set errno for
  *         any of the errors specified for the routine malloc(3).
