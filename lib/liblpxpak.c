@@ -55,7 +55,6 @@ typedef uint32_t __lpxpak_int_t;
 
 typedef struct __lpxpak_index{
      char *name;
-     size_t name_len;
      size_t offset;
      size_t len;
      struct __lpxpak_index *next;
@@ -412,7 +411,6 @@ __lpxpak_parse_index(const void *data, size_t len)
                return NULL;
           memcpy(t->name, data+count, name_len);
           (t->name)[name_len] = '\0';
-          t->name_len = name_len+1;
           count += name_len;
           
           /* read t->offset from data in local byte order and increase
