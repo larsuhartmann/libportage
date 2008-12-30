@@ -404,8 +404,10 @@ __lpxpak_parse_index(const void *data, size_t len)
                t = index;
           }
           else {
-               if ( (t->next = __lpxpak_init_index()) == NULL)
+               if ( (t->next = __lpxpak_init_index()) == NULL) {
+                    __lpxpak_destroy_index(index);
                     return NULL;
+               }
                t = t->next;
           }
 
@@ -417,8 +419,10 @@ __lpxpak_parse_index(const void *data, size_t len)
           /* allocate name_len+1 bytes on the heap, assign it to t->name, read
            * name_len bytes from data into t->name, apply name_len+1 to
            * t->name_len, and increase the counter by name_len bytes */
-          if ( (t->name = malloc((size_t)name_len+1)) == NULL )
+          if ( (t->name = malloc((size_t)name_len+1)) == NULL ) {
+               __lpxpak_destroy_index(index);
                return NULL;
+          }
           memcpy(t->name, data+count, name_len);
           (t->name)[name_len] = '\0';
           count += name_len;
@@ -470,8 +474,6 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
            * memory to tx->next and tx->next to tx */
           if (xpak == NULL) {
                if ( (xpak = __lpxpak_init()) == NULL)
-                    return NULL;
-               if ( (xpak = malloc(sizeof(lpxpak_t))) == NULL )
                     return NULL;
                tx=xpak;
           } else {
