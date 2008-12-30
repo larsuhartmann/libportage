@@ -456,21 +456,20 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
            * on the heap and assign it to xpak and tx, otherwise assign that
            * memory to tx->next and tx->next to tx */
           if (xpak == NULL) {
-               if ( (xpak = malloc(xpaksize)) == NULL )
+               if ( (xpak = malloc(sizeof(lpxpak_t))) == NULL )
                     return NULL;
                __lpxpak_init(xpak);
                tx=xpak;
           } else {
-               if ( (tx->next = malloc(xpaksize)) == NULL )
+               if ( (tx->next = malloc(sizeof(lpxpak_t))) == NULL )
                     return NULL;
                __lpxpak_init((lpxpak_t *)tx->next);
                tx = (lpxpak_t *)tx->next;
           }
           /* allocate ti->name_len bytes on the heap, assign it to tx->name
            * and copy ti->name_len bytes from ti->name to tx->name */
-          if ( (tx->name = malloc((size_t)ti->name_len)) == NULL )
+          if ( (tx->name = strdup(ti->name)) == NULL)
                return NULL;
-          memcpy((lpxpak_t *)tx->name, ti->name, ti->name_len);
 
           /* allocate ti->len bytes on the heap, assign it to tx->value, copy
            * ti->len data from data+offset to tx->value and null-terminate
