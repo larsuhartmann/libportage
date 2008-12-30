@@ -69,11 +69,11 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index);
 static void
 __lpxpak_destroy_index(__lpxpak_index_t *index);
 
-static void
-__lpxpak_init_index(__lpxpak_index_t *index);
+__lpxpak_index_t *
+__lpxpak_init_index(void);
 
-static void
-__lpxpak_init(lpxpak_t *xpak);
+static lpxpak_t *
+__lpxpak_init(void);
 
 /* 
  * lpxpak_parse_data: Reads the xpak data out of a xpak binary blob.
@@ -399,15 +399,13 @@ __lpxpak_parse_index(const void *data, size_t len)
            * on the heap and assign it to index and t, otherwise assign that
            * memory to t->next and t->next to t */
           if (index == NULL) {
-               if ( (index = malloc(indexsize)) == NULL )
+               if ( (index = __lpxpak_init_index()) == NULL)
                     return NULL;
-               __lpxpak_init_index(index);
                t = index;
           }
           else {
-               if( (t->next = malloc(indexsize)) == NULL )
+               if ( (t->next = __lpxpak_init_index()) == NULL)
                     return NULL;
-               __lpxpak_init_index(t->next);
                t = t->next;
           }
 
@@ -471,16 +469,16 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
            * on the heap and assign it to xpak and tx, otherwise assign that
            * memory to tx->next and tx->next to tx */
           if (xpak == NULL) {
+               if ( (xpak = __lpxpak_init()) == NULL)
+                    return NULL;
                if ( (xpak = malloc(sizeof(lpxpak_t))) == NULL )
                     return NULL;
-               __lpxpak_init(xpak);
                tx=xpak;
           } else {
-               if ( (tx->next = malloc(sizeof(lpxpak_t))) == NULL ) {
+               if ( (tx->next = __lpxpak_init()) == NULL) {
                     lpxpak_destroy_xpak(xpak);
                     return NULL;
                }
-               __lpxpak_init((lpxpak_t *)tx->next);
                tx = (lpxpak_t *)tx->next;
           }
           /* allocate ti->name_len bytes on the heap, assign it to tx->name
@@ -565,43 +563,52 @@ lpxpak_destroy_xpak(lpxpak_t *xpak)
 
 
 /*
- * __lpxpak_init_index: initialize an __lpxpak_index_t object
+ * __lpxpak_init_index: initialize an xpak object
  *
- * Gets an pointer to an lpxpak_index_t object and sets all of its pointers to
- * NULL. If a NULL pointer was given, __lpxpak_init_index will just return.
- *
+ * allocates and initializes a new __lpxpak_index_t object and returns a
+ * pointer to it, if an error occured, NULL is returned and errno is set.
+ * 
  * PRIVATE: This is a private function and thus should not be called directly
  *          from outside the API, as the way this function works can be
  *          changed regularly.
- */ 
-static void
-__lpxpak_init_index(__lpxpak_index_t *index)
+ * Errors: 
+ *         The __lpxpak_init_index() function may fail and set errno for any
+ *         of the errors specified for the routine malloc(3).
+ */
+__lpxpak_index_t *
+__lpxpak_init_index(void)
 {
-     if (index != NULL) {
-          index->name = NULL;
-          index->next = NULL;
-     }
-     return;
+     __lpxpak_index_t *index;
+     if ( (index = malloc(sizeof(__lpxpak_index_t))) == NULL )
+          return NULL;
+     index->name = NULL;
+     index->next = NULL;
+     return index;
 }
 
 /*
  * __lpxpak_init: initialize an xpak object
  *
- * Gets an pointer to an lpxpak_t object and sets all of its pointers to
- * NULL. If a NULL pointer was given, __lpxpak_init will just return.
+ * allocates and initializes a new lpxpak_t object and returns a pointer to
+ * it, if an error occured, NULL is returned and errno is set.
  * 
  * PRIVATE: This is a private function and thus should not be called directly
  *          from outside the API, as the way this function works can be
  *          changed regularly.
+ * Errors: 
+ *         The __lpxpak_init() function may fail and set errno for any
+ *         of the errors specified for the routine malloc(3).
  */
-static void
-__lpxpak_init(lpxpak_t *xpak)
+
+static lpxpak_t *
+__lpxpak_init(void)
 {
-     if (xpak != NULL) {
-          xpak->name = NULL;
-          xpak->value_len = 0;
-          xpak->value = NULL;
-          xpak->next = NULL;
-     }
-     return;
+     lpxpak_t *xpak;
+     if ( (xpak = malloc(sizeof(lpxpak_t))) == NULL)
+          return NULL;
+     xpak->name = NULL;
+     xpak->value_len = 0;
+     xpak->value = NULL;
+     xpak->next = NULL;
+     return xpak;
 }
