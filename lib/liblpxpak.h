@@ -61,6 +61,9 @@ typedef struct lpxpak{
  *
  *         The lpxpak_parse_data() function may also fail and set errno for
  *         any of the errors specified for the routine malloc(3).
+ *
+ *         The lpxpak_parse_data() function may also fail and set errno for
+ *         any of the errors specified for the routine strdup(3)
  */
 lpxpak_t *
 lpxpak_parse_data(const void *data, size_t len);
@@ -81,6 +84,9 @@ lpxpak_parse_data(const void *data, size_t len);
  *
  *         The lpxpak_parse_fd() function may also fail and set errno for any
  *         of the errors specified for the routine malloc(3).
+ *
+ *         The lpxpak_parse_fd() function may also fail and set errno for
+ *         any of the errors specified for the routine strdup(3)
  *
  *         The lpxpak_parse_fd() function may also fail and set errno for any
  *         of the errors specified for the routine lseek(2).
@@ -107,6 +113,9 @@ lpxpak_parse_fd(int fd);
  *
  *         The lpxpak_parse_file() function may also fail and set errno for
  *         any of the errors specified for the routine malloc(3).
+ *
+ *         The lpxpak_parse_file() function may also fail and set errno for
+ *         any of the errors specified for the routine strdup(3)
  *
  *         The lpxpak_parse_file() function may also fail and set errno for
  *         any of the errors specified for the routine lseek(2).
@@ -136,6 +145,9 @@ lpxpak_parse_file(FILE *file);
  *
  *         The lpxpak_parse_path() function may also fail and set errno for
  *         any of the errors specified for the routine malloc(3).
+ *
+ *         The lpxpak_parse_path() function may also fail and set errno for
+ *         any of the errors specified for the routine strdup(3)
  *
  *         The lpxpak_parse_path() function may also fail and set errno for
  *         any of the errors specified for the routine lseek(2).
