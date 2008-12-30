@@ -49,7 +49,7 @@ typedef struct lpxpak{
 /* 
  * lpxpak_parse_data: Reads the xpak data out of a xpak binary blob.
  *
- * Gets the actual xpak-blob (see doc/xpak.txt) and returns an pointer to an
+ * Gets the actual xpak-blob (see doc/xpak.txt) and returns a pointer to an
  * lpxpak object with its data. If an error occurs, NULL is returned and errno
  * is set to indicate the error.
  *
@@ -101,7 +101,7 @@ lpxpak_parse_fd(int fd);
  * lpxpak_parse_file: Reads the xpak data out of a FILE * buffer which points
  *                    to an Gentoo binary package.
  *
- * Gets an FILE buffer for a Gentoo binary package and returns an pointer to
+ * Gets an FILE buffer for a Gentoo binary package and returns a pointer to
  * an lpxpak object with the xpak data. If an error occurs, NULL is returned
  * and errno is set to indicate the error.
  *
@@ -133,7 +133,7 @@ lpxpak_parse_file(FILE *file);
  * lpxpak_parse_path: Reads the xpak data out of a Gentoo binary packages'
  *                    path it was called with.
  *
- * Gets an path to a Gentoo binary package and returns an pointer to an lpxpak
+ * Gets an path to a Gentoo binary package and returns a pointer to an lpxpak
  * object with the xpak data. If an error occurs, NULL is returned and errno
  * is set to indicate the error.
  *
@@ -164,7 +164,7 @@ lpxpak_parse_path(const char *path);
 /*
  * lpxpak_destroy_xpak: destroy an xpak object
  *
- * Gets an pointer to an lpxpak_t object and free(2)s up all memory of that
+ * Gets a pointer to an lpxpak_t object and free(2)s up all memory of that
  * object. If a NULL pointer was given, lpxpak_destroy_xpak will just return.
  *
  * ATTENTION: Do not try to use a destroyed xpak object or unexpected things

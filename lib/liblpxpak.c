@@ -78,7 +78,7 @@ __lpxpak_init(void);
 /* 
  * lpxpak_parse_data: Reads the xpak data out of a xpak binary blob.
  *
- * Gets the actual xpak-blob (see doc/xpak.txt) and returns an pointer to an
+ * Gets the actual xpak-blob (see doc/xpak.txt) and returns a pointer to an
  * lpxpak object with its data. If an error occurs, NULL is returned and errno
  * is set to indicate the error.
  *
@@ -280,7 +280,7 @@ lpxpak_parse_fd(int fd)
  * lpxpak_parse_file: Reads the xpak data out of a FILE * buffer which points
  *                    to an Gentoo binary package.
  *
- * Gets an FILE buffer for a Gentoo binary package and returns an pointer to
+ * Gets an FILE buffer for a Gentoo binary package and returns a pointer to
  * an lpxpak object with the xpak data. If an error occurs, NULL is returned
  * and errno is set to indicate the error.
  *
@@ -325,7 +325,7 @@ lpxpak_parse_file(FILE *file)
  * lpxpak_parse_path: Reads the xpak data out of a Gentoo binary packages'
  *                    path it was called with.
  *
- * Gets an path to a Gentoo binary package and returns an pointer to an lpxpak
+ * Gets an path to a Gentoo binary package and returns a pointer to an lpxpak
  * object with the xpak data. If an error occurs, NULL is returned and errno
  * is set to indicate the error.
  *
@@ -369,8 +369,8 @@ lpxpak_parse_path(const char *path)
 /*
  * __lpxpak_parse_index: parses an data block according to the provided index
  *
- * Gets an pointer to the index block of an xpak and the length of that index
- * block and returns and returns an pointer to an __lpxpak_index_t object with
+ * Gets a pointer to the index block of an xpak and the length of that index
+ * block and returns and returns a pointer to an __lpxpak_index_t object with
  * the xpak index data. If an error occurred, NULL is returned and errno is
  * set to indicate the error.
  *
@@ -444,7 +444,7 @@ __lpxpak_parse_index(const void *data, size_t len)
 /*
  * __lpxpak_parse_data: parses an data block according to the provided index
  *
- * Gets an pointer to the data block of an xpak and a pointer to the index of
+ * Gets a pointer to the data block of an xpak and a pointer to the index of
  * the same xpak as an __lpxpak_index_t struct and returns and returns an
  * pointer to an lpxpak_t object with the xpak data. If an error occurred,
  * NULL is returned and errno is set to indicate the error.
@@ -507,7 +507,7 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
 /*
  * __lpxpak_destroy_index: destroy an __lpxpak_index_t object
  *
- * Gets an pointer to an __lpxpak_index_t object and free(2)s up all memory of
+ * Gets a pointer to an __lpxpak_index_t object and free(2)s up all memory of
  * that object. If a NULL pointer was given, __lpxpak_destroy_index will just
  * return.
  *
@@ -540,7 +540,7 @@ __lpxpak_destroy_index(__lpxpak_index_t *index)
 /*
  * lpxpak_destroy_xpak: destroy an xpak object
  *
- * Gets an pointer to an lpxpak_t object and free(2)s up all memory of that
+ * Gets a pointer to an lpxpak_t object and free(2)s up all memory of that
  * object. If a NULL pointer was given, lpxpak_destroy_xpak will just return.
  *
  * ATTENTION: Do not try to use a destroyed xpak object or unexpected things
