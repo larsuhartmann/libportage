@@ -461,21 +461,27 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
                __lpxpak_init(xpak);
                tx=xpak;
           } else {
-               if ( (tx->next = malloc(sizeof(lpxpak_t))) == NULL )
+               if ( (tx->next = malloc(sizeof(lpxpak_t))) == NULL ) {
+                    lpxpak_destroy_xpak(xpak);
                     return NULL;
+               }
                __lpxpak_init((lpxpak_t *)tx->next);
                tx = (lpxpak_t *)tx->next;
           }
           /* allocate ti->name_len bytes on the heap, assign it to tx->name
            * and copy ti->name_len bytes from ti->name to tx->name */
-          if ( (tx->name = strdup(ti->name)) == NULL)
+          if ( (tx->name = strdup(ti->name)) == NULL) {
+               lpxpak_destroy_xpak(xpak);
                return NULL;
+          }
 
           /* allocate ti->len bytes on the heap, assign it to tx->value, copy
            * ti->len data from data+offset to tx->value and null-terminate
            * tx->value  */
-          if ( (tx->value = malloc((size_t)ti->len)) == NULL )
+          if ( (tx->value = malloc((size_t)ti->len)) == NULL ) {
                return NULL;
+               lpxpak_destroy_xpak(xpak);
+          }
           memcpy((lpxpak_t *)tx->value, data+ti->offset, ti->len);
           tx->value_len = ti->len;
      }
