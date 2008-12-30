@@ -141,7 +141,6 @@ lpxpak_parse_data(const void *data, size_t len)
       * heap, set errno and return.  */
      ti = index;
      while (ti!=NULL) {
-          __lpxpak_destroy_index(index);
           tl += ti->len;
           ti = ti->next;
      }
