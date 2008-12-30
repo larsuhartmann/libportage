@@ -494,8 +494,8 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
            * ti->len data from data+offset to tx->value and null-terminate
            * tx->value  */
           if ( (tx->value = malloc((size_t)ti->len)) == NULL ) {
-               return NULL;
                lpxpak_destroy_xpak(xpak);
+               return NULL;
           }
           memcpy((lpxpak_t *)tx->value, data+ti->offset, ti->len);
           tx->value_len = ti->len;
