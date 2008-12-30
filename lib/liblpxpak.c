@@ -451,10 +451,7 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
      __lpxpak_index_t *ti = NULL;
      lpxpak_t *xpak = NULL;
      lpxpak_t *tx = NULL;
-     size_t xpaksize;
 
-     xpaksize = sizeof(lpxpak_t);
-     
      /* operate over all index elements */
      for (ti = index; ti->next != NULL; ti = ti->next) {
           /* check if xpak is initialized, if not, allocate xpaksize bytes
