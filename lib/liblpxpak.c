@@ -71,7 +71,7 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index);
 static void
 __lpxpak_destroy_index(__lpxpak_index_t *index);
 
-__lpxpak_index_t *
+static __lpxpak_index_t *
 __lpxpak_init_index(void);
 
 static lpxpak_t *
@@ -114,17 +114,17 @@ lpxpak_parse_data(const void *data, size_t len)
       * and return. Otherwise increase count which we will be using as an seek
       * counter */
      if ((memcmp(data, __LPXPAK_INTRO, __LPXPAK_INTRO_LEN) != 0) ||
-         (memcmp(data+len-__LPXPAK_OUTRO_LEN, __LPXPAK_OUTRO,
+         (memcmp((uint8_t *)data+len-__LPXPAK_OUTRO_LEN, __LPXPAK_OUTRO,
                  __LPXPAK_OUTRO_LEN != 0))) {
           errno = EINVAL;
           return NULL;
      }
      count += __LPXPAK_INTRO_LEN;
 
-     memcpy(&index_len, data+count, sizeof(__lpxpak_int_t));
+     memcpy(&index_len, (uint8_t *)data+count, sizeof(__lpxpak_int_t));
      count+=sizeof(__lpxpak_int_t);
      index_len = ntohl(index_len);
-     memcpy(&data_len, data+count, sizeof(__lpxpak_int_t));
+     memcpy(&data_len, (uint8_t *)data+count, sizeof(__lpxpak_int_t));
      count += sizeof(__lpxpak_int_t);
      data_len = ntohl(data_len);
 
@@ -135,8 +135,8 @@ lpxpak_parse_data(const void *data, size_t len)
           return NULL;
      }
 
-     index_data = data+count;
-     data_data = data+count+index_len;
+     index_data = (uint8_t *)data+count;
+     data_data = (uint8_t *)data+count+index_len;
 
      /* get index */
      index = __lpxpak_parse_index(index_data, (size_t)index_len);
@@ -229,8 +229,8 @@ lpxpak_parse_fd(int fd)
      /* check if the read in __LPXPAK_STOP string equals __LPXPAK_STOP.  If
       * not, free the allocated memory, set errno and return NULL as this is
       * an invalid xpak. */
-     if ( memcmp(tmp+sizeof(__lpxpak_int_t), __LPXPAK_STOP, __LPXPAK_STOP_LEN)
-         != 0 ) {
+     if ( memcmp((uint8_t *)tmp+sizeof(__lpxpak_int_t), __LPXPAK_STOP,
+         __LPXPAK_STOP_LEN) != 0 ) {
           free(tmp);
           errno = EINVAL;
           return NULL;
@@ -391,9 +391,6 @@ __lpxpak_parse_index(const void *data, size_t len)
      __lpxpak_index_t *t = NULL;
      __lpxpak_int_t count = 0;
      __lpxpak_int_t name_len = 0;
-     size_t indexsize;
-
-     indexsize = sizeof(__lpxpak_index_t);
 
      /* iterate over the index block  */
      while (count < len) {
@@ -414,7 +411,7 @@ __lpxpak_parse_index(const void *data, size_t len)
           }
 
           /* read name_len from data and increase the counter */
-          name_len = *(__lpxpak_int_t *)(data+count);
+          name_len = *((__lpxpak_int_t *)((uint8_t *)data+count));
           name_len = ntohl(name_len);
           count += sizeof(__lpxpak_int_t);
 
@@ -425,18 +422,18 @@ __lpxpak_parse_index(const void *data, size_t len)
                __lpxpak_destroy_index(index);
                return NULL;
           }
-          memcpy(t->name, data+count, name_len);
+          memcpy(t->name, (uint8_t *)data+count, name_len);
           (t->name)[name_len] = '\0';
           count += name_len;
           
           /* read t->offset from data in local byte order and increase
            * counter */
-          t->offset = *(__lpxpak_int_t *)(data+count);
+          t->offset = *((__lpxpak_int_t *)((uint8_t *)data+count));
           t->offset = ntohl(t->offset);
           count += sizeof(__lpxpak_int_t);
 
           /* read t->len from data in local byte order and increase counter */
-          t->len = *(__lpxpak_int_t *)(data+count);
+          t->len = *((__lpxpak_int_t *)((uint8_t *)data+count));
           t->len = htonl(t->len);
           count += sizeof(__lpxpak_int_t);
      }
@@ -499,7 +496,7 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
                lpxpak_destroy_xpak(xpak);
                return NULL;
           }
-          memcpy((lpxpak_t *)tx->value, data+ti->offset, ti->len);
+          memcpy((lpxpak_t *)tx->value, (uint8_t *)data+ti->offset, ti->len);
           tx->value_len = ti->len;
      }
      return xpak;
@@ -579,7 +576,7 @@ lpxpak_destroy_xpak(lpxpak_t *xpak)
  *         The __lpxpak_init_index() function may fail and set errno for any
  *         of the errors specified for the routine malloc(3).
  */
-__lpxpak_index_t *
+static __lpxpak_index_t *
 __lpxpak_init_index(void)
 {
      __lpxpak_index_t *index;
