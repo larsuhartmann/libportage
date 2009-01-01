@@ -8,7 +8,7 @@
  *
  *    1. Redistributions of source code must retain the above copyright
  *       notice, this list of conditions and the following disclaimer.
- *      
+ *
  *    2. Redistributions in binary form must reproduce the above copyright
  *       notice, this list of conditions and the following disclaimer in the
  *       documentation and/or other materials provided with the distribution.
@@ -37,136 +37,174 @@
 #include <stdint.h>
 #include <stdio.h>
 
+/**
+ * The lpxpak_t object.
+ *
+ * This is the data structure which holds all of the xpak's informations. It
+ * is implemented as a linked list.
+ *
+ * None of the Pointers in this struct will
+ * point to memory regions which are used elsewhere by the lpxpak library.
+ *
+ * If you whish to throw away this xpak, do so by using lpxpak_destroy_xpak().
+ *
+ * \sa lpxpak_destroy_xpak().
+ */
 typedef struct lpxpak{
+     /**
+      * The Name of the element.
+      *
+      * This element is implemented as a null-terminated C-String.
+      */
      const char *name;
+     /**
+      * The length of the value.
+      *
+      * This element holds the length of the data, the value pointer points
+      * to.
+      */
      size_t value_len;
+     /**
+      * The Value.
+      *
+      * A pointer to the value - a value_len bytes long memory block.
+      */
      const void *value;
+     /**
+      * The next Element.
+      *
+      * A pointer to the next xpak Element.
+      */
      const struct lpxpak *next;
 } lpxpak_t;
 
-/* 
- * lpxpak_parse_data: Reads the xpak data out of a xpak binary blob.
+/**
+ * Reads the xpak data out of a xpak binary blob.
  *
  * Gets the actual xpak-blob (see doc/xpak.txt) and returns a pointer to an
  * lpxpak object with its data. If an error occurs, NULL is returned and errno
  * is set to indicate the error.
  *
- * Errors:
- *         EINVAL The file either is no valid gentoo binary package or has an
- *                invalid xpak.
+ * \param data a constant void pointer.
+ * \param len the length of the data pointed to by data.
+ * \return a pointer to a lpxpak_t data structure which holds the parsed xpak
+ *         data.
+ * \sa lpxpak_t.
  *
- *         EBUSY The xpak could not be fully read in
- *
- *         The lpxpak_parse_data() function may also fail and set errno for
- *         any of the errors specified for the routine malloc(3).
- *
- *         The lpxpak_parse_data() function may also fail and set errno for
- *         any of the errors specified for the routine strdup(3)
+ * List of possible errno values:
+ * 
+ * - EINVAL The file either is no valid gentoo binary package or has an
+ *   invalid xpak.
+ * - EBUSY The xpak could not be fully read in.
+ * - The lpxpak_parse_data() function may also fail and set errno for any of
+ *   the errors specified for the routine malloc(3).
+ * - The lpxpak_parse_data() function may also fail and set errno for any of
+ *   the errors specified for the routine strdup(3).
  */
 lpxpak_t *
 lpxpak_parse_data(const void *data, size_t len);
 
-/* 
- * lpxpak_parse_fd: Reads the xpak data out of a file-descriptor which points
- *                  to an Gentoo binary package.
+/**
+ * Reads the xpak data out of a file-descriptor.
  *
- * Gets an file-descriptor (fd) for a Gentoo binary package and returns an
+ * Gets an file-descriptor (fd) for a Gentoo binary package and returns a
  * pointer to an lpxpak object with the xpak data. If an error occurs, NULL is
  * returned and errno is set to indicate the error.
  *
- * Errors:
- *         EINVAL The file either is no valid gentoo binary package or has an
- *                invalid xpak.
+ * \param fd a file descriptor with the gentoo binary package which needs to
+ *        be opened in O_RDONLY mode.
+ * \return a pointer to a lpxpak_t data structure which holds the parsed xpak
+ *         data.
  *
- *         EBUSY The xpak could not be fully read in
- *
- *         The lpxpak_parse_fd() function may also fail and set errno for any
- *         of the errors specified for the routine malloc(3).
- *
- *         The lpxpak_parse_fd() function may also fail and set errno for
- *         any of the errors specified for the routine strdup(3)
- *
- *         The lpxpak_parse_fd() function may also fail and set errno for any
- *         of the errors specified for the routine lseek(2).
- *
- *         The lpxpak_parse_fd() function may also fail and set errno for any
- *         of the errors specified for the routine read(2).
+ * List of possible errno values:
+ * 
+ * - EINVAL The file either is no valid gentoo binary package or has an
+ *   invalid xpak.
+ * - EBUSY The xpak could not be fully read in.
+ * - The lpxpak_parse_fd() function may also fail and set errno for any of the
+ *   errors specified for the routine malloc(3).
+ * - The lpxpak_parse_fd() function may also fail and set errno for any of the
+ *   errors specified for the routine strdup(3).
+ * - The lpxpak_parse_fd() function may also fail and set errno for any of the
+ *   errors specified for the routine lseek(2).
+ * - The lpxpak_parse_fd() function may also fail and set errno for any of the
+ *   errors specified for the routine read(2).
  */
 lpxpak_t *
 lpxpak_parse_fd(int fd);
 
-/* 
- * lpxpak_parse_file: Reads the xpak data out of a FILE * buffer which points
- *                    to an Gentoo binary package.
+/**
+ * Reads the xpak data out of a FILE* buffer.
  *
- * Gets an FILE buffer for a Gentoo binary package and returns a pointer to
+ * Gets an FILE* buffer for a Gentoo binary package and returns a pointer to
  * an lpxpak object with the xpak data. If an error occurs, NULL is returned
  * and errno is set to indicate the error.
  *
- * Errors:
- *         EINVAL The file either is no valid gentoo binary package or has an
- *                invalid xpak.
+ * \param file a FILE* buffer with the gentoo binary package which needs to be
+ *        opened in "r" mode.
+ * \return a pointer to a lpxpak_t data structure which holds the parsed xpak
+ *         data.
  *
- *         EBUSY The xpak could not be fully read in
- *
- *         The lpxpak_parse_file() function may also fail and set errno for
- *         any of the errors specified for the routine malloc(3).
- *
- *         The lpxpak_parse_file() function may also fail and set errno for
- *         any of the errors specified for the routine strdup(3)
- *
- *         The lpxpak_parse_file() function may also fail and set errno for
- *         any of the errors specified for the routine lseek(2).
- *
- *         The lpxpak_parse_file() function may also fail and set errno for
- *         any of the errors specified for the routine read(2).
- *
- *         The lpxpak_parse_file() function may also fail and set errno for
- *         any of the errors specified for the routine fileno(3).
+ * List of possible errno values:
+ * 
+ * - EINVAL The file either is no valid gentoo binary package or has an
+ *   invalid xpak.
+ * - EBUSY The xpak could not be fully read in.
+ * - The lpxpak_parse_file() function may also fail and set errno for any of
+ *   the errors specified for the routine malloc(3).
+ * - The lpxpak_parse_file() function may also fail and set errno for any of
+ *   the errors specified for the routine strdup(3).
+ * - The lpxpak_parse_file() function may also fail and set errno for any of
+ *   the errors specified for the routine lseek(2).
+ * - The lpxpak_parse_file() function may also fail and set errno for any of
+ *   the errors specified for the routine read(2).
+ * - The lpxpak_parse_file() function may also fail and set errno for any of
+ *   the errors specified for the routine fileno(3).
  */
 lpxpak_t *
 lpxpak_parse_file(FILE *file);
 
-/* 
- * lpxpak_parse_path: Reads the xpak data out of a Gentoo binary packages'
- *                    path it was called with.
+/**
+ * Reads the xpak data out of a Gentoo binary package.
  *
  * Gets an path to a Gentoo binary package and returns a pointer to an lpxpak
  * object with the xpak data. If an error occurs, NULL is returned and errno
  * is set to indicate the error.
- *
- * Errors:
- *         EINVAL The file either is no valid gentoo binary package or has an
- *                invalid xpak.
- *                
- *         EBUSY The xpak could not be fully read in
- *
- *         The lpxpak_parse_path() function may also fail and set errno for
- *         any of the errors specified for the routine malloc(3).
- *
- *         The lpxpak_parse_path() function may also fail and set errno for
- *         any of the errors specified for the routine strdup(3)
- *
- *         The lpxpak_parse_path() function may also fail and set errno for
- *         any of the errors specified for the routine lseek(2).
- *
- *         The lpxpak_parse_path() function may also fail and set errno for
- *         any of the errors specified for the routine read(2).
- *
- *         The lpxpak_parse_path() function may also fail and set errno for
- *         any of the errors specified in the routine open(2).
+ * 
+ * \param path Path to a gentoo binary package which needs to be
+ *        readable by the current process.
+ * \return a pointer to a lpxpak_t data structure which holds the parsed xpak
+ *         data.
+ * 
+ * \b List of possible errno values:
+ * 
+ * - \c EINVAL The file either is no valid gentoo binary package or has an
+ *   invalid xpak.
+ * - \c EBUSY The xpak could not be fully read in.
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine malloc(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine strdup(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine lseek(2).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine read(2).
+ * - This function may also fail and set errno for any of
+ *   the errors specified for the routine open(2).
  */
 lpxpak_t *
 lpxpak_parse_path(const char *path);
 
-/*
- * lpxpak_destroy_xpak: destroy an xpak object
+/**
+ * Destroy an xpak object.
  *
  * Gets a pointer to an lpxpak_t object and free(2)s up all memory of that
  * object. If a NULL pointer was given, lpxpak_destroy_xpak will just return.
  *
- * ATTENTION: Do not try to use a destroyed xpak object or unexpected things
- *            will happen.
+ * \param pointer to the lpxpak_t object to be destroye'd.
+ * 
+ * \b ATTENTION: Do not try to use a lpxpak_t object after destroying it or
+ *            unexpected things will happen.
  */
 void
 lpxpak_destroy_xpak(lpxpak_t *xpak);
