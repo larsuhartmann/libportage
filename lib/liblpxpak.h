@@ -38,7 +38,7 @@
 #include <stdio.h>
 
 /**
- * The lpxpak_t object.
+ * \brief The lpxpak_t object.
  *
  * This is the data structure which holds all of the xpak's informations. It
  * is implemented as a single linked list. The Memory for an lpxpak_t object
@@ -76,7 +76,7 @@ typedef struct lpxpak{
 } lpxpak_t;
 
 /**
- * Reads the xpak data out of a xpak binary blob.
+ * \brief Reads the xpak data out of a xpak binary blob.
  *
  * Gets the actual xpak-blob (see doc/xpak.txt) and returns a pointer to an
  * lpxpak object with its data. If an error occurs, NULL is returned and errno
@@ -105,7 +105,7 @@ lpxpak_t *
 lpxpak_parse_data(const void *data, size_t len);
 
 /**
- * Reads the xpak data out of a file-descriptor.
+ * \brief Reads the xpak data out of a file-descriptor.
  *
  * Gets an file-descriptor (fd) for a Gentoo binary package and returns a
  * pointer to an lpxpak object with the xpak data. If an error occurs, NULL is
@@ -134,7 +134,7 @@ lpxpak_t *
 lpxpak_parse_fd(int fd);
 
 /**
- * Reads the xpak data out of a FILE buffer.
+ * \brief Reads the xpak data out of a FILE buffer.
  *
  * Gets a pointer to a FILE buffer for a Gentoo binary package and returns a
  * pointer to an lpxpak object with the xpak data. If an error occurs, NULL is
@@ -164,7 +164,7 @@ lpxpak_t *
 lpxpak_parse_file(FILE *file);
 
 /**
- * Reads the xpak data out of a Gentoo binary package.
+ * \brief Reads the xpak data out of a Gentoo binary package.
  *
  * Gets an path to a Gentoo binary package and returns a pointer to an lpxpak
  * object with the xpak data. If an error occurs, NULL is returned and errno
@@ -195,7 +195,7 @@ lpxpak_t *
 lpxpak_parse_path(const char *path);
 
 /**
- * Destroy an xpak object.
+ * \brief Destroy an xpak object.
  *
  * Gets a pointer to an lpxpak_t object and free(2)s up all memory of that
  * object. If a NULL pointer was given, lpxpak_destroy_xpak will just return.
