@@ -29,6 +29,12 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+
+/**
+ * Feature test macro for POSIX.1, POSIX.2, XPG4, SUSv2, SUSv3.
+ *
+ * This makes shure, we have a Standard conformant environment.
+ */
 #define _XOPEN_SOURCE   600
 
 #include "liblpxpak.h"
@@ -43,22 +49,84 @@
 #include <stdio.h>
 #include <string.h>
 
-
+/**
+ * The Offset for the STOP String - calculated from SEEK_END.
+ */
 #define __LPXPAK_STOP_OFFSET    4
-#define __LPXPAK_OFFSET         8
+/**
+ * The Length of the XPAK_OFFSET field in Bytes.
+ */
+#define __LPXPAK_OFFSET_LEN         8
+/**
+ * The Length of the INTRO String in Bytes.
+ */
 #define __LPXPAK_INTRO_LEN      8
+/**
+ * The Value the INTRO String should have.
+ */
 #define __LPXPAK_INTRO          "XPAKPACK"
+/**
+ * The Length of the OUTRO String in Bytes.
+ */
 #define __LPXPAK_OUTRO_LEN      8
+/**
+ * The Value the OUTRO String should have.
+ */
 #define __LPXPAK_OUTRO          "XPAKSTOP"
+/**
+ * The Length of the STOP String in Bytes
+ */
 #define __LPXPAK_STOP_LEN       4
+/**
+ * The Value the STOP String should have.
+ */
 #define __LPXPAK_STOP           "STOP"
 
+/**
+ * The Datatype for the offset/length values XPAK uses.
+ */
 typedef uint32_t __lpxpak_int_t;
 
+/**
+ * The __lpxpak_index_t Object.
+ *
+ * This is the Datastructure that holds the Index Data parsed by
+ * __lpxpak_parse_index. It is implemented as a single linked list.
+ *
+ * None of the Pointers in this struct will point to memory regions which are
+ * used elsewhere by the lpxpak library.
+ *
+ * Some elements in this struct may be modified after being used by
+ * __lpxpak_parse_data.
+ *
+ * If you which to throw away this Struct, do so by using
+ * __lpxpak_destroy_index().
+ *
+ * \sa __lpxpak_destroy_index().
+ */
 typedef struct __lpxpak_index{
+     /**
+      * The Name of the Element.
+      *
+      * This Element is implemented as a null terminated C String.
+      */
      char *name;
+     /**
+      * The Offset of the Data.
+      *
+      * The Offset needed to find the corresponding data block, calculated
+      * from the start of the data block.
+      */
      size_t offset;
+     /**
+      * The Length of the Data Block.
+      *
+      * The Length needed to copy out the corresponding data block.
+      */
      size_t len;
+     /**
+      * A pointer to the next Element in the list.
+      */
      struct __lpxpak_index *next;
 } __lpxpak_index_t;
 
@@ -87,7 +155,7 @@ __lpxpak_init(void);
  * Errors:
  *         EINVAL The file either is no valid gentoo binary package or has an
  *                invalid xpak.
- *                
+ *
  *         EBUSY The xpak could not be fully read in
  *
  *         The lpxpak_parse_data() function may also fail and set errno for
@@ -244,8 +312,8 @@ lpxpak_parse_fd(int fd)
      /* allocate <xpakoffset> bytes on the heap, assign it to xpakdata, seek
       * to the start of the xpak data, read in the xpak data and store it in
       * xpakdata. */
-     if ( lseek(fd, (off_t)((off_t)*xpakoffset+__LPXPAK_OFFSET)*-1, SEEK_END)
-          == -1 ) {
+     if ( lseek(fd, (off_t)((off_t)*xpakoffset+__LPXPAK_OFFSET_LEN)*-1,
+         SEEK_END) == -1 ) {
           free(tmp);
           free(xpakdata);
           return NULL;
