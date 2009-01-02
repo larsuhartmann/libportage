@@ -98,6 +98,11 @@ lputil_splitstr(const char *s, const char *delim)
      size_t len = 10;
      int i, j;
 
+     if ( s == NULL || delim == NULL) {
+          errno = EINVAL;
+          return NULL;
+     }
+     
      /* allocate len bytes on the heap and assign a pointer to that to that
       * region r */
      if ( (r = malloc(sizeof(char *)*len)) == NULL )
