@@ -41,12 +41,11 @@
  * The lpxpak_t object.
  *
  * This is the data structure which holds all of the xpak's informations. It
- * is implemented as a single linked list.
+ * is implemented as a single linked list. The Memory for an lpxpak_t object
+ * can be freed with lpxpak_destroy_xpak()
  *
  * None of the Pointers in this struct will point to memory regions which are
  * used elsewhere by the lpxpak library.
- *
- * If you whish to throw away this Struct, do so by using lpxpak_destroy_xpak().
  *
  * \sa lpxpak_destroy_xpak().
  */
