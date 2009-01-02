@@ -36,8 +36,6 @@
 #include <errno.h>
 #include <stdlib.h>
 
-
-
 char *
 lputil_get_re_match(const regmatch_t *match, int n, const char *s)
 {
@@ -66,6 +64,20 @@ lputil_substr(const char *s, size_t os, size_t oe)
 
      memcpy(r, s+os, oe);
      r[oe] = '\0';
+     return r;
+}
+
+void *
+lputil_memdup(const void *s, size_t len)
+{
+     void *r;
+     if ( s==NULL) {
+          errno = EINVAL;
+          return NULL;
+     }
+     if ( ( r = malloc(len)) == NULL )
+          return NULL;
+     memcpy(r, s, len);
      return r;
 }
 

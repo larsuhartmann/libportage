@@ -43,4 +43,7 @@ lputil_substr(const char *s, size_t os, size_t oe);
 char **
 lputil_splitstr(const char *s, const char *delim);
 
+void *
+lputil_memdup(const void *s, size_t len);
+
 #endif
