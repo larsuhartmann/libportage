@@ -84,9 +84,12 @@ typedef struct lpxpak{
  * is set to indicate the error.
  *
  * \param data a constant void pointer.
+ * 
  * \param len the length of the data pointed to by data.
+ * 
  * \return a pointer to a lpxpak_t data structure which holds the parsed xpak
- *         data.
+ * data or NULL, if an error has occured.
+ * 
  * \sa lpxpak_t.
  *
  * \b Errors:

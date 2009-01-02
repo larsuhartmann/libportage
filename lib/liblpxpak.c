@@ -29,7 +29,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-
+/**
+ * \privatesection
+ */
+ 
 /**
  * Feature test macro for POSIX.1, POSIX.2, XPG4, SUSv2, SUSv3.
  *
@@ -130,40 +133,103 @@ typedef struct __lpxpak_index{
      struct __lpxpak_index *next;
 } __lpxpak_index_t;
 
+/**
+ * Parses the Index block of an XPAK.
+ *
+ * Gets a pointer to the index block of an xpak and the length of that index
+ * block and returns and returns a pointer to an __lpxpak_index_t object with
+ * the xpak index data. If an error occurred, NULL is returned and errno is
+ * set to indicate the error.
+ *
+ * The provided Index block will not be modified by this function.
+ *
+ * \param data a pointer to the start of the index block.
+ * 
+ * \param len the length of the index block pointed to by data.
+ *
+ * \return a pointer to a __lpxpak_index_t structure which holds the parsed
+ * index data or NULL if an error occured.
+ *
+ *
+ * \b Errors:
+ * 
+ * - This function may fail and set errno for any of the errors specified for
+ *   the routine malloc(3).
+ */
 static __lpxpak_index_t *
 __lpxpak_parse_index(const void *data, size_t len);
 
+/**
+ * __lpxpak_parse_data: parses an data block according to the provided index
+ *
+ * Gets a pointer to the data block of an xpak and a pointer to the index of
+ * the same xpak as an __lpxpak_index_t struct and returns and returns an
+ * pointer to an lpxpak_t object with the xpak data. If an error occurred,
+ * NULL is returned and errno is set to indicate the error.
+ *
+ * PRIVATE: This is a private function and thus should not be called
+ *          directly from outside the API, as the way this function works
+ *          can be changed regularly.
+ *
+ * Errors: 
+ *         The __lpxpak_parse_data() function may fail and set errno for any
+ *         of the errors specified for the routine malloc(3).
+ *
+ *         The __lpxpak_parse_data() function may also fail and set errno for
+ *         any of the errors specified for the routine strdup(3)
+ */
 static lpxpak_t *
 __lpxpak_parse_data(const void *data, __lpxpak_index_t *index);
 
+/**
+ * __lpxpak_destroy_index: destroy an __lpxpak_index_t object
+ *
+ * Gets a pointer to an __lpxpak_index_t object and free(2)s up all memory of
+ * that object. If a NULL pointer was given, __lpxpak_destroy_index will just
+ * return.
+ *
+ * PRIVATE: This is a private function and thus should not be called directly
+ *          from outside the API, as the way this function works can be
+ *          changed regularly.
+ *
+ * ATTENTION: Do not try to use a destroyed __lpxpak_index_t object or
+ *            unexpected things will happen
+ */
 static void
 __lpxpak_destroy_index(__lpxpak_index_t *index);
 
+/**
+ * __lpxpak_init_index: initialize an xpak object
+ *
+ * allocates and initializes a new __lpxpak_index_t object and returns a
+ * pointer to it, if an error occured, NULL is returned and errno is set.
+ * 
+ * PRIVATE: This is a private function and thus should not be called directly
+ *          from outside the API, as the way this function works can be
+ *          changed regularly.
+ * Errors: 
+ *         The __lpxpak_init_index() function may fail and set errno for any
+ *         of the errors specified for the routine malloc(3).
+ */
 static __lpxpak_index_t *
 __lpxpak_init_index(void);
 
+/**
+ * __lpxpak_init: initialize an xpak object
+ *
+ * allocates and initializes a new lpxpak_t object and returns a pointer to
+ * it, if an error occured, NULL is returned and errno is set.
+ * 
+ * PRIVATE: This is a private function and thus should not be called directly
+ *          from outside the API, as the way this function works can be
+ *          changed regularly.
+ * Errors: 
+ *         The __lpxpak_init() function may fail and set errno for any
+ *         of the errors specified for the routine malloc(3).
+ */
 static lpxpak_t *
 __lpxpak_init(void);
 
-/* 
- * lpxpak_parse_data: Reads the xpak data out of a xpak binary blob.
- *
- * Gets the actual xpak-blob (see doc/xpak.txt) and returns a pointer to an
- * lpxpak object with its data. If an error occurs, NULL is returned and errno
- * is set to indicate the error.
- *
- * Errors:
- *         EINVAL The file either is no valid gentoo binary package or has an
- *                invalid xpak.
- *
- *         EBUSY The xpak could not be fully read in
- *
- *         The lpxpak_parse_data() function may also fail and set errno for
- *         any of the errors specified for the routine malloc(3).
- *
- *         The lpxpak_parse_data() function may also fail and set errno for
- *         any of the errors specified for the routine strdup(3)
- */
 lpxpak_t *
 lpxpak_parse_data(const void *data, size_t len)
 {
@@ -231,35 +297,6 @@ lpxpak_parse_data(const void *data, size_t len)
      return xpak;
 }
 
-/* 
- * lpxpak_parse_fd: Reads the xpak data out of a file-descriptor which points
- *                  to an Gentoo binary package.
- *
- * Gets an file-descriptor (fd) for a Gentoo binary package and returns an
- * pointer to an lpxpak object with the xpak data. If an error occurs, NULL is
- * returned and errno is set to indicate the error.
- *
- * Errors:
- *         EINVAL The file either is no valid gentoo binary package or has an
- *                invalid xpak.
- *                
- *         EBUSY The xpak could not be fully read in
- *
- *         The lpxpak_parse_fd() function may also fail and set errno for any
- *         of the errors specified for the routine malloc(3).
- *
- *         The lpxpak_parse_fd() function may also fail and set errno for
- *         any of the errors specified for the routine strdup(3)
- *
- *         The lpxpak_parse_fd() function may also fail and set errno for any
- *         of the errors specified for the routine lseek(2).
- *
- *         The lpxpak_parse_fd() function may also fail and set errno for any
- *         of the errors specified for the routine read(2).
- *
- *         The lpxpak_parse_fd() function may also fail and set errno for any
- *         of the errors specified for the routine fstat(2).
- */
 lpxpak_t *
 lpxpak_parse_fd(int fd)
 {
@@ -346,38 +383,6 @@ lpxpak_parse_fd(int fd)
      return xpak;
 }
 
-/* 
- * lpxpak_parse_file: Reads the xpak data out of a FILE * buffer which points
- *                    to an Gentoo binary package.
- *
- * Gets an FILE buffer for a Gentoo binary package and returns a pointer to
- * an lpxpak object with the xpak data. If an error occurs, NULL is returned
- * and errno is set to indicate the error.
- *
- * Errors:
- *         EINVAL The file either is no valid gentoo binary package or has an
- *                invalid xpak.
- *                
- *         EBUSY The xpak could not be fully read in
- *
- *         The lpxpak_parse_file() function may also fail and set errno for
- *         any of the errors specified for the routine malloc(3).
- *         
- *         The lpxpak_parse_file() function may also fail and set errno for
- *         any of the errors specified for the routine strdup(3)
- *
- *         The lpxpak_parse_file() function may also fail and set errno for
- *         any of the errors specified for the routine lseek(2).
- *
- *         The lpxpak_parse_file() function may also fail and set errno for
- *         any of the errors specified for the routine read(2).
- *
- *         The lpxpak_parse_file() function may also fail and set errno for
- *         any of the errors specified for the routine fileno(3).
- *
- *         The lpxpak_parse_file() function may also fail and set errno for any
- *         of the errors specified for the routine fstat(2).
- */
 lpxpak_t *
 lpxpak_parse_file(FILE *file)
 {
@@ -391,38 +396,6 @@ lpxpak_parse_file(FILE *file)
      return xpak;
 }
 
-/* 
- * lpxpak_parse_path: Reads the xpak data out of a Gentoo binary packages'
- *                    path it was called with.
- *
- * Gets an path to a Gentoo binary package and returns a pointer to an lpxpak
- * object with the xpak data. If an error occurs, NULL is returned and errno
- * is set to indicate the error.
- *
- * Errors:
- *         EINVAL The file either is no valid gentoo binary package or has an
- *                invalid xpak.
- *                
- *         EBUSY The xpak could not be fully read in
- *
- *         The lpxpak_parse_path() function may also fail and set errno for
- *         any of the errors specified for the routine malloc(3).
- *
- *         The lpxpak_parse_path() function may also fail and set errno for
- *         any of the errors specified for the routine strdup(3)
- *
- *         The lpxpak_parse_path() function may also fail and set errno for
- *         any of the errors specified for the routine lseek(2).
- *
- *         The lpxpak_parse_path() function may also fail and set errno for
- *         any of the errors specified for the routine read(2).
- *
- *         The lpxpak_parse_path() function may also fail and set errno for
- *         any of the errors specified in the routine open(2).
- *
- *         The lpxpak_parse_path() function may also fail and set errno for any
- *         of the errors specified for the routine fstat(2).
- */
 lpxpak_t *
 lpxpak_parse_path(const char *path)
 {
@@ -436,22 +409,6 @@ lpxpak_parse_path(const char *path)
      return xpak;
 }
 
-/*
- * __lpxpak_parse_index: parses an data block according to the provided index
- *
- * Gets a pointer to the index block of an xpak and the length of that index
- * block and returns and returns a pointer to an __lpxpak_index_t object with
- * the xpak index data. If an error occurred, NULL is returned and errno is
- * set to indicate the error.
- *
- * PRIVATE: This is a private function and thus should not be called
- *          directly from outside the API, as the way this function works
- *          can be changed regularly.
- *
- * Errors: 
- *         The __lpxpak_parse_index() function may fail and set errno for any
- *         of the errors specified for the routine malloc(3).
- */
 static __lpxpak_index_t *
 __lpxpak_parse_index(const void *data, size_t len)
 {
@@ -508,25 +465,6 @@ __lpxpak_parse_index(const void *data, size_t len)
      return index;
 }
 
-/*
- * __lpxpak_parse_data: parses an data block according to the provided index
- *
- * Gets a pointer to the data block of an xpak and a pointer to the index of
- * the same xpak as an __lpxpak_index_t struct and returns and returns an
- * pointer to an lpxpak_t object with the xpak data. If an error occurred,
- * NULL is returned and errno is set to indicate the error.
- *
- * PRIVATE: This is a private function and thus should not be called
- *          directly from outside the API, as the way this function works
- *          can be changed regularly.
- *
- * Errors: 
- *         The __lpxpak_parse_data() function may fail and set errno for any
- *         of the errors specified for the routine malloc(3).
- *
- *         The __lpxpak_parse_data() function may also fail and set errno for
- *         any of the errors specified for the routine strdup(3)
- */
 static lpxpak_t *
 __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
 {
@@ -571,20 +509,6 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
 }
 
 
-/*
- * __lpxpak_destroy_index: destroy an __lpxpak_index_t object
- *
- * Gets a pointer to an __lpxpak_index_t object and free(2)s up all memory of
- * that object. If a NULL pointer was given, __lpxpak_destroy_index will just
- * return.
- *
- * PRIVATE: This is a private function and thus should not be called directly
- *          from outside the API, as the way this function works can be
- *          changed regularly.
- *
- * ATTENTION: Do not try to use a destroyed __lpxpak_index_t object or
- *            unexpected things will happen
- */
 static void
 __lpxpak_destroy_index(__lpxpak_index_t *index)
 {
@@ -603,16 +527,6 @@ __lpxpak_destroy_index(__lpxpak_index_t *index)
      return;
 }
 
-
-/*
- * lpxpak_destroy_xpak: destroy an xpak object
- *
- * Gets a pointer to an lpxpak_t object and free(2)s up all memory of that
- * object. If a NULL pointer was given, lpxpak_destroy_xpak will just return.
- *
- * ATTENTION: Do not try to use a destroyed xpak object or unexpected things
- *            will happen.
- */
 void
 lpxpak_destroy_xpak(lpxpak_t *xpak)
 {
@@ -630,20 +544,6 @@ lpxpak_destroy_xpak(lpxpak_t *xpak)
      return;
 }
 
-
-/*
- * __lpxpak_init_index: initialize an xpak object
- *
- * allocates and initializes a new __lpxpak_index_t object and returns a
- * pointer to it, if an error occured, NULL is returned and errno is set.
- * 
- * PRIVATE: This is a private function and thus should not be called directly
- *          from outside the API, as the way this function works can be
- *          changed regularly.
- * Errors: 
- *         The __lpxpak_init_index() function may fail and set errno for any
- *         of the errors specified for the routine malloc(3).
- */
 static __lpxpak_index_t *
 __lpxpak_init_index(void)
 {
@@ -654,20 +554,6 @@ __lpxpak_init_index(void)
      index->next = NULL;
      return index;
 }
-
-/*
- * __lpxpak_init: initialize an xpak object
- *
- * allocates and initializes a new lpxpak_t object and returns a pointer to
- * it, if an error occured, NULL is returned and errno is set.
- * 
- * PRIVATE: This is a private function and thus should not be called directly
- *          from outside the API, as the way this function works can be
- *          changed regularly.
- * Errors: 
- *         The __lpxpak_init() function may fail and set errno for any
- *         of the errors specified for the routine malloc(3).
- */
 
 static lpxpak_t *
 __lpxpak_init(void)
