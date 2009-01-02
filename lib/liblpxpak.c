@@ -41,6 +41,7 @@
 #define _XOPEN_SOURCE   600
 
 #include "liblpxpak.h"
+#include "liblputil.h"
 
 #include <sys/stat.h>
 #include <arpa/inet.h>
@@ -255,6 +256,7 @@ lpxpak_parse_data(const void *data, size_t len)
      }
      count += __LPXPAK_INTRO_LEN;
 
+     
      memcpy(&index_len, (uint8_t *)data+count, sizeof(__lpxpak_int_t));
      count+=sizeof(__lpxpak_int_t);
      index_len = ntohl(index_len);
@@ -374,7 +376,6 @@ lpxpak_parse_fd(int fd)
           errno = EBUSY;
           return NULL;
      }
-
      xpak = lpxpak_parse_data(xpakdata, (size_t)(*xpakoffset));
      
      /* clear up allocated memory*/
@@ -498,11 +499,11 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
           /* allocate ti->len bytes on the heap, assign it to tx->value, copy
            * ti->len data from data+offset to tx->value and null-terminate
            * tx->value  */
-          if ( (tx->value = malloc((size_t)ti->len)) == NULL ) {
+          if ( (tx->value = lputil_memdup((uint8_t *)data+ti->offset, ti->len))
+               == NULL) {
                lpxpak_destroy_xpak(xpak);
                return NULL;
           }
-          memcpy((lpxpak_t *)tx->value, (uint8_t *)data+ti->offset, ti->len);
           tx->value_len = ti->len;
      }
      return xpak;
