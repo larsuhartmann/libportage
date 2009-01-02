@@ -39,29 +39,31 @@
 char *
 lputil_get_re_match(const regmatch_t *match, int n, const char *s)
 {
+     /* check if one of the given pointers is NULL  */
      if (match == NULL || s == NULL) {
           errno = EINVAL;
           return NULL;
      }
-     regoff_t rm_so, rm_eo;
-
-     rm_so = match[n].rm_so;
-     rm_eo = match[n].rm_eo;
-
-     return lputil_substr(s, rm_so, rm_eo-rm_so);
+     /* get the substring and return it  */
+     return lputil_substr(s, match[n].rm_so, match[n].rm_eo-match[n].rm_so);
 }
 
 char *
 lputil_substr(const char *s, size_t os, size_t oe)
 {
      char *r;
-     if ( s == NULL || strlen(s) < (os+oe) ) {
+     /* check if the given pointer is NULL  */
+     if ( s == NULL ) {
           errno = EINVAL;
           return NULL;
      }
+     /* allocate oe+1 bytes on the Heap and assign a pointer to that region to
+      * r */
      if ( (r = malloc(sizeof(char)*(oe+1) )) == NULL )
           return NULL;
 
+     /* copy oe bytes starting from s+os to r, null terminate r and return the
+      * created c string */
      memcpy(r, s+os, oe);
      r[oe] = '\0';
      return r;
@@ -71,12 +73,18 @@ void *
 lputil_memdup(const void *s, size_t len)
 {
      void *r;
-     if ( s==NULL) {
+
+     /* check if the given pointer is NULL */
+     if ( s==NULL ) {
           errno = EINVAL;
           return NULL;
      }
+
+     /* allocate len bytes on the heap and assign a pointer to that region to
+      * r*/
      if ( ( r = malloc(len)) == NULL )
           return NULL;
+     /* copy len bytes from s to r and return r */
      memcpy(r, s, len);
      return r;
 }
@@ -85,26 +93,49 @@ char **
 lputil_splitstr(const char *s, const char *delim)
 {
      char **r;
+     char **rt;
      char *t = (char *)s;
      size_t len = 10;
-     int i;
-     
+     int i, j;
+
+     /* allocate len bytes on the heap and assign a pointer to that to that
+      * region r */
      if ( (r = malloc(sizeof(char *)*len)) == NULL )
           return NULL;
+
+     /* iterate over all strtok matches */
      for (i=0; (r[i] = strtok(t, delim)) != NULL; ++i) {
           if (t != NULL)
                t = NULL;
+          /* check if we still got enough space in r, if not reallocate it
+           * with space for 5 more chars */
           if (i == len-2) {
-               len += 5;
-               if ( (r = realloc(r, sizeof(char *)*len)) == NULL ) {
+               len += sizeof(char)*5;
+               /* back up r */
+               rt = r;
+               /* reallocate the region r points to and assign a pointer to
+                * that region to r, if not successfull, clean up everything we
+                * ve allocated so far and return */
+               if ( (rt = realloc(r, sizeof(char *)*len)) == NULL ) {
+                    /* iterate over r and free up every entry */
+                    for (j=0; j <= i; ++j)
+                         free(r[j]);
                     free(r);
                     return NULL;
                }
+               /* assign the pointer to the reallocated region(rt) to r*/
+               r = rt;
           }
      }
+     /* reallocate r to the optimal size */
      if ( (r = realloc(r, sizeof(char *)*(i+1))) == NULL ) {
+          /* iterate over r and free up every entry */
+          for (j=0; j < i; ++j)
+               free(r[j]);
           free(r);
           return NULL;
      }
+     /* we do not need to NULL terminate the r, as strtok's last result was
+      * already NULL */
      return r;
 }
