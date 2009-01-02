@@ -51,26 +51,24 @@
  */
 typedef struct lpxpak{
      /**
-      * The Name of the element.
+      * \brief The Name of the element.
       *
       * This element is implemented as a null terminated C-String.
       */
      char *name;
      /**
-      * The length of the value.
+      * \brief The length of the value.
       *
       * This element holds the length of the data, the value pointer points
       * to.
       */
      size_t value_len;
      /**
-      * The Value.
-      *
-      * A pointer to the value - a value_len bytes long memory block.
+      * \brief A pointer to the value - a value_len bytes long memory block.
       */
      void *value;
      /**
-      * A pointer to the next element in the list.
+      * \brief A pointer to the next element in the list.
       */
      struct lpxpak *next;
 } lpxpak_t;
@@ -200,7 +198,7 @@ lpxpak_parse_path(const char *path);
  * Gets a pointer to an lpxpak_t object and free(2)s up all memory of that
  * object. If a NULL pointer was given, lpxpak_destroy_xpak will just return.
  *
- * \param pointer to the lpxpak_t object to be destroye'd.
+ * \param xpak pointer to the lpxpak_t object to be destroye'd.
  * 
  * \b Attention: Do not try to use a lpxpak_t object after destroying it or
  * unexpected things will happen.
