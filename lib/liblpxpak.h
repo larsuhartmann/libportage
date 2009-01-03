@@ -47,7 +47,7 @@
  * None of the Pointers in this struct will point to memory regions which are
  * used elsewhere by the lpxpak library.
  *
- * \sa lpxpak_destroy_xpak().
+ * \sa lpxpak_destroy_xpak()
  */
 typedef struct lpxpak{
      /**
@@ -94,10 +94,11 @@ typedef struct lpxpak{
  * - \c EINVAL The file either is no valid gentoo binary package or has an
  *   invalid xpak.
  * - \c EBUSY The xpak could not be fully read in.
- * - The lpxpak_parse_data() function may also fail and set errno for any of
- *   the errors specified for the routine malloc(3).
- * - The lpxpak_parse_data() function may also fail and set errno for any of
- *   the errors specified for the routine strdup(3).
+ * 
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine malloc(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine strdup(3).
  */
 lpxpak_t *
 lpxpak_parse_data(const void *data, size_t len);
@@ -119,14 +120,14 @@ lpxpak_parse_data(const void *data, size_t len);
  * - \c EINVAL The file either is no valid gentoo binary package or has an
  *   invalid xpak.
  * - \c EBUSY The xpak could not be fully read in.
- * - The lpxpak_parse_fd() function may also fail and set errno for any of the
- *   errors specified for the routine malloc(3).
- * - The lpxpak_parse_fd() function may also fail and set errno for any of the
- *   errors specified for the routine strdup(3).
- * - The lpxpak_parse_fd() function may also fail and set errno for any of the
- *   errors specified for the routine lseek(2).
- * - The lpxpak_parse_fd() function may also fail and set errno for any of the
- *   errors specified for the routine read(2).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine malloc(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine strdup(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine lseek(2).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine read(2).
  */
 lpxpak_t *
 lpxpak_parse_fd(int fd);
@@ -147,16 +148,16 @@ lpxpak_parse_fd(int fd);
  * - \c EINVAL The file either is no valid gentoo binary package or has an
  *   invalid xpak.
  * - \c EBUSY The xpak could not be fully read in.
- * - The lpxpak_parse_file() function may also fail and set errno for any of
- *   the errors specified for the routine malloc(3).
- * - The lpxpak_parse_file() function may also fail and set errno for any of
- *   the errors specified for the routine strdup(3).
- * - The lpxpak_parse_file() function may also fail and set errno for any of
- *   the errors specified for the routine lseek(2).
- * - The lpxpak_parse_file() function may also fail and set errno for any of
- *   the errors specified for the routine read(2).
- * - The lpxpak_parse_file() function may also fail and set errno for any of
- *   the errors specified for the routine fileno(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine malloc(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine strdup(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine lseek(2).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine read(2).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine fileno(3).
  */
 lpxpak_t *
 lpxpak_parse_file(FILE *file);

@@ -80,10 +80,7 @@ typedef uint32_t __lpxpak_int_t;
  * None of the Pointers in this struct will point to memory regions which are
  * used elsewhere by the lpxpak library.
  *
- * Some elements in this struct may be modified after being used by
- * __lpxpak_parse_data.
- *
- * \sa __lpxpak_destroy_index().
+ * \sa __lpxpak_destroy_index()
  */
 typedef struct __lpxpak_index{
      /**
@@ -105,7 +102,9 @@ typedef struct __lpxpak_index{
       * The Length needed to copy out the corresponding data block.
       */
      size_t len;
-     /** \brief A pointer to the next Element in the list. */
+     /**
+      * \brief A pointer to the next Element in the list.
+      */
      struct __lpxpak_index *next;
 } __lpxpak_index_t;
 
