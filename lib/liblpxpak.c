@@ -489,12 +489,9 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
                }
                tx = (lpxpak_t *)tx->next;
           }
-          /* allocate ti->name_len bytes on the heap, assign it to tx->name
-           * and copy ti->name_len bytes from ti->name to tx->name */
-          if ( (tx->name = strdup(ti->name)) == NULL) {
-               lpxpak_destroy_xpak(xpak);
-               return NULL;
-          }
+          /* assign ti->name to tx->name and set ti->name to NULL */
+          tx->name = ti->name;
+          ti->name = NULL;
 
           /* allocate ti->len bytes on the heap, assign it to tx->value, copy
            * ti->len data from data+offset to tx->value and null-terminate
