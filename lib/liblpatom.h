@@ -34,7 +34,26 @@
 
 #include <stdio.h>
 
-typedef enum {alpha, beta, pre, rc, no, p} lpatom_suf_t;
+/**
+ * suffix enum
+ *
+ * all valid suffixes for package atoms in the right order, so they can be
+ * compared directly to find out which one of two is the larger one.
+ */
+typedef enum {
+     /** _alpha */
+     alpha,
+     /** _beta */
+     beta,
+     /** _pre */
+     pre,
+     /** _rc */
+     rc,
+     /** no suffix */
+     no,
+     /** _p */
+     p
+} lpatom_suf_t;
 
 typedef struct {
      char *name;

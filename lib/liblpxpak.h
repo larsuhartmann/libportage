@@ -38,7 +38,7 @@
 #include <stdio.h>
 
 /**
- * \brief The lpxpak_t object.
+ * \brief The xpak data
  *
  * This is the data structure which holds all of the xpak's informations. It
  * is implemented as a single linked list. The Memory for an lpxpak_t object
