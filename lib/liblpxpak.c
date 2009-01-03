@@ -30,13 +30,9 @@
  */
 
 /**
- * \privatesection
- */
- 
-/**
- * Feature test macro for POSIX.1, POSIX.2, XPG4, SUSv2, SUSv3.
+ * \brief Feature test macro for POSIX.1, POSIX.2, XPG4, SUSv2, SUSv3.
  *
- * This makes shure, we have a Standard conformant environment.
+ * This makes sure, we have a Standard conformant environment.
  */
 #define _XOPEN_SOURCE   600
 
@@ -53,49 +49,33 @@
 #include <stdio.h>
 #include <string.h>
 
-/**
- * The Offset for the STOP String - calculated from SEEK_END.
- */
+/** \brief The Offset for the STOP String - calculated from SEEK_END. */
 #define __LPXPAK_STOP_OFFSET    4
-/**
- * The Length of the XPAK_OFFSET field in Bytes.
- */
+/** \brief The Length of the XPAK_OFFSET field in Bytes. */
 #define __LPXPAK_OFFSET_LEN         8
-/**
- * The Length of the INTRO String in Bytes.
- */
+/** \brief The Length of the INTRO String in Bytes. */
 #define __LPXPAK_INTRO_LEN      8
-/**
- * The Value the INTRO String should have.
- */
+/** \brief The Value the INTRO String should have. */
 #define __LPXPAK_INTRO          "XPAKPACK"
-/**
- * The Length of the OUTRO String in Bytes.
- */
+/** \brief The Length of the OUTRO String in Bytes. */
 #define __LPXPAK_OUTRO_LEN      8
-/**
- * The Value the OUTRO String should have.
- */
+/** \brief The Value the OUTRO String should have. */
 #define __LPXPAK_OUTRO          "XPAKSTOP"
-/**
- * The Length of the STOP String in Bytes
- */
+/** \brief The Length of the STOP String in Bytes  */
 #define __LPXPAK_STOP_LEN       4
-/**
- * The Value the STOP String should have.
- */
+/** \brief The Value the STOP String should have. */
 #define __LPXPAK_STOP           "STOP"
 
-/**
- * The Datatype for the offset/length values XPAK uses.
- */
+/** \brief The Datatype for the offset/length values XPAK uses. */
 typedef uint32_t __lpxpak_int_t;
 
 /**
- * The __lpxpak_index_t Object.
+ * \private
+ * \brief The xpak index Data.
  *
  * This is the Datastructure that holds the Index Data parsed by
- * __lpxpak_parse_index. It is implemented as a single linked list.
+ * __lpxpak_parse_index. It is implemented as a single linked list. The Memory
+ * for an lpxpak_t object can be freed with lpxpak_destroy_xpak()
  *
  * None of the Pointers in this struct will point to memory regions which are
  * used elsewhere by the lpxpak library.
@@ -103,54 +83,51 @@ typedef uint32_t __lpxpak_int_t;
  * Some elements in this struct may be modified after being used by
  * __lpxpak_parse_data.
  *
- * If you which to throw away this Struct, do so by using
- * __lpxpak_destroy_index().
- *
  * \sa __lpxpak_destroy_index().
  */
 typedef struct __lpxpak_index{
      /**
-      * The Name of the Element.
+      * \brief The Name of the Element.
       *
       * This Element is implemented as a null terminated C String.
       */
      char *name;
      /**
-      * The Offset of the Data.
+      * \brief The Offset of the Data.
       *
       * The Offset needed to find the corresponding data block, calculated
       * from the start of the data block.
       */
      size_t offset;
      /**
-      * The Length of the Data Block.
+      * \brief The Length of the Data Block.
       *
       * The Length needed to copy out the corresponding data block.
       */
      size_t len;
-     /**
-      * A pointer to the next Element in the list.
-      */
+     /** \brief A pointer to the next Element in the list. */
      struct __lpxpak_index *next;
 } __lpxpak_index_t;
 
 /**
- * Parses the Index block of an XPAK.
+ * \private
+ * \brief Parses the Index block of an XPAK.
  *
  * Gets a pointer to the index block of an xpak and the length of that index
  * block and returns and returns a pointer to an __lpxpak_index_t object with
- * the xpak index data. If an error occurred, NULL is returned and errno is
- * set to indicate the error.
+ * the xpak index data. If an error occurred, \c NULL is returned and errno is
+ * set to indicate the error. 
  *
- * The provided Index block will not be modified by this function.
+ * The provided Index data will not be modified by this function.
  *
- * \param data a pointer to the start of the index block.
+ * \param data a pointer to a memory segment which holds the index block.
  * 
  * \param len the length of the index block pointed to by data.
  *
  * \return a pointer to a __lpxpak_index_t structure which holds the parsed
- * index data or NULL if an error occured.
+ * index data or \c NULL if an error occured.
  *
+ * \sa __lpxpak_destroy_index()
  *
  * \b Errors:
  * 
@@ -161,72 +138,96 @@ static __lpxpak_index_t *
 __lpxpak_parse_index(const void *data, size_t len);
 
 /**
- * __lpxpak_parse_data: parses an data block according to the provided index
+ * \private
+ * \brief Parses an data block according to the provided index
  *
- * Gets a pointer to the data block of an xpak and a pointer to the index of
- * the same xpak as an __lpxpak_index_t struct and returns and returns an
- * pointer to an lpxpak_t object with the xpak data. If an error occurred,
- * NULL is returned and errno is set to indicate the error.
+ * Gets a pointer to the data block of an xpak and a pointer to the
+ * corresponding __lpxpak_index_t object and returns and returns a pointer to
+ * an lpxpak_t object with the xpak data. If an error occurred, \c NULL is
+ * returned and errno is set to indicate the error.
  *
- * PRIVATE: This is a private function and thus should not be called
- *          directly from outside the API, as the way this function works
- *          can be changed regularly.
+ * The provided __lpxpak_index_t may be modified by this function.
  *
- * Errors: 
- *         The __lpxpak_parse_data() function may fail and set errno for any
- *         of the errors specified for the routine malloc(3).
+ * \param data a pointer to the memory segment which holds the data block of
+ * the xpak.
  *
- *         The __lpxpak_parse_data() function may also fail and set errno for
- *         any of the errors specified for the routine strdup(3)
+ * \param index a pointer to the corresponding __lpxpak_index_t structure.
+ *
+ * \return a pointer to a lpxpak_t structure which holds the parsed xpak data
+ * or \c NULL if an error occured.
+ *
+ * \sa lpxpak_destroy_xpak()
+ *
+ * \b Errors:
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ *   the routine malloc(3).
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ *   the routine strdup(3).
  */
 static lpxpak_t *
 __lpxpak_parse_data(const void *data, __lpxpak_index_t *index);
 
 /**
- * __lpxpak_destroy_index: destroy an __lpxpak_index_t object
+ * \private
+ * \brief Destroy an __lpxpak_index_t object.
  *
- * Gets a pointer to an __lpxpak_index_t object and free(2)s up all memory of
- * that object. If a NULL pointer was given, __lpxpak_destroy_index will just
- * return.
+ * Gets a pointer to an __lpxpak_index_t object and frees up all memory of
+ * that object using free(3). If a \c NULL pointer was given,
+ * __lpxpak_destroy_index will just return.
  *
- * PRIVATE: This is a private function and thus should not be called directly
- *          from outside the API, as the way this function works can be
- *          changed regularly.
+ * \param index a pointer to the __lpxpak_index_t to be freed.
  *
- * ATTENTION: Do not try to use a destroyed __lpxpak_index_t object or
- *            unexpected things will happen
+ * \b Attention: Do not try to use a destroyed __lpxpak_index_t object or
+ * any thing could happen.
  */
 static void
 __lpxpak_destroy_index(__lpxpak_index_t *index);
 
 /**
- * __lpxpak_init_index: initialize an xpak object
+ * \private
+ * \brief Allocates and initialises a new __lpxpak_index_t struct.
  *
- * allocates and initializes a new __lpxpak_index_t object and returns a
- * pointer to it, if an error occured, NULL is returned and errno is set.
+ * Allocates a new __lpxpak_index_t object, sets all its values to 0 and all
+ * its pointers to \c NULL and returns a pointer to it, if an error occurs,
+ * \c NULL is returned and errno is set.
+ *
+ * The Memory for an __lpxpak_index_t object can be freed with
+ * __lpxpak_destroy_index().
+ *
+ * \return a pointer to a new __lpxpak_index_t struct or \c NULL if an error
+ * occured.
+ *
+ * \sa __lpxpak_destroy_index()
  * 
- * PRIVATE: This is a private function and thus should not be called directly
- *          from outside the API, as the way this function works can be
- *          changed regularly.
- * Errors: 
- *         The __lpxpak_init_index() function may fail and set errno for any
- *         of the errors specified for the routine malloc(3).
+ * \b Errors:
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ * the routine malloc(3).
  */
 static __lpxpak_index_t *
 __lpxpak_init_index(void);
 
 /**
- * __lpxpak_init: initialize an xpak object
+ * \private
+ * \brief Allocates and initializes a new lpxpak_t struct.
  *
- * allocates and initializes a new lpxpak_t object and returns a pointer to
- * it, if an error occured, NULL is returned and errno is set.
+ * Allocates a new xpak_t object, sets all its values to 0 and all
+ * its pointers to \c NULL and returns a pointer to it, if an error occurs,
+ * \c NULL is returned and errno is set.
+ *
+ * The Memory for an xpak_t object can be freed with lpxpak_destroy_xpak()
+ *
+ * \return a pointer to a new xpak_t struct or \c NULL if an error
+ * occured.
+ *
+ * \sa lpxpak_destroy_xpak()
  * 
- * PRIVATE: This is a private function and thus should not be called directly
- *          from outside the API, as the way this function works can be
- *          changed regularly.
- * Errors: 
- *         The __lpxpak_init() function may fail and set errno for any
- *         of the errors specified for the routine malloc(3).
+ * \b Errors:
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ * the routine malloc(3).
  */
 static lpxpak_t *
 __lpxpak_init(void);

@@ -42,7 +42,7 @@
  *
  * This is the data structure which holds all of the xpak's informations. It
  * is implemented as a single linked list. The Memory for an lpxpak_t object
- * can be freed with lpxpak_destroy_xpak()
+ * can be freed with lpxpak_destroy_xpak().
  *
  * None of the Pointers in this struct will point to memory regions which are
  * used elsewhere by the lpxpak library.
@@ -85,7 +85,7 @@ typedef struct lpxpak{
  * \param len the length of the data pointed to by data.
  * 
  * \return a pointer to a lpxpak_t data structure which holds the parsed xpak
- * data or NULL, if an error has occured.
+ * data or \c NULL, if an error has occured.
  * 
  * \sa lpxpak_t.
  *
@@ -198,10 +198,10 @@ lpxpak_parse_path(const char *path);
  * Gets a pointer to an lpxpak_t object and free(2)s up all memory of that
  * object. If a NULL pointer was given, lpxpak_destroy_xpak will just return.
  *
- * \param xpak pointer to the lpxpak_t object to be destroye'd.
+ * \param xpak pointer to the lpxpak_t object to be freed.
  * 
  * \b Attention: Do not try to use a lpxpak_t object after destroying it or
- * unexpected things will happen.
+ * any thing could happen.
  */
 void
 lpxpak_destroy_xpak(lpxpak_t *xpak);
