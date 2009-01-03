@@ -100,7 +100,7 @@ typedef struct lpxpak{
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine strdup(3).
  */
-lpxpak_t *
+lpxpak_t **
 lpxpak_parse_data(const void *data, size_t len);
 
 /**
@@ -129,7 +129,7 @@ lpxpak_parse_data(const void *data, size_t len);
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine read(2).
  */
-lpxpak_t *
+lpxpak_t **
 lpxpak_parse_fd(int fd);
 
 /**
@@ -159,7 +159,7 @@ lpxpak_parse_fd(int fd);
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine fileno(3).
  */
-lpxpak_t *
+lpxpak_t **
 lpxpak_parse_file(FILE *file);
 
 /**
@@ -190,7 +190,7 @@ lpxpak_parse_file(FILE *file);
  * - This function may also fail and set errno for any of
  *   the errors specified for the routine open(2).
  */
-lpxpak_t *
+lpxpak_t **
 lpxpak_parse_path(const char *path);
 
 /**
@@ -205,6 +205,6 @@ lpxpak_parse_path(const char *path);
  * any thing could happen.
  */
 void
-lpxpak_destroy_xpak(lpxpak_t *xpak);
+lpxpak_destroy_xpak(lpxpak_t **xpak);
 
 #endif

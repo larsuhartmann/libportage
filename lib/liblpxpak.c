@@ -133,7 +133,7 @@ typedef struct __lpxpak_index{
  * - This function may fail and set errno for any of the errors specified for
  *   the routine malloc(3).
  */
-static __lpxpak_index_t *
+static __lpxpak_index_t **
 __lpxpak_parse_index(const void *data, size_t len);
 
 /**
@@ -165,8 +165,8 @@ __lpxpak_parse_index(const void *data, size_t len);
  * - This function may fail and set errno for any of the errors specified for
  *   the routine strdup(3).
  */
-static lpxpak_t *
-__lpxpak_parse_data(const void *data, __lpxpak_index_t *index);
+static lpxpak_t **
+__lpxpak_parse_data(const void *data, __lpxpak_index_t **index);
 
 /**
  * \private
@@ -182,7 +182,7 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t *index);
  * any thing could happen.
  */
 static void
-__lpxpak_destroy_index(__lpxpak_index_t *index);
+__lpxpak_destroy_index(__lpxpak_index_t **index);
 
 /**
  * \private
@@ -205,8 +205,8 @@ __lpxpak_destroy_index(__lpxpak_index_t *index);
  * - This function may fail and set errno for any of the errors specified for
  * the routine malloc(3).
  */
-static __lpxpak_index_t *
-__lpxpak_init_index(void);
+static __lpxpak_index_t **
+__lpxpak_init_index(size_t size);
 
 /**
  * \private
@@ -228,20 +228,23 @@ __lpxpak_init_index(void);
  * - This function may fail and set errno for any of the errors specified for
  * the routine malloc(3).
  */
-static lpxpak_t *
-__lpxpak_init(void);
+static lpxpak_t **
+__lpxpak_init(size_t size);
 
-lpxpak_t *
+static __lpxpak_index_t **
+__lpxpak_resize_index(__lpxpak_index_t **index, size_t size);
+
+lpxpak_t **
 lpxpak_parse_data(const void *data, size_t len)
 {
      __lpxpak_int_t count = 0;
      __lpxpak_int_t index_len, data_len;
      const void *index_data = NULL;
      const void *data_data = NULL;
-     __lpxpak_index_t *index = NULL;
-     __lpxpak_index_t *ti;
+     __lpxpak_index_t **index = NULL;
      size_t tl = 0;
-     lpxpak_t *xpak = NULL;
+     lpxpak_t **xpak = NULL;
+     int i;
      
      /* check if the first __LPXPAK_INTRO_LEN bytes of the xpak data read
       * __LPXPAK_INTRO and the last __LPXPAK_OUTRO_LEN bytes of the xpak read
@@ -255,7 +258,6 @@ lpxpak_parse_data(const void *data, size_t len)
           return NULL;
      }
      count += __LPXPAK_INTRO_LEN;
-
      
      memcpy(&index_len, (uint8_t *)data+count, sizeof(__lpxpak_int_t));
      count+=sizeof(__lpxpak_int_t);
@@ -279,16 +281,12 @@ lpxpak_parse_data(const void *data, size_t len)
      /* check if the sum of all len entries of all data elements is equal to
       * data_len to make sure the len values are correct, if not, clean up the
       * heap, set errno and return.  */
-     ti = index;
-     while (ti!=NULL) {
-          tl += ti->len;
-          ti = ti->next;
-     }
+     for ( i=0; index[i] != NULL; ++i)
+          tl += index[i]->len;
      if (tl != data_len) {
           errno = EINVAL;
           return NULL;
      }
-     ti = NULL;
 
      /* get xpak-data  */
      xpak = __lpxpak_parse_data(data_data, index);
@@ -299,14 +297,14 @@ lpxpak_parse_data(const void *data, size_t len)
      return xpak;
 }
 
-lpxpak_t *
+lpxpak_t **
 lpxpak_parse_fd(int fd)
 {
      struct stat xpakstat;
      void *xpakdata = NULL;
      void *tmp = NULL;
      __lpxpak_int_t *xpakoffset = NULL;
-     lpxpak_t *xpak = NULL;
+     lpxpak_t **xpak = NULL;
      ssize_t rs;
 
      /* check if the given fd belongs to a file */
@@ -384,11 +382,11 @@ lpxpak_parse_fd(int fd)
      return xpak;
 }
 
-lpxpak_t *
+lpxpak_t **
 lpxpak_parse_file(FILE *file)
 {
      int fd;
-     lpxpak_t *xpak = NULL;
+     lpxpak_t **xpak = NULL;
 
      if ( (fd = fileno(file)) == -1 )
           return NULL;
@@ -397,11 +395,11 @@ lpxpak_parse_file(FILE *file)
      return xpak;
 }
 
-lpxpak_t *
+lpxpak_t **
 lpxpak_parse_path(const char *path)
 {
      int fd;
-     lpxpak_t *xpak = NULL;
+     lpxpak_t **xpak = NULL;
 
      if ( (fd = open(path, O_RDONLY)) == -1)
           return NULL;
@@ -410,32 +408,31 @@ lpxpak_parse_path(const char *path)
      return xpak;
 }
 
-static __lpxpak_index_t *
+static __lpxpak_index_t **
 __lpxpak_parse_index(const void *data, size_t len)
 {
-     __lpxpak_index_t *index = NULL;
-     __lpxpak_index_t *t = NULL;
+     __lpxpak_index_t **index = NULL;
+     __lpxpak_index_t **t = NULL;
      __lpxpak_int_t count = 0;
      __lpxpak_int_t name_len = 0;
+     size_t ilen = 100;
+     int i;
 
+     /* initialize a array of __lpxpak_index_t structs with len entries */
+     if ( (index = __lpxpak_init_index(ilen)) == NULL )
+          return NULL;
+     
      /* iterate over the index block  */
-     while (count < len) {
-          /* check if index is initialized, if not, allocate indexsize bytes
-           * on the heap and assign it to index and t, otherwise assign that
-           * memory to t->next and t->next to t */
-          if (index == NULL) {
-               if ( (index = __lpxpak_init_index()) == NULL)
-                    return NULL;
-               t = index;
-          }
-          else {
-               if ( (t->next = __lpxpak_init_index()) == NULL) {
+     for ( i=0; count < len; ++i) {
+          if ( i == ilen-1 ) {
+               ilen += 50;
+               if ( (t = __lpxpak_resize_index(index, ilen)) == NULL) {
                     __lpxpak_destroy_index(index);
                     return NULL;
                }
-               t = t->next;
+               index = t;
+               t = NULL;
           }
-
           /* read name_len from data and increase the counter */
           name_len = *((__lpxpak_int_t *)((uint8_t *)data+count));
           name_len = ntohl(name_len);
@@ -444,124 +441,164 @@ __lpxpak_parse_index(const void *data, size_t len)
           /* allocate name_len+1 bytes on the heap, assign it to t->name, read
            * name_len bytes from data into t->name, apply name_len+1 to
            * t->name_len, and increase the counter by name_len bytes */
-          if ( (t->name = malloc((size_t)name_len+1)) == NULL ) {
+          if ( (index[i]->name = malloc((size_t)name_len+1)) == NULL ) {
                __lpxpak_destroy_index(index);
                return NULL;
           }
-          memcpy(t->name, (uint8_t *)data+count, name_len);
-          (t->name)[name_len] = '\0';
+          memcpy(index[i]->name, (uint8_t *)data+count, name_len);
+          (index[i]->name)[name_len] = '\0';
           count += name_len;
           
           /* read t->offset from data in local byte order and increase
            * counter */
-          t->offset = *((__lpxpak_int_t *)((uint8_t *)data+count));
-          t->offset = ntohl(t->offset);
+          index[i]->offset = *((__lpxpak_int_t *)((uint8_t *)data+count));
+          index[i]->offset = ntohl(index[i]->offset);
           count += sizeof(__lpxpak_int_t);
 
           /* read t->len from data in local byte order and increase counter */
-          t->len = *((__lpxpak_int_t *)((uint8_t *)data+count));
-          t->len = htonl(t->len);
+          index[i]->len = *((__lpxpak_int_t *)((uint8_t *)data+count));
+          index[i]->len = htonl(index[i]->len);
           count += sizeof(__lpxpak_int_t);
      }
+     if ( (t = __lpxpak_resize_index(index, i)) == NULL) {
+          __lpxpak_destroy_index(index);
+          return NULL;
+     }
+     index = t;
      return index;
 }
 
-static lpxpak_t *
-__lpxpak_parse_data(const void *data, __lpxpak_index_t *index)
+static lpxpak_t **
+__lpxpak_parse_data(const void *data, __lpxpak_index_t **index)
 {
-     __lpxpak_index_t *ti = NULL;
-     lpxpak_t *xpak = NULL;
-     lpxpak_t *tx = NULL;
+     lpxpak_t **xpak = NULL;
+     int i, len;
 
+     for ( i=0; index[i] != NULL; ++i )
+          ;
+     len = i;
+
+     if ( (xpak = __lpxpak_init(len)) == NULL )
+          return NULL;
+     
      /* operate over all index elements */
-     for (ti = index; ti->next != NULL; ti = ti->next) {
-          /* check if xpak is initialized, if not, allocate xpaksize bytes
-           * on the heap and assign it to xpak and tx, otherwise assign that
-           * memory to tx->next and tx->next to tx */
-          if (xpak == NULL) {
-               if ( (xpak = __lpxpak_init()) == NULL)
-                    return NULL;
-               tx=xpak;
-          } else {
-               if ( (tx->next = __lpxpak_init()) == NULL) {
-                    lpxpak_destroy_xpak(xpak);
-                    return NULL;
-               }
-               tx = (lpxpak_t *)tx->next;
-          }
+     for ( i=0; i < len; ++i ) {
           /* assign ti->name to tx->name and set ti->name to NULL */
-          tx->name = ti->name;
-          ti->name = NULL;
+          xpak[i]->name = index[i]->name;
+          index[i]->name = NULL;
 
           /* allocate ti->len bytes on the heap, assign it to tx->value, copy
            * ti->len data from data+offset to tx->value and null-terminate
            * tx->value  */
-          if ( (tx->value = lputil_memdup((uint8_t *)data+ti->offset, ti->len))
-               == NULL) {
+          if ( (xpak[i]->value = lputil_memdup(
+              (uint8_t *)data+index[i]->offset, index[i]->len)) == NULL) {
                lpxpak_destroy_xpak(xpak);
                return NULL;
           }
-          tx->value_len = ti->len;
+          xpak[i]->value_len = index[i]->len;
      }
      return xpak;
 }
 
 
 static void
-__lpxpak_destroy_index(__lpxpak_index_t *index)
+__lpxpak_destroy_index(__lpxpak_index_t **index)
 {
-     __lpxpak_index_t *t = NULL;
+     int i;
 
-     t=index;
-
-     /* iterate over the whole index and free(2) every single object */
-     while ( index != NULL ) {
-          /* assign index->next to t, free up index and assign t to index */
-          t=index->next;
-          free(index->name);
-          free(index);
-          index=t;
+     for ( i=0; index[i] != NULL; ++i) {
+          free(index[i]->name);
      }
+     free(index[0]);
+     free(index);
      return;
 }
 
 void
-lpxpak_destroy_xpak(lpxpak_t *xpak)
+lpxpak_destroy_xpak(lpxpak_t **xpak)
 {
-     lpxpak_t *t = NULL;
+     int i;
+     
+     if (xpak == NULL)
+          return;
 
-     /* iterate over the whole index and free(2) every single object */
-     while ( xpak != NULL ) {
-          /* assign xpak->next to t, free up xpak and assign t to xpak */
-          free((lpxpak_t *)xpak->name);
-          free((lpxpak_t *)xpak->value);
-          t=(lpxpak_t *)xpak->next;
-          free(xpak);
-          xpak=t;
+     for ( i=0; xpak[i] != NULL; ++i) {
+          free(xpak[i]->name);
+          free(xpak[i]->value);
      }
+     free(xpak[0]);
+     free(xpak);
      return;
 }
 
-static __lpxpak_index_t *
-__lpxpak_init_index(void)
+static __lpxpak_index_t **
+__lpxpak_init_index(size_t size)
 {
-     __lpxpak_index_t *index;
-     if ( (index = malloc(sizeof(__lpxpak_index_t))) == NULL )
+     __lpxpak_index_t **index;
+     __lpxpak_index_t *mem;
+     int i;
+
+     if ( (index = malloc(sizeof(__lpxpak_index_t *)*(size+1))) == NULL )
           return NULL;
-     index->name = NULL;
-     index->next = NULL;
+     if ( (mem = malloc(sizeof(__lpxpak_index_t)*size)) == NULL) {
+          free(index);
+          return NULL;
+     }
+     for ( i=0; i < size; ++i ) {
+          index[i] = mem+i;
+          index[i]->name = NULL;
+          index[i]->next = NULL;
+          index[i]->len = 0;
+          index[i]->offset = 0;
+     }
+     index[size] = NULL;
      return index;
 }
 
-static lpxpak_t *
-__lpxpak_init(void)
+static lpxpak_t **
+__lpxpak_init(size_t size)
 {
-     lpxpak_t *xpak;
-     if ( (xpak = malloc(sizeof(lpxpak_t))) == NULL)
+     lpxpak_t **xpak;
+     lpxpak_t *mem;
+     int i;
+     
+     if ( (xpak = malloc(sizeof(lpxpak_t *)*(size+1))) == NULL )
           return NULL;
-     xpak->name = NULL;
-     xpak->value_len = 0;
-     xpak->value = NULL;
-     xpak->next = NULL;
+     if ( (mem = malloc(sizeof(lpxpak_t)*size)) == NULL ) {
+          free(xpak);
+          return NULL;
+     }
+     for ( i=0; i<size; ++i) {
+          xpak[i] = mem+i;
+          xpak[i]->name = NULL;
+          xpak[i]->value = NULL;
+          xpak[i]->value_len = 0;
+     }
+     xpak[size] = NULL;
      return xpak;
+}
+
+static __lpxpak_index_t **
+__lpxpak_resize_index(__lpxpak_index_t **index, size_t size)
+{
+     __lpxpak_index_t **tindex = NULL;
+     __lpxpak_index_t *t = NULL;
+     int i;
+     int len;
+     
+     for (i = 0; index[i] != NULL; ++i)
+          ;
+     len = i;
+     
+     if ( (tindex = realloc(index, sizeof(__lpxpak_index_t *)*(size+1)))
+         == NULL)
+          return NULL;
+     index = tindex;
+     if ( (t = realloc(index[0], sizeof(__lpxpak_index_t)*size)) == NULL)
+          return NULL;
+     for ( i=0; i < size; ++i) {
+          index[i] = t+i;
+     }
+     index[size] = NULL;
+     return index;
 }
