@@ -475,17 +475,23 @@ static lpxpak_t **
 __lpxpak_parse_data(const void *data, __lpxpak_index_t **index)
 {
      lpxpak_t **xpak = NULL;
-     int i, len;
+     int i, isize, dlen = 0;
+     void *tdata;
 
      for ( i=0; index[i] != NULL; ++i )
-          ;
-     len = i;
+          dlen += index[i]->len;
+     isize = i;
 
-     if ( (xpak = __lpxpak_init(len)) == NULL )
+     if ( (xpak = __lpxpak_init(isize)) == NULL )
           return NULL;
+
+     if ( (tdata = lputil_memdup(data, dlen)) == NULL ) {
+          lpxpak_destroy_xpak(xpak);
+          return NULL;
+     }
      
      /* operate over all index elements */
-     for ( i=0; i < len; ++i ) {
+     for ( i=0; i < isize; ++i ) {
           /* assign ti->name to tx->name and set ti->name to NULL */
           xpak[i]->name = index[i]->name;
           index[i]->name = NULL;
@@ -493,11 +499,7 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t **index)
           /* allocate ti->len bytes on the heap, assign it to tx->value, copy
            * ti->len data from data+offset to tx->value and null-terminate
            * tx->value  */
-          if ( (xpak[i]->value = lputil_memdup(
-              (uint8_t *)data+index[i]->offset, index[i]->len)) == NULL) {
-               lpxpak_destroy_xpak(xpak);
-               return NULL;
-          }
+          xpak[i]->value = (uint8_t*)tdata+index[i]->offset;
           xpak[i]->value_len = index[i]->len;
      }
      return xpak;
@@ -531,8 +533,8 @@ lpxpak_destroy_xpak(lpxpak_t **xpak)
 
      for ( i=0; xpak[i] != NULL; ++i ) {
           free(xpak[i]->name);
-          free(xpak[i]->value);
      }
+     free(xpak[0]->value);
      free(xpak[0]);
      free(xpak);
      return;
