@@ -239,10 +239,11 @@ __lpxpak_init(size_t size);
  * is \c NULL, a new array with the size \c size is returned. If an error
  * occurs, \c NULL is returned and errno is set to indicate the error.
  *
+ * \param index a \c NULL terminated array of lpxpak_index_t structures which
+ * is to be resized
  * \param size the new size.
  * 
- * \return a \c NULL terminated array of lpxpak_t structures which hold the
- * parsed xpak data or \c NULL if an error occured.
+ * \return the resized array or \c NULL if an error occured.
  */
 static __lpxpak_index_t **
 __lpxpak_resize_index(__lpxpak_index_t **index, size_t size);
