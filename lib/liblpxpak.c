@@ -551,6 +551,9 @@ __lpxpak_init_index(size_t size)
           free(index);
           return NULL;
      }
+     /* zero out the memory region pointed to by mem - this is far more
+      * effective compared to manually setting each element of each struct to
+      * zero / NULL. */
      memset(mem, '\0', sizeof(__lpxpak_index_t)*size);
      for ( i=0; i < size; ++i ) {
           index[i] = mem+i;
@@ -572,6 +575,9 @@ __lpxpak_init(size_t size)
           free(xpak);
           return NULL;
      }
+     /* zero out the memory region pointed to by mem - this is far more
+      * effective compared to manually setting each element of each struct to
+      * zero / NULL. */
      memset(mem, '\0', sizeof(lpxpak_t)*size);
      for ( i=0; i<size; ++i) {
           xpak[i] = mem+i;
@@ -607,6 +613,9 @@ __lpxpak_resize_index(__lpxpak_index_t **index, size_t size)
      /* set values and pointers to \c 0 or \c NULL if the new size is greater
       * than the old */
      if ( len < size )
+          /* zero out the memory region pointed to by index[0]+len - this is
+           * far more effective compared to manually setting each element of
+           * each struct to zero / NULL. */
           memset(index[0]+len, '\0', (size-len-1)*sizeof(__lpxpak_index_t));
      index[size] = NULL;
      return index;
