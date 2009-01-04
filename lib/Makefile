@@ -1,4 +1,4 @@
-CC = cc
+CC = icc
 LS = ${CC}
 
 check-syntax:

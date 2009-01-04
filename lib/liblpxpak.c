@@ -182,7 +182,7 @@ __lpxpak_destroy_index(__lpxpak_index_t **index);
  * \private \brief Allocates and initialises a new \c NULL terminated array of
  * pointers to __lpxpak_index_t structures with the length \c size.
  *
- * This function sets all values of the returned structures to 0 and all
+ * This function sets all values of the returned structures to \c 0 and all
  * pointers to \c NULL. If an error occurs, \c NULL is returned and errno is
  * set.
  *
@@ -209,7 +209,7 @@ __lpxpak_init_index(size_t size);
  * \private \brief Allocates and initialises a new \c NULL terminated array of
  * pointers to lpxpak_t structures with the length \c size.
  *
- * This function sets all values of the returned structures to 0 and all
+ * This function sets all values of the returned structures to \c 0 and all
  * pointers to \c NULL. If an error occurs, \c NULL is returned and errno is
  * set.
  *
@@ -235,9 +235,11 @@ __lpxpak_init(size_t size);
  * resize a \c NULL terminated array of pointers to __lpxpak_index_t structures.
  *
  * resizes the array and frees all unused structs if the new size is lower, or
- * allocate more space for structs if the size is higher. If the given pointer
- * is \c NULL, a new array with the size \c size is returned. If an error
- * occurs, \c NULL is returned and errno is set to indicate the error.
+ * allocate more space for structs if the size is higher. If the new size is
+ * higher, the values and pointers of the newly allocated structs are set to
+ * \c 0 or \c NULL. If the given pointer is \c NULL, a new array with the size
+ * \c size is returned. If an error occurs, \c NULL is returned and errno is
+ * set to indicate the error.
  *
  * \param index a \c NULL terminated array of lpxpak_index_t structures which
  * is to be resized
@@ -549,11 +551,9 @@ __lpxpak_init_index(size_t size)
           free(index);
           return NULL;
      }
+     memset(mem, '\0', sizeof(__lpxpak_index_t)*size);
      for ( i=0; i < size; ++i ) {
           index[i] = mem+i;
-          index[i]->name = NULL;
-          index[i]->len = 0;
-          index[i]->offset = 0;
      }
      index[size] = NULL;
      return index;
@@ -572,11 +572,9 @@ __lpxpak_init(size_t size)
           free(xpak);
           return NULL;
      }
+     memset(mem, '\0', sizeof(lpxpak_t)*size);
      for ( i=0; i<size; ++i) {
           xpak[i] = mem+i;
-          xpak[i]->name = NULL;
-          xpak[i]->value = NULL;
-          xpak[i]->value_len = 0;
      }
      xpak[size] = NULL;
      return xpak;
@@ -606,6 +604,10 @@ __lpxpak_resize_index(__lpxpak_index_t **index, size_t size)
      for ( i=0; i < size; ++i) {
           index[i] = t+i;
      }
+     /* set values and pointers to \c 0 or \c NULL if the new size is greater
+      * than the old */
+     if ( len < size )
+          memset(index[0]+len, '\0', (size-len-1)*sizeof(__lpxpak_index_t));
      index[size] = NULL;
      return index;
 }
