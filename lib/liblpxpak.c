@@ -71,16 +71,13 @@ typedef uint32_t __lpxpak_int_t;
 
 /**
  * \private
- * \brief The xpak index Data.
+ * \brief A xpak index element.
  *
- * This is the Datastructure that holds the Index Data parsed by
- * __lpxpak_parse_index. It is implemented as a single linked list. The Memory
- * for an lpxpak_t object can be freed with lpxpak_destroy_xpak()
+ * This is the Datastructure that holds one element of the Index Data parsed
+ * by __lpxpak_parse_index.
  *
  * None of the Pointers in this struct will point to memory regions which are
  * used elsewhere by the lpxpak library.
- *
- * \sa __lpxpak_destroy_index()
  */
 typedef struct __lpxpak_index{
      /**
@@ -102,10 +99,6 @@ typedef struct __lpxpak_index{
       * The Length needed to copy out the corresponding data block.
       */
      size_t len;
-     /**
-      * \brief A pointer to the next Element in the list.
-      */
-     struct __lpxpak_index *next;
 } __lpxpak_index_t;
 
 /**
@@ -113,9 +106,9 @@ typedef struct __lpxpak_index{
  * \brief Parses the Index block of an XPAK.
  *
  * Gets a pointer to the index block of an xpak and the length of that index
- * block and returns and returns a pointer to an __lpxpak_index_t object with
- * the xpak index data. If an error occurred, \c NULL is returned and errno is
- * set to indicate the error. 
+ * block and returns and returns a \c NULL terminated array of pointers
+ * to__lpxpak_index_t structures with the xpak index data. If an error
+ * occurred, \c NULL is returned and errno is set to indicate the error.
  *
  * The provided Index data will not be modified by this function.
  *
@@ -123,8 +116,8 @@ typedef struct __lpxpak_index{
  * 
  * \param len the length of the index block pointed to by data.
  *
- * \return a pointer to a __lpxpak_index_t structure which holds the parsed
- * index data or \c NULL if an error occured.
+ * \return A \c NULL terminated aray of pointers to __lpxpak_index_t
+ * structures, which hold the parsed data or \c NULL if an error occured.
  *
  * \sa __lpxpak_destroy_index()
  *
@@ -140,9 +133,10 @@ __lpxpak_parse_index(const void *data, size_t len);
  * \private
  * \brief Parses an data block according to the provided index
  *
- * Gets a pointer to the data block of an xpak and a pointer to the
- * corresponding __lpxpak_index_t object and returns and returns a pointer to
- * an lpxpak_t object with the xpak data. If an error occurred, \c NULL is
+ * Gets a pointer to the data block of an xpak and a \c NULL terminated array
+ * of pointers to __lpxpak_index_t structures which hold the corresponding
+ * index data and returns and returns a \c NULL terminated array of pointers
+ * to lpxpak_t structures with the xpak data. If an error occurred, \c NULL is
  * returned and errno is set to indicate the error.
  *
  * The provided __lpxpak_index_t may be modified by this function.
@@ -150,10 +144,11 @@ __lpxpak_parse_index(const void *data, size_t len);
  * \param data a pointer to the memory segment which holds the data block of
  * the xpak.
  *
- * \param index a pointer to the corresponding __lpxpak_index_t structure.
+ * \param index a \c NULL terminated array of __lpxpak_index_t structures
+ * which hold the corresponding index data.
  *
- * \return a pointer to a lpxpak_t structure which holds the parsed xpak data
- * or \c NULL if an error occured.
+ * \return a \c NULL terminated array of __lpxpak_index_t structures which
+ * hold the parsed xpak data or \c NULL if an error occured.
  *
  * \sa lpxpak_destroy_xpak()
  *
@@ -169,34 +164,34 @@ static lpxpak_t **
 __lpxpak_parse_data(const void *data, __lpxpak_index_t **index);
 
 /**
- * \private
- * \brief Destroy an __lpxpak_index_t object.
+ * \private \brief Destroy an \c NULL terminated array of pointers to
+ * __lpxpak_index_t structures.
  *
- * Gets a pointer to an __lpxpak_index_t object and frees up all memory of
- * that object using free(3). If a \c NULL pointer was given,
- * __lpxpak_destroy_index will just return.
+ * frees up the array and all of the underlying structures plus the pointers
+ * they have using free(3). If a \c NULL pointer was given,
+ * __lpxpak_destroy_index() will just return.
  *
- * \param index a pointer to the __lpxpak_index_t to be freed.
+ * \param a \c NULL terminated array of pointers to __lpxpak_index_t structures.
  *
- * \b Attention: Do not try to use a destroyed __lpxpak_index_t object or
- * any thing could happen.
+ * \b Attention: Do not try to access the array after destroying it or
+ * anything can happen.
  */
 static void
 __lpxpak_destroy_index(__lpxpak_index_t **index);
 
 /**
- * \private
- * \brief Allocates and initialises a new __lpxpak_index_t struct.
+ * \private \brief Allocates and initialises a new \c NULL terminated array of
+ * pointers to __lpxpak_index_t structures with the length \c size.
  *
- * Allocates a new __lpxpak_index_t object, sets all its values to 0 and all
- * its pointers to \c NULL and returns a pointer to it, if an error occurs,
- * \c NULL is returned and errno is set.
+ * This function sets all values of the returned structures to 0 and all
+ * pointers to \c NULL. If an error occurs, \c NULL is returned and errno is
+ * set.
  *
- * The Memory for an __lpxpak_index_t object can be freed with
- * __lpxpak_destroy_index().
+ * The Memory for the returned array including all its members can be freed
+ * with __lpxpak_destroy_index().
  *
- * \return a pointer to a new __lpxpak_index_t struct or \c NULL if an error
- * occured.
+ * \return a \c NULL terminated array of __lpxpak_index_t structures which
+ * hold the parsed xpak data or \c NULL if an error occured.
  *
  * \sa __lpxpak_destroy_index()
  * 
@@ -208,18 +203,20 @@ __lpxpak_destroy_index(__lpxpak_index_t **index);
 static __lpxpak_index_t **
 __lpxpak_init_index(size_t size);
 
+
 /**
- * \private
- * \brief Allocates and initializes a new lpxpak_t struct.
+ * \private \brief Allocates and initialises a new \c NULL terminated array of
+ * pointers to lpxpak_t structures with the length \c size.
  *
- * Allocates a new xpak_t object, sets all its values to 0 and all
- * its pointers to \c NULL and returns a pointer to it, if an error occurs,
- * \c NULL is returned and errno is set.
+ * This function sets all values of the returned structures to 0 and all
+ * pointers to \c NULL. If an error occurs, \c NULL is returned and errno is
+ * set.
  *
- * The Memory for an xpak_t object can be freed with lpxpak_destroy_xpak()
+ * The Memory for the returned array including all its members can be freed
+ * with lpxpak_destroy_xpak().
  *
- * \return a pointer to a new xpak_t struct or \c NULL if an error
- * occured.
+ * \return a \c NULL terminated array of lpxpak_t structures which hold the
+ * parsed xpak data or \c NULL if an error occured.
  *
  * \sa lpxpak_destroy_xpak()
  * 
@@ -506,7 +503,9 @@ __lpxpak_destroy_index(__lpxpak_index_t **index)
 {
      int i;
 
-     for ( i=0; index[i] != NULL; ++i) {
+     if ( index == NULL )
+          return;
+     for ( i=0; index[i] != NULL; ++i ) {
           free(index[i]->name);
      }
      free(index[0]);
@@ -518,11 +517,13 @@ void
 lpxpak_destroy_xpak(lpxpak_t **xpak)
 {
      int i;
-     
-     if (xpak == NULL)
+
+     if ( xpak == NULL )
+          return;
+     if ( xpak == NULL )
           return;
 
-     for ( i=0; xpak[i] != NULL; ++i) {
+     for ( i=0; xpak[i] != NULL; ++i ) {
           free(xpak[i]->name);
           free(xpak[i]->value);
      }
@@ -547,7 +548,6 @@ __lpxpak_init_index(size_t size)
      for ( i=0; i < size; ++i ) {
           index[i] = mem+i;
           index[i]->name = NULL;
-          index[i]->next = NULL;
           index[i]->len = 0;
           index[i]->offset = 0;
      }

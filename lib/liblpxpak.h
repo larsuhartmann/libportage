@@ -38,16 +38,12 @@
 #include <stdio.h>
 
 /**
- * \brief The xpak data
+ * \brief A xpak element
  *
- * This is the data structure which holds all of the xpak's informations. It
- * is implemented as a single linked list. The Memory for an lpxpak_t object
- * can be freed with lpxpak_destroy_xpak().
+ * This is the data structure that holds one element of the xpak.
  *
  * None of the Pointers in this struct will point to memory regions which are
  * used elsewhere by the lpxpak library.
- *
- * \sa lpxpak_destroy_xpak()
  */
 typedef struct lpxpak{
      /**
@@ -67,27 +63,27 @@ typedef struct lpxpak{
       * \brief A pointer to the value - a value_len bytes long memory block.
       */
      void *value;
-     /**
-      * \brief A pointer to the next element in the list.
-      */
-     struct lpxpak *next;
 } lpxpak_t;
 
 /**
  * \brief Reads the xpak data out of a xpak binary blob.
  *
- * Gets the actual xpak-blob (see doc/xpak.txt) and returns a pointer to an
- * lpxpak object with its data. If an error occurs, NULL is returned and errno
- * is set to indicate the error.
+ * Gets the actual xpak-blob (see doc/xpak.txt) and returns a \c NULL
+ * terminated array of pointers to lpxpak structures which holds the parsed
+ * data. If an error occurs, NULL is returned and errno is set to indicate the
+ * error.
  *
- * \param data a constant void pointer.
+ * The returned array can be freed with lpxpak_destroy_xpak().
+ *
+ * \param a pointer to the start of a memory region which holds the xpak blob.
  * 
- * \param len the length of the data pointed to by data.
+ * \param len the length of the xpak pointed to by data.
  * 
- * \return a pointer to a lpxpak_t data structure which holds the parsed xpak
- * data or \c NULL, if an error has occured.
+ * \return a \c NULL terminated array of pointers to lpxpak_t structures which
+ * holds the parsed xpak data or \c NULL, if an error has occured.
  * 
- * \sa lpxpak_t.
+ * \sa lpxpak_t
+ * \sa lpxpak_destroy_xpak()
  *
  * \b Errors:
  * 
@@ -106,14 +102,20 @@ lpxpak_parse_data(const void *data, size_t len);
 /**
  * \brief Reads the xpak data out of a file-descriptor.
  *
- * Gets an file-descriptor (fd) for a Gentoo binary package and returns a
- * pointer to an lpxpak object with the xpak data. If an error occurs, NULL is
- * returned and errno is set to indicate the error.
+ * Gets an file-descriptor (fd) for a Gentoo binary package and returns a \c
+ * NULL terminated array of pointers to lpxpak structures which holds the
+ * parsed data. If an error occurs, NULL is returned and errno is set to
+ * indicate the error.
  *
+ * The returned array can be freed with lpxpak_destroy_xpak().
+ * 
  * \param fd a file descriptor with the gentoo binary package which needs to
  *        be opened in O_RDONLY mode.
- * \return a pointer to a lpxpak_t data structure which holds the parsed xpak
- *         data.
+ * \return a \c NULL terminated array of pointers to lpxpak_t structures which
+ * holds the parsed xpak data or \c NULL, if an error has occured.
+ *
+ * \sa lpxpak_t
+ * \sa lpxpak_destroy_xpak()
  *
  * \b Errors:
  * 
@@ -136,12 +138,21 @@ lpxpak_parse_fd(int fd);
  * \brief Reads the xpak data out of a FILE buffer.
  *
  * Gets a pointer to a FILE buffer for a Gentoo binary package and returns a
- * pointer to an lpxpak object with the xpak data. If an error occurs, NULL is
- * returned and errno is set to indicate the error.
+ * \c NULL terminated array of pointers to lpxpak structures which holds the
+ * parsed data. If an error occurs, NULL is returned and errno is set to
+ * indicate the error.
+ *
+ * The returned array can be freed with lpxpak_destroy_xpak().
  *
  * \param file a pointer to a FILE buffer with the gentoo binary package which
  *        needs to be opened in "r" mode.  \return a pointer to a lpxpak_t
  *        data structure which holds the parsed xpak data.
+ *        
+ * \return a \c NULL terminated array of pointers to lpxpak_t structures which
+ * holds the parsed xpak data or \c NULL, if an error has occured.
+ *
+ * \sa lpxpak_t
+ * \sa lpxpak_destroy_xpak()
  *
  * \b Errors:
  * 
@@ -165,14 +176,20 @@ lpxpak_parse_file(FILE *file);
 /**
  * \brief Reads the xpak data out of a Gentoo binary package.
  *
- * Gets an path to a Gentoo binary package and returns a pointer to an lpxpak
- * object with the xpak data. If an error occurs, NULL is returned and errno
- * is set to indicate the error.
+ * Gets an path to a Gentoo binary package and returns a \c NULL terminated
+ * array of pointers to lpxpak structures which holds the parsed data. If an
+ * error occurs, NULL is returned and errno is set to indicate the error.
+ *
+ * The returned array can be freed with lpxpak_destroy_xpak().
  * 
  * \param path Path to a gentoo binary package which needs to be
  *        readable by the current process.
- * \return a pointer to a lpxpak_t data structure which holds the parsed xpak
- *         data.
+ *
+ * \return a \c NULL terminated array of pointers to lpxpak_t structures which
+ * holds the parsed xpak data or \c NULL, if an error has occured.
+ *
+ * \sa lpxpak_t
+ * \sa lpxpak_destroy_xpak()
  * 
  * \b Errors:
  *
@@ -194,15 +211,17 @@ lpxpak_t **
 lpxpak_parse_path(const char *path);
 
 /**
- * \brief Destroy an xpak object.
+ * \brief Destroy an \c NULL terminated array of pointers to
+ * lpxpak_t structures.
  *
- * Gets a pointer to an lpxpak_t object and free(2)s up all memory of that
- * object. If a NULL pointer was given, lpxpak_destroy_xpak will just return.
+ * frees up the array and all of the underlying structures plus the pointers
+ * they have using free(3). If a \c NULL pointer was given,
+ * lpxpak_destroy_xpak() will just return.
  *
- * \param xpak pointer to the lpxpak_t object to be freed.
- * 
- * \b Attention: Do not try to use a lpxpak_t object after destroying it or
- * any thing could happen.
+ * \param a \c NULL terminated array of pointers to lpxpak_t structures.
+ *
+ * \b Attention: Do not try to access the array after destroying it or
+ * anything can happen.
  */
 void
 lpxpak_destroy_xpak(lpxpak_t **xpak);
