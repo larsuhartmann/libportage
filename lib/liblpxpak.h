@@ -75,8 +75,8 @@ typedef struct lpxpak{
  *
  * The returned array can be freed with lpxpak_destroy_xpak().
  *
- * \param a pointer to the start of a memory region which holds the xpak blob.
- * 
+ * \param data a pointer to the start of a memory region which holds the xpak
+ * blob.
  * \param len the length of the xpak pointed to by data.
  * 
  * \return a \c NULL terminated array of pointers to lpxpak_t structures which
@@ -218,7 +218,7 @@ lpxpak_parse_path(const char *path);
  * they have using free(3). If a \c NULL pointer was given,
  * lpxpak_destroy_xpak() will just return.
  *
- * \param a \c NULL terminated array of pointers to lpxpak_t structures.
+ * \param xpak a \c NULL terminated array of pointers to lpxpak_t structures.
  *
  * \b Attention: Do not try to access the array after destroying it or
  * anything can happen.

@@ -171,7 +171,7 @@ __lpxpak_parse_data(const void *data, __lpxpak_index_t **index);
  * they have using free(3). If a \c NULL pointer was given,
  * __lpxpak_destroy_index() will just return.
  *
- * \param a \c NULL terminated array of pointers to __lpxpak_index_t structures.
+ * \param index a \c NULL terminated array of pointers to __lpxpak_index_t structures.
  *
  * \b Attention: Do not try to access the array after destroying it or
  * anything can happen.
@@ -190,6 +190,8 @@ __lpxpak_destroy_index(__lpxpak_index_t **index);
  * The Memory for the returned array including all its members can be freed
  * with __lpxpak_destroy_index().
  *
+ * \param size the size of the requested array.
+ * 
  * \return a \c NULL terminated array of __lpxpak_index_t structures which
  * hold the parsed xpak data or \c NULL if an error occured.
  *
@@ -215,6 +217,8 @@ __lpxpak_init_index(size_t size);
  * The Memory for the returned array including all its members can be freed
  * with lpxpak_destroy_xpak().
  *
+ * \param size the size of the requested array.
+ *
  * \return a \c NULL terminated array of lpxpak_t structures which hold the
  * parsed xpak data or \c NULL if an error occured.
  *
@@ -228,6 +232,19 @@ __lpxpak_init_index(size_t size);
 static lpxpak_t **
 __lpxpak_init(size_t size);
 
+/**
+ * resize a \c NULL terminated array of pointers to __lpxpak_index_t structures.
+ *
+ * resizes the array and frees all unused structs if the new size is lower, or
+ * allocate more space for structs if the size is higher. If the given pointer
+ * is \c NULL, a new array with the size \c size is returned. If an error
+ * occurs, \c NULL is returned and errno is set to indicate the error.
+ *
+ * \param size the new size.
+ * 
+ * \return a \c NULL terminated array of lpxpak_t structures which hold the
+ * parsed xpak data or \c NULL if an error occured.
+ */
 static __lpxpak_index_t **
 __lpxpak_resize_index(__lpxpak_index_t **index, size_t size);
 
@@ -585,6 +602,9 @@ __lpxpak_resize_index(__lpxpak_index_t **index, size_t size)
      __lpxpak_index_t *t = NULL;
      int i;
      int len;
+
+     if ( index == NULL )
+          return __lpxpak_init_index(size);
      
      for (i = 0; index[i] != NULL; ++i)
           ;
