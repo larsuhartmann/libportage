@@ -46,7 +46,6 @@
 #include <unistd.h>
 #include <stdlib.h>
 #include <errno.h>
-#include <stdio.h>
 #include <string.h>
 
 /** \brief The Offset for the STOP String - calculated from SEEK_END. */
@@ -393,19 +392,6 @@ lpxpak_parse_fd(int fd)
      /* clear up allocated memory*/
      free(tmp);
      free(xpakdata);
-     return xpak;
-}
-
-lpxpak_t **
-lpxpak_parse_file(FILE *file)
-{
-     int fd;
-     lpxpak_t **xpak = NULL;
-
-     if ( (fd = fileno(file)) == -1 )
-          return NULL;
-     xpak = lpxpak_parse_fd(fd);
-     close(fd);
      return xpak;
 }
 

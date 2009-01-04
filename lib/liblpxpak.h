@@ -35,7 +35,6 @@
 
 #include <sys/types.h>
 #include <stdint.h>
-#include <stdio.h>
 
 /**
  * \brief A xpak element
@@ -133,45 +132,6 @@ lpxpak_parse_data(const void *data, size_t len);
  */
 lpxpak_t **
 lpxpak_parse_fd(int fd);
-
-/**
- * \brief Reads the xpak data out of a FILE buffer.
- *
- * Gets a pointer to a FILE buffer for a Gentoo binary package and returns a
- * \c NULL terminated array of pointers to lpxpak structures which holds the
- * parsed data. If an error occurs, NULL is returned and errno is set to
- * indicate the error.
- *
- * The returned array can be freed with lpxpak_destroy_xpak().
- *
- * \param file a pointer to a FILE buffer with the gentoo binary package which
- *        needs to be opened in "r" mode.  \return a pointer to a lpxpak_t
- *        data structure which holds the parsed xpak data.
- *        
- * \return a \c NULL terminated array of pointers to lpxpak_t structures which
- * holds the parsed xpak data or \c NULL, if an error has occured.
- *
- * \sa lpxpak_t
- * \sa lpxpak_destroy_xpak()
- *
- * \b Errors:
- * 
- * - \c EINVAL The file either is no valid gentoo binary package or has an
- *   invalid xpak.
- * - \c EBUSY The xpak could not be fully read in.
- * - This function may also fail and set errno for any of the errors specified
- *   for the routine malloc(3).
- * - This function may also fail and set errno for any of the errors specified
- *   for the routine strdup(3).
- * - This function may also fail and set errno for any of the errors specified
- *   for the routine lseek(2).
- * - This function may also fail and set errno for any of the errors specified
- *   for the routine read(2).
- * - This function may also fail and set errno for any of the errors specified
- *   for the routine fileno(3).
- */
-lpxpak_t **
-lpxpak_parse_file(FILE *file);
 
 /**
  * \brief Reads the xpak data out of a Gentoo binary package.
