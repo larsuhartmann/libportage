@@ -191,8 +191,8 @@ __lpxpak_destroy_index(__lpxpak_index_t **index);
  *
  * \param size the size of the requested array.
  * 
- * \return a \c NULL terminated array of __lpxpak_index_t structures which
- * hold the parsed xpak data or \c NULL if an error occured.
+ * \return a \c NULL terminated array of __lpxpak_index_t or \c NULL if an
+ * error occured.
  *
  * \sa __lpxpak_destroy_index()
  * 
@@ -218,8 +218,8 @@ __lpxpak_init_index(size_t size);
  *
  * \param size the size of the requested array.
  *
- * \return a \c NULL terminated array of lpxpak_t structures which hold the
- * parsed xpak data or \c NULL if an error occured.
+ * \return a \c NULL terminated array of lpxpak_t structures or \c NULL if an
+ * error occured.
  *
  * \sa lpxpak_destroy_xpak()
  * 
