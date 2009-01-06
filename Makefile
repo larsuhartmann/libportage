@@ -1,10 +1,12 @@
-CC = cc
+CC = icc
 LS = ${CC}
 DX = doxygen
 
 check-syntax:
 	${CC} -o nul -Wall -S ${CHK_SOURCES}
 
-doxydoc:
-	${DX} -d Doxyfile
+devdoc:
+	${DX} doxygen/dev-doc
 
+apidoc:
+	${DX} doxygen/api-doc
