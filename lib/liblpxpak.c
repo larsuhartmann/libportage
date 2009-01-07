@@ -350,7 +350,7 @@ lpxpak_parse_fd(int fd)
      if ( rs != __LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t) ){
           
           free(tmp);
-          einval = EBUSY;
+          errno = EBUSY;
           return NULL;
      }
      
@@ -363,7 +363,6 @@ lpxpak_parse_fd(int fd)
           errno = EINVAL;
           return NULL;
      }
-
      /* assign a pointer to the xpak offset data to xpakoffset and convert it
       * to local byte order */
      xpakoffset = (__lpxpak_int_t *)tmp;
