@@ -129,6 +129,69 @@ static __lpxpak_index_t **
 __lpxpak_parse_index(const void *data, size_t len);
 
 /**
+ * \private \brief Allocates and initialises a new \c NULL terminated array of
+ * pointers to __lpxpak_index_t structures with the length \c size.
+ *
+ * This function sets all values of the returned structures to \c 0 and all
+ * pointers to \c NULL. If an error occurs, \c NULL is returned and errno is
+ * set.
+ *
+ * The Memory for the returned array including all its members can be freed
+ * with __lpxpak_destroy_index().
+ *
+ * \param size the size of the requested array.
+ * 
+ * \return a \c NULL terminated array of __lpxpak_index_t or \c NULL if an
+ * error occured.
+ *
+ * \sa __lpxpak_destroy_index()
+ * 
+ * \b Errors:
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ * the routine malloc(3).
+ */
+static __lpxpak_index_t **
+__lpxpak_init_index(size_t size);
+
+/**
+ * resize a \c NULL terminated array of pointers to __lpxpak_index_t
+ * structures.
+ *
+ * resizes the array and frees all unused structs if the new size is lower, or
+ * allocate more space for structs if the size is higher. If the new size is
+ * higher, the values and pointers of the newly allocated structs are set to
+ * \c 0 or \c NULL. If the given pointer is \c NULL, a new array with the size
+ * \c size is returned. If an error occurs, \c NULL is returned and errno is
+ * set to indicate the error.
+ *
+ * \param index a \c NULL terminated array of lpxpak_index_t structures which
+ * is to be resized
+ * \param size the new size.
+ * 
+ * \return the resized array or \c NULL if an error occured.
+ */
+static __lpxpak_index_t **
+__lpxpak_resize_index(__lpxpak_index_t **index, size_t size);
+
+/**
+ * \private \brief Destroy an \c NULL terminated array of pointers to
+ * __lpxpak_index_t structures.
+ *
+ * frees up the array and all of the underlying structures plus the pointers
+ * they have using free(3). If a \c NULL pointer was given,
+ * __lpxpak_destroy_index() will just return.
+ *
+ * \param index a \c NULL terminated array of pointers to __lpxpak_index_t
+ * structures.
+ *
+ * \b Attention: Do not try to access the array after destroying it or
+ * anything can happen.
+ */
+static void
+__lpxpak_destroy_index(__lpxpak_index_t **index);
+
+/**
  * \private
  * \brief Parses an data block according to the provided index
  *
@@ -159,51 +222,9 @@ __lpxpak_parse_index(const void *data, size_t len);
  * - This function may fail and set errno for any of the errors specified for
  *   the routine strdup(3).
  */
+
 static lpxpak_t **
 __lpxpak_parse_data(const void *data, __lpxpak_index_t **index);
-
-/**
- * \private \brief Destroy an \c NULL terminated array of pointers to
- * __lpxpak_index_t structures.
- *
- * frees up the array and all of the underlying structures plus the pointers
- * they have using free(3). If a \c NULL pointer was given,
- * __lpxpak_destroy_index() will just return.
- *
- * \param index a \c NULL terminated array of pointers to __lpxpak_index_t structures.
- *
- * \b Attention: Do not try to access the array after destroying it or
- * anything can happen.
- */
-static void
-__lpxpak_destroy_index(__lpxpak_index_t **index);
-
-/**
- * \private \brief Allocates and initialises a new \c NULL terminated array of
- * pointers to __lpxpak_index_t structures with the length \c size.
- *
- * This function sets all values of the returned structures to \c 0 and all
- * pointers to \c NULL. If an error occurs, \c NULL is returned and errno is
- * set.
- *
- * The Memory for the returned array including all its members can be freed
- * with __lpxpak_destroy_index().
- *
- * \param size the size of the requested array.
- * 
- * \return a \c NULL terminated array of __lpxpak_index_t or \c NULL if an
- * error occured.
- *
- * \sa __lpxpak_destroy_index()
- * 
- * \b Errors:
- *
- * - This function may fail and set errno for any of the errors specified for
- * the routine malloc(3).
- */
-static __lpxpak_index_t **
-__lpxpak_init_index(size_t size);
-
 
 /**
  * \private \brief Allocates and initialises a new \c NULL terminated array of
@@ -231,28 +252,8 @@ __lpxpak_init_index(size_t size);
 static lpxpak_t **
 __lpxpak_init(size_t size);
 
-/**
- * resize a \c NULL terminated array of pointers to __lpxpak_index_t structures.
- *
- * resizes the array and frees all unused structs if the new size is lower, or
- * allocate more space for structs if the size is higher. If the new size is
- * higher, the values and pointers of the newly allocated structs are set to
- * \c 0 or \c NULL. If the given pointer is \c NULL, a new array with the size
- * \c size is returned. If an error occurs, \c NULL is returned and errno is
- * set to indicate the error.
- *
- * \param index a \c NULL terminated array of lpxpak_index_t structures which
- * is to be resized
- * \param size the new size.
- * 
- * \return the resized array or \c NULL if an error occured.
- */
-static __lpxpak_index_t **
-__lpxpak_resize_index(__lpxpak_index_t **index, size_t size);
-
 lpxpak_t **
-lpxpak_parse_data(const void *data, size_t len)
-{
+lpxpak_parse_data(const void *data, size_t len) {
      __lpxpak_int_t count = 0;
      __lpxpak_int_t index_len, data_len;
      const void *index_data = NULL;
@@ -476,73 +477,6 @@ __lpxpak_parse_index(const void *data, size_t len)
      return index;
 }
 
-static lpxpak_t **
-__lpxpak_parse_data(const void *data, __lpxpak_index_t **index)
-{
-     lpxpak_t **xpak = NULL;
-     int i, isize, dlen = 0;
-     void *tdata;
-
-     for ( i=0; index[i] != NULL; ++i )
-          dlen += index[i]->len;
-     isize = i;
-
-     if ( (xpak = __lpxpak_init(isize)) == NULL )
-          return NULL;
-
-     if ( (tdata = lputil_memdup(data, dlen)) == NULL ) {
-          lpxpak_destroy_xpak(xpak);
-          return NULL;
-     }
-     
-     /* operate over all index elements */
-     for ( i=0; i < isize; ++i ) {
-          /* assign ti->name to tx->name and set ti->name to NULL */
-          xpak[i]->name = index[i]->name;
-          index[i]->name = NULL;
-
-          /* allocate ti->len bytes on the heap, assign it to tx->value, copy
-           * ti->len data from data+offset to tx->value and null-terminate
-           * tx->value  */
-          xpak[i]->value = (uint8_t*)tdata+index[i]->offset;
-          xpak[i]->value_len = index[i]->len;
-     }
-     return xpak;
-}
-
-
-static void
-__lpxpak_destroy_index(__lpxpak_index_t **index)
-{
-     int i;
-
-     if ( index == NULL )
-          return;
-     for ( i=0; index[i] != NULL; ++i )
-          free(index[i]->name);
-     free(index[0]);
-     free(index);
-     return;
-}
-
-void
-lpxpak_destroy_xpak(lpxpak_t **xpak)
-{
-     int i;
-
-     if ( xpak == NULL )
-          return;
-     if ( xpak == NULL )
-          return;
-
-     for ( i=0; xpak[i] != NULL; ++i )
-          free(xpak[i]->name);
-     free(xpak[0]->value);
-     free(xpak[0]);
-     free(xpak);
-     return;
-}
-
 static __lpxpak_index_t **
 __lpxpak_init_index(size_t size)
 {
@@ -564,30 +498,6 @@ __lpxpak_init_index(size_t size)
           index[i] = mem+i;
      index[size] = NULL;
      return index;
-}
-
-static lpxpak_t **
-__lpxpak_init(size_t size)
-{
-     lpxpak_t **xpak;
-     lpxpak_t *mem;
-     int i;
-     
-     if ( (xpak = malloc(sizeof(lpxpak_t *)*(size+1))) == NULL )
-          return NULL;
-     if ( (mem = malloc(sizeof(lpxpak_t)*size)) == NULL ) {
-          free(xpak);
-          return NULL;
-     }
-     /* zero out the memory region pointed to by mem - this is far more
-      * effective compared to manually setting each element of each struct to
-      * zero / NULL. */
-     memset(mem, '\0', sizeof(lpxpak_t)*size);
-     for ( i=0; i<size; ++i )
-          xpak[i] = mem+i;
-
-     xpak[size] = NULL;
-     return xpak;
 }
 
 static __lpxpak_index_t **
@@ -622,4 +532,94 @@ __lpxpak_resize_index(__lpxpak_index_t **index, size_t size)
           memset(index[0]+len, '\0', (size-len-1)*sizeof(__lpxpak_index_t));
      index[size] = NULL;
      return index;
+}
+
+static void
+__lpxpak_destroy_index(__lpxpak_index_t **index)
+{
+     int i;
+
+     if ( index == NULL )
+          return;
+     for ( i=0; index[i] != NULL; ++i )
+          free(index[i]->name);
+     free(index[0]);
+     free(index);
+     return;
+}
+
+static lpxpak_t **
+__lpxpak_parse_data(const void *data, __lpxpak_index_t **index)
+{
+     lpxpak_t **xpak = NULL;
+     int i, isize, dlen = 0;
+     void *tdata;
+
+     for ( i=0; index[i] != NULL; ++i )
+          dlen += index[i]->len;
+     isize = i;
+
+     if ( (xpak = __lpxpak_init(isize)) == NULL )
+          return NULL;
+
+     if ( (tdata = lputil_memdup(data, dlen)) == NULL ) {
+          lpxpak_destroy_xpak(xpak);
+          return NULL;
+     }
+     
+     /* operate over all index elements */
+     for ( i=0; i < isize; ++i ) {
+          /* assign ti->name to tx->name and set ti->name to NULL */
+          xpak[i]->name = index[i]->name;
+          index[i]->name = NULL;
+
+          /* allocate ti->len bytes on the heap, assign it to tx->value, copy
+           * ti->len data from data+offset to tx->value and null-terminate
+           * tx->value  */
+          xpak[i]->value = (uint8_t*)tdata+index[i]->offset;
+          xpak[i]->value_len = index[i]->len;
+     }
+     return xpak;
+}
+
+static lpxpak_t **
+__lpxpak_init(size_t size)
+{
+     lpxpak_t **xpak;
+     lpxpak_t *mem;
+     int i;
+     
+     if ( (xpak = malloc(sizeof(lpxpak_t *)*(size+1))) == NULL )
+          return NULL;
+     if ( (mem = malloc(sizeof(lpxpak_t)*size)) == NULL ) {
+          free(xpak);
+          return NULL;
+     }
+     /* zero out the memory region pointed to by mem - this is far more
+      * effective compared to manually setting each element of each struct to
+      * zero / NULL. */
+     memset(mem, '\0', sizeof(lpxpak_t)*size);
+     for ( i=0; i<size; ++i )
+          xpak[i] = mem+i;
+
+     xpak[size] = NULL;
+     return xpak;
+}
+
+void
+lpxpak_destroy_xpak(lpxpak_t **xpak)
+{
+     int i;
+
+     if ( xpak == NULL )
+          return;
+     if ( xpak == NULL )
+          return;
+
+     for ( i=0; xpak[i] != NULL; ++i )
+          free(xpak[i]->name);
+     free(xpak[0]->value);
+     free(xpak[0]);
+     free(xpak);
+     return;
 }
