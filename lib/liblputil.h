@@ -29,6 +29,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * \file liblputil.h
+ * \private
+ */
+
 #ifndef __LPUTIL
 #define __LPUTIL
 

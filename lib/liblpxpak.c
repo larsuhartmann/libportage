@@ -36,8 +36,8 @@
  */
 #define _XOPEN_SOURCE   600
 
-#include "liblpxpak.h"
-#include "liblputil.h"
+#include <liblpxpak.h>
+#include <liblputil.h>
 
 #include <sys/stat.h>
 #include <arpa/inet.h>
@@ -48,24 +48,42 @@
 #include <errno.h>
 #include <string.h>
 
-/** \brief The Offset for the STOP String - calculated from SEEK_END. */
+/**
+ * \brief The Offset for the STOP String - calculated from SEEK_END.
+ */
 #define __LPXPAK_STOP_OFFSET    4
-/** \brief The Length of the XPAK_OFFSET field in Bytes. */
+/**
+ * \brief The Length of the XPAK_OFFSET field in Bytes.
+ */
 #define __LPXPAK_OFFSET_LEN         8
-/** \brief The Length of the INTRO String in Bytes. */
+/**
+ * \brief The Length of the INTRO String in Bytes.
+ */
 #define __LPXPAK_INTRO_LEN      8
-/** \brief The Value the INTRO String should have. */
+/**
+ * \brief The Value the INTRO String should have.
+ */
 #define __LPXPAK_INTRO          "XPAKPACK"
-/** \brief The Length of the OUTRO String in Bytes. */
+/**
+ * \brief The Length of the OUTRO String in Bytes.
+ */
 #define __LPXPAK_OUTRO_LEN      8
-/** \brief The Value the OUTRO String should have. */
+/**
+ * \brief The Value the OUTRO String should have.
+ */
 #define __LPXPAK_OUTRO          "XPAKSTOP"
-/** \brief The Length of the STOP String in Bytes  */
+/**
+ * \brief The Length of the STOP String in Bytes 
+ */
 #define __LPXPAK_STOP_LEN       4
-/** \brief The Value the STOP String should have. */
+/**
+ * \brief The Value the STOP String should have.
+ */
 #define __LPXPAK_STOP           "STOP"
 
-/** \brief The Datatype for the offset/length values XPAK uses. */
+/**
+ * \brief The Datatype for the offset/length values XPAK uses.
+ */
 typedef uint32_t __lpxpak_int_t;
 
 /**

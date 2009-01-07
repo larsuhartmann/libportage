@@ -30,6 +30,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * \file liblpxpak.h
+ * \brief Provides functions to decode/encode/manipulate xpaks.
+ */
+
 #ifndef __LPXPAK
 #define __LPXPAK
 

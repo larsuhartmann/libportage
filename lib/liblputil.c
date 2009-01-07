@@ -31,7 +31,7 @@
 
 #define _XOPEN_SOURCE   600
 
-#include "liblputil.h"
+#include <liblputil.h>
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
