@@ -261,15 +261,15 @@ lpxpak_parse_data(const void *data, size_t len)
      size_t tl = 0;
      lpxpak_t **xpak = NULL;
      int i;
-     
+
      /* check if the first __LPXPAK_INTRO_LEN bytes of the xpak data read
       * __LPXPAK_INTRO and the last __LPXPAK_OUTRO_LEN bytes of the xpak read
       * __LPXPAK_OUTRO to make sure we have a valid xpak, if not, set errno
       * and return. Otherwise increase count which we will be using as an seek
       * counter */
-     if ((memcmp(data, __LPXPAK_INTRO, __LPXPAK_INTRO_LEN) != 0) ||
+     if ( (memcmp(data, __LPXPAK_INTRO, __LPXPAK_INTRO_LEN) != 0) ||
          (memcmp((uint8_t *)data+len-__LPXPAK_OUTRO_LEN, __LPXPAK_OUTRO,
-         __LPXPAK_OUTRO_LEN != 0))) {
+         __LPXPAK_OUTRO_LEN != 0)) ) {
           errno = EINVAL;
           return NULL;
      }
@@ -297,9 +297,9 @@ lpxpak_parse_data(const void *data, size_t len)
      /* check if the sum of all len entries of all data elements is equal to
       * data_len to make sure the len values are correct, if not, clean up the
       * heap, set errno and return.  */
-     for ( i=0; index[i] != NULL; ++i)
+     for ( i=0; index[i] != NULL; ++i )
           tl += index[i]->len;
-     if (tl != data_len) {
+     if ( tl != data_len ) {
           errno = EINVAL;
           return NULL;
      }
@@ -341,9 +341,15 @@ lpxpak_parse_fd(int fd)
       * string. */
      if ( (tmp = malloc(__LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t))) == NULL )
           return NULL;
-     rs = read(fd, tmp, __LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t)); 
-     if ( rs == -1 || rs != __LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t) ){
+     if ( (rs = read(fd, tmp, __LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t)))
+         == -1) {
           free(tmp);
+          return NULL;
+     }
+     if ( rs != __LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t) ){
+          
+          free(tmp);
+          einval = EBUSY;
           return NULL;
      }
      
@@ -375,16 +381,15 @@ lpxpak_parse_fd(int fd)
           free(tmp);
           return NULL;
      }
-     rs = read(fd, xpakdata, (size_t)*xpakoffset);
      /* check if a error occured while data was read in */
-     if ( rs == -1 ) {
+     if ( (rs = read(fd, xpakdata, (off_t)*xpakoffset)) == -1 ) {
           free(tmp);
           free(xpakdata);
           return NULL;
      }
      /* check if all of the data was read, if not, set errno and return with
       * failure  */
-     if ( rs != (size_t)*xpakoffset) {
+     if ( rs != (size_t)*xpakoffset ) {
           free(tmp);
           free(xpakdata);
           errno = EBUSY;
@@ -404,7 +409,7 @@ lpxpak_parse_path(const char *path)
      int fd;
      lpxpak_t **xpak = NULL;
 
-     if ( (fd = open(path, O_RDONLY)) == -1)
+     if ( (fd = open(path, O_RDONLY)) == -1 )
           return NULL;
      xpak = lpxpak_parse_fd(fd);
      close(fd);
@@ -513,9 +518,8 @@ __lpxpak_destroy_index(__lpxpak_index_t **index)
 
      if ( index == NULL )
           return;
-     for ( i=0; index[i] != NULL; ++i ) {
+     for ( i=0; index[i] != NULL; ++i )
           free(index[i]->name);
-     }
      free(index[0]);
      free(index);
      return;
@@ -531,9 +535,8 @@ lpxpak_destroy_xpak(lpxpak_t **xpak)
      if ( xpak == NULL )
           return;
 
-     for ( i=0; xpak[i] != NULL; ++i ) {
+     for ( i=0; xpak[i] != NULL; ++i )
           free(xpak[i]->name);
-     }
      free(xpak[0]->value);
      free(xpak[0]);
      free(xpak);
@@ -557,9 +560,8 @@ __lpxpak_init_index(size_t size)
       * effective compared to manually setting each element of each struct to
       * zero / NULL. */
      memset(mem, '\0', sizeof(__lpxpak_index_t)*size);
-     for ( i=0; i < size; ++i ) {
+     for ( i=0; i < size; ++i )
           index[i] = mem+i;
-     }
      index[size] = NULL;
      return index;
 }
@@ -581,9 +583,9 @@ __lpxpak_init(size_t size)
       * effective compared to manually setting each element of each struct to
       * zero / NULL. */
      memset(mem, '\0', sizeof(lpxpak_t)*size);
-     for ( i=0; i<size; ++i) {
+     for ( i=0; i<size; ++i )
           xpak[i] = mem+i;
-     }
+
      xpak[size] = NULL;
      return xpak;
 }
@@ -609,9 +611,8 @@ __lpxpak_resize_index(__lpxpak_index_t **index, size_t size)
      index = tindex;
      if ( (t = realloc(index[0], sizeof(__lpxpak_index_t)*size)) == NULL)
           return NULL;
-     for ( i=0; i < size; ++i) {
+     for ( i=0; i < size; ++i )
           index[i] = t+i;
-     }
      /* set values and pointers to \c 0 or \c NULL if the new size is greater
       * than the old */
      if ( len < size )
