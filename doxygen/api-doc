@@ -40,9 +40,9 @@ TYPEDEF_HIDES_STRUCT   = YES
 #---------------------------------------------------------------------------
 # Build related configuration options
 #---------------------------------------------------------------------------
-EXTRACT_ALL            = YES
-EXTRACT_PRIVATE        = YES
-EXTRACT_STATIC         = YES
+# EXTRACT_ALL            = YES
+EXTRACT_PRIVATE        = NO
+EXTRACT_STATIC         = NO
 EXTRACT_LOCAL_CLASSES  = YES
 EXTRACT_LOCAL_METHODS  = NO
 EXTRACT_ANON_NSPACES   = NO
@@ -83,8 +83,8 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 INPUT                  = lib/
 INPUT_ENCODING         = UTF-8
-FILE_PATTERNS          = liblpxpak.h \
-                         liblpatom.h
+FILE_PATTERNS          = *.c \
+                         *.h
 RECURSIVE              = NO
 EXCLUDE_SYMLINKS       = YES
 EXAMPLE_PATTERNS       = *

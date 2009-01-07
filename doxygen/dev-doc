@@ -4,7 +4,7 @@
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = LibPortage
 #PROJECT_NUMBER         = alpha
-OUTPUT_DIRECTORY       = doc/api/
+OUTPUT_DIRECTORY       = doc/dev-doc/
 CREATE_SUBDIRS         = YES
 OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
