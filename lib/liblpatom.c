@@ -29,6 +29,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * \brief Feature test macro for POSIX.1, POSIX.2, XPG4, SUSv2, SUSv3.
+ *
+ * This makes sure, we have a Standard conformant environment.
+ */
 #define _XOPEN_SOURCE   600
 
 #include <liblpatom.h>
@@ -41,12 +46,32 @@
 #include <string.h>
 #include <stdbool.h>
 
-#define __LP_ATOM_RE    "^(([A-Za-z0-9+_][A-Za-z0-9+_.-]*)/?([A-Za-z0-9+_-]*[A-Za-z+_-]|[A-Za-z+_][0-9]+))-([0-9]+([.][0-9]+)*[a-z]?)((_(alpha|beta|pre|rc|p)[0-9]*)?(-r[0-9]+)?)?$"
-#define __LP_SUF_RE     "((_(alpha|beta|pre|rc|p)[0-9]*)?(-r[0-9]+)?)$"
-#define __LP_VSUF_RE    "^_((alpha|beta|pre|rc|p)[0-9]*)"
-#define __LP_REL_RE     "-r([0-9]+)$"
-#define __LP_VER_RE     "([0-9]+([.][0-9]+)*)([a-z]?)"
-#define __LP_VER_SUF_RE "([a-z])$"
+/**
+ * \brief Regular expression for a package atom.
+ */
+#define LPATOM_RE         "^(([A-Za-z0-9+_][A-Za-z0-9+_.-]*)/?([A-Za-z0-9+_-]\
+*[A-Za-z+_-]|[A-Za-z+_][0-9]+))-([0-9]+([.][0-9]+)*[a-z]?)((_(alpha|beta|pre|\
+rc|p)[0-9]*)?(-r[0-9]+)?)?$"
+/**
+ * \brief Regular expression for a package suffix
+ */
+#define LPATOM_RE_SUF     "((_(alpha|beta|pre|rc|p)[0-9]*)?(-r[0-9]+)?)$"
+/**
+ * \brief Regular expression for a package suffix version
+ */
+#define LPATOM_RE_VSUF    "^_((alpha|beta|pre|rc|p)[0-9]*)"
+/**
+ * \brief Regular expression for a package release version
+ */
+#define LPATOM_RE_REL     "-r([0-9]+)$"
+/**
+ * \brief Regular expression for a Package version
+ */
+#define LPATOM_RE_VER     "([0-9]+([.][0-9]+)*)([a-z]?)"
+/**
+ * \brief Regular expression for a Version suffix
+ */
+#define LPATOM_RE_VER_SUF "([a-z])$"
 
 
 typedef struct {
@@ -55,19 +80,19 @@ typedef struct {
 } __lpatom_suf_t;
 
 static __lpatom_suf_t *
-__lpatom_parse_suffix(const char *s);
+lpatom_suffix_parse(const char *s);
 
 static void
-__lpatom_init_suffix(__lpatom_suf_t *suf);
+lpatom_suffix_init(__lpatom_suf_t *suf);
 
 static void
-__lpatom_init(lpatom_t *atom);
+lpatom_init(lpatom_t *atom);
 
 static void
-__lpatom_destroy_suffix(__lpatom_suf_t *suffix);
+lpatom_suffix_destroy(__lpatom_suf_t *suffix);
 
 static int *
-__lpatom_parse_version(const char *v);
+lpatom_version_parse(const char *v);
 
 /* 
  * lpatom_parse: Reads the atom data out of an packetname string
@@ -97,10 +122,10 @@ lpatom_parse(const char *s)
      /* get enough memory for the atom object and initialize it */
      if ( (atom = malloc(sizeof(lpatom_t))) == NULL)
           return NULL;
-     __lpatom_init(atom);
+     lpatom_init(atom);
 
      /* compile the __LP_ATOM_RE regexp */
-     regcomp (regexp, __LP_ATOM_RE, REG_EXTENDED);
+     regcomp (regexp, LPATOM_RE, REG_EXTENDED);
 
      /* check if this is a valid ebuild version atom by regexp matching */
      if (! (regexec(regexp, s, 5, regmatch, 0) == 0)) {
@@ -131,18 +156,18 @@ lpatom_parse(const char *s)
       * regexp (The package version to atom->ver */
      if ((ver = lputil_get_re_match(regmatch, count, s)) == NULL)
           return NULL;
-     regcomp(regexp, __LP_VER_RE, REG_EXTENDED);
+     regcomp(regexp, LPATOM_RE_VER, REG_EXTENDED);
      regexec(regexp, ver, 2, regmatch, 0);
      /* assign the first match of the previously applied regexp (The version
       * number without the suffix to ver, parse ver and assign the resulting
       * int-array to atom->ver */
      if ( (vers = lputil_get_re_match(regmatch, 1, ver)) == NULL)
           return NULL;
-     atom->ver = __lpatom_parse_version(vers);
+     atom->ver = lpatom_version_parse(vers);
      /* free up the regexp object */
      regfree(regexp);
 
-     regcomp(regexp, __LP_VER_SUF_RE, REG_EXTENDED);
+     regcomp(regexp, LPATOM_RE_VER_SUF, REG_EXTENDED);
      if( regexec(regexp, ver, 2, regmatch, 0) == 0) {
           if ( (ver = lputil_get_re_match(regmatch, 1, ver)) == NULL)
                return NULL;
@@ -151,7 +176,7 @@ lpatom_parse(const char *s)
 
       /* compile __LP_SUF_RE regexp, check if it matches and assign the
        * matched string to ssuf if so */
-     regcomp (regexp, __LP_SUF_RE, REG_EXTENDED);
+     regcomp (regexp, LPATOM_RE_SUF, REG_EXTENDED);
      if ( regexec(regexp, s, 5, regmatch, 0) == 0 ) {
           if ( (ssuf = lputil_get_re_match(regmatch, 1, s)) == NULL )
                return NULL;
@@ -161,13 +186,13 @@ lpatom_parse(const char *s)
      regfree(regexp);
 
      /* parse the suffix and assign the values to the atom object */
-     suf = __lpatom_parse_suffix(ssuf);
+     suf = lpatom_suffix_parse(ssuf);
      free(ssuf);
      atom->sufenum = suf->se;
      atom->rel = suf->rel;
 
      /* clean up the suf object  */
-     __lpatom_destroy_suffix(suf);
+     lpatom_suffix_destroy(suf);
      
      return atom;
 }
@@ -188,7 +213,7 @@ lpatom_parse(const char *s)
  *         for any of the errors specified for the routine malloc(3).
  */
 static __lpatom_suf_t *
-__lpatom_parse_suffix(const char *s)
+lpatom_suffix_parse(const char *s)
 {
      regmatch_t regmatch[2];
      regex_t regexp[1];
@@ -200,11 +225,11 @@ __lpatom_parse_suffix(const char *s)
      /* allocate memory for the suf object and initialize it */
      if ( (suf = malloc(sizeof(__lpatom_suf_t))) == NULL )
           return NULL;
-     __lpatom_init_suffix(suf);
+     lpatom_suffix_init(suf);
 
      /* compile the regexp with __LP_VSUF_RE, check if it matches and assign
       * the matched string (the suffix) to sufs */
-     regcomp (regexp, __LP_VSUF_RE, REG_EXTENDED);
+     regcomp (regexp, LPATOM_RE_VSUF, REG_EXTENDED);
      if (regexec(regexp, s, 2, regmatch, 0) == 0) {
           if ( (sufs = lputil_get_re_match(regmatch, 1, s)) == NULL)
                return NULL;
@@ -240,7 +265,7 @@ __lpatom_parse_suffix(const char *s)
 
      /* compile the regexp with __LP_REL_RE, check if it matches, convert the
       * matched string to decimal and assign it to suf->rel  */
-     regcomp(regexp, __LP_REL_RE, REG_EXTENDED);
+     regcomp(regexp, LPATOM_RE_REL, REG_EXTENDED);
      if (regexec(regexp, s, 2, regmatch, 0) == 0) {
           if ( (rs = lputil_get_re_match(regmatch, 1, s)) == NULL)
                return NULL;
@@ -263,7 +288,7 @@ __lpatom_parse_suffix(const char *s)
  *          changed regularly.
  */
 static void
-__lpatom_init_suffix(__lpatom_suf_t *suf)
+lpatom_suffix_init(__lpatom_suf_t *suf)
 {
      if (suf != NULL) {
           suf->se = no;
@@ -283,7 +308,7 @@ __lpatom_init_suffix(__lpatom_suf_t *suf)
  *          changed regularly.
  */
 static void
-__lpatom_init(lpatom_t *atom)
+lpatom_init(lpatom_t *atom)
 {
      if(atom != NULL) {
           atom->name = NULL;
@@ -312,7 +337,7 @@ __lpatom_init(lpatom_t *atom)
  *            unexpected things will happen
  */
 static void
-__lpatom_destroy_suffix(__lpatom_suf_t *suffix)
+lpatom_suffix_destroy(__lpatom_suf_t *suffix)
 {
      if (suffix != NULL ){
           free(suffix);
@@ -357,7 +382,7 @@ lpatom_destroy(lpatom_t *atom)
  *         for any of the errors specified for the routine malloc(3).
  */
 static int *
-__lpatom_parse_version(const char *v)
+lpatom_version_parse(const char *v)
 {
      char **p;
      int *r, i, len=10;
@@ -471,7 +496,7 @@ char *
 lpatom_get_qname(const lpatom_t *atom)
 {
      char *cat, *name, *r;
-     size_t len;
+     size_t len = 0;
      if (atom->cat != NULL) {
           len = strlen(atom->cat);
           if ( (cat = malloc(sizeof(char)*(len+2))) == NULL )
