@@ -29,6 +29,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * \file liblpatom.h
+ * \brief Functions to encode/decode/parse version atoms.
+ */
+
 #ifndef __LPATOM
 #define __LPATOM
 
@@ -41,20 +46,37 @@
  * compared directly to find out which one of two is the larger one.
  */
 typedef enum {
-     /** _alpha */
+     /**
+      * _alpha
+      */
      alpha,
-     /** _beta */
+     /**
+      * _beta
+      */
      beta,
-     /** _pre */
+     /**
+      * _pre
+      */
      pre,
-     /** _rc */
+     /**
+      * _rc
+      */
      rc,
-     /** no suffix */
+     /**
+      * no suffix
+      */
      no,
-     /** _p */
+     /**
+      * _p
+      */
      p
 } lpatom_suf_t;
 
+/**
+ * \brief The atom struct
+ *
+ * This is the data structure that holds the parsed data of a version atom.
+ */
 typedef struct {
      char *name;
      char *cat;
@@ -65,7 +87,7 @@ typedef struct {
      int rel;
 } lpatom_t;
 
-/* 
+/*
  * lpatom_parse: Reads the atom data out of an packetname string
  *
  * Gets an version string and returns an pointer to an lpatom_t struct. If an

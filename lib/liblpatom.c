@@ -246,7 +246,6 @@ __lpatom_parse_suffix(const char *s)
                return NULL;
           suf->rel = atoi(rs);
      }
-
      /* clean up */
      regfree(regexp);
      free(rs);
