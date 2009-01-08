@@ -1,5 +1,10 @@
 2009-01-08  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* lib/liblputil.h (lputil_substr): renamed parameter oes to off
+	and oe to len
+
+	* lib/liblputil.h: added comments
+
 	* lib/liblpatom.h: added comments
 
 	* Changelog: started logging to a Changelog

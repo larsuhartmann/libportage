@@ -31,9 +31,8 @@
 
 /**
  * \file liblputil.h
- * \private
+ * \brief Small helper Functions.
  */
-
 #ifndef __LPUTIL
 #define __LPUTIL
 
@@ -59,9 +58,7 @@
  *
  * \b Errors:
  *
- * - \c EINVAL one or both of the given pointers was \c NULL
- * - This function may also fail and set errno for any of the errors specified
- *   for the routine  lputil_substr().
+ * - \c EINVAL one or both of the given pointers are \c NULL
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine malloc(3)
  */
@@ -71,9 +68,9 @@ lputil_get_re_match(const regmatch_t *match, int n, const char *s);
 /**
  * Copy substring from a string.
  *
- * Copies a substring starting at os and ending at oe out of a string s and
- * returns it. The memory for the returned String is obtained by malloc(3) and
- * can be freed with free(3).
+ * Copies a substring with the length len starting at off and returns it. The
+ * memory for the returned String is obtained by malloc(3) and can be freed
+ * with free(3).
  *
  * lputil_get_re_match() does not check if the requested match is inside the
  * borders of the given string.
@@ -82,8 +79,8 @@ lputil_get_re_match(const regmatch_t *match, int n, const char *s);
  * error.
  *
  * \param s the string of which we want the substring
- * \param os the start of the substring
- * \param oe the length of the substring
+ * \param off the start of the substring
+ * \param len the length of the substring
  *
  * \return the substring as a null terminated substring.
  *
@@ -92,7 +89,7 @@ lputil_get_re_match(const regmatch_t *match, int n, const char *s);
  * - This routine may also fail and set errno for any of the errors specified
  *    for the routine malloc(3).
  */
-char * lputil_substr(const char *s, size_t os, size_t oe);
+char * lputil_substr(const char *s, size_t off, size_t len);
 
 /**
  * Split a String into tokens.

@@ -49,7 +49,7 @@ lputil_get_re_match(const regmatch_t *match, int n, const char *s)
 }
 
 char *
-lputil_substr(const char *s, size_t os, size_t oe)
+lputil_substr(const char *s, size_t off, size_t len)
 {
      char *r;
      /* check if the given pointer is NULL  */
@@ -59,13 +59,13 @@ lputil_substr(const char *s, size_t os, size_t oe)
      }
      /* allocate oe+1 bytes on the Heap and assign a pointer to that region to
       * r */
-     if ( (r = malloc(sizeof(char)*(oe+1) )) == NULL )
+     if ( (r = malloc(sizeof(char)*(len+1) )) == NULL )
           return NULL;
 
      /* copy oe bytes starting from s+os to r, null terminate r and return the
       * created c string */
-     memcpy(r, s+os, oe);
-     r[oe] = '\0';
+     memcpy(r, s+off, len);
+     r[len] = '\0';
      return r;
 }
 
