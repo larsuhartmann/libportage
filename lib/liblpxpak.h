@@ -32,7 +32,7 @@
 
 /**
  * \file liblpxpak.h
- * \brief Provides functions to decode/encode/manipulate xpaks.
+ * \brief Functions to decode/encode/manipulate xpaks.
  */
 
 #ifndef __LPXPAK
@@ -77,7 +77,7 @@ typedef struct lpxpak{
  * data. If an error occurs, NULL is returned and errno is set to indicate the
  * error.
  *
- * The returned array can be freed with lpxpak_destroy_xpak().
+ * The returned array can be freed with lpxpak_destroy().
  *
  * \param data a pointer to the start of a memory region which holds the xpak
  * blob.
@@ -87,7 +87,7 @@ typedef struct lpxpak{
  * holds the parsed xpak data or \c NULL, if an error has occured.
  * 
  * \sa lpxpak_t
- * \sa lpxpak_destroy_xpak()
+ * \sa lpxpak_destroy()
  *
  * \b Errors:
  * 
@@ -109,7 +109,7 @@ lpxpak_parse_data(const void *data, size_t len);
  * parsed data. If an error occurs, NULL is returned and errno is set to
  * indicate the error.
  *
- * The returned array can be freed with lpxpak_destroy_xpak().
+ * The returned array can be freed with lpxpak_destroy().
  * 
  * \param fd a file descriptor with the gentoo binary package which needs to
  *        be opened in O_RDONLY mode.
@@ -117,7 +117,7 @@ lpxpak_parse_data(const void *data, size_t len);
  * holds the parsed xpak data or \c NULL, if an error has occured.
  *
  * \sa lpxpak_t
- * \sa lpxpak_destroy_xpak()
+ * \sa lpxpak_destroy()
  *
  * \b Errors:
  * 
@@ -143,7 +143,7 @@ lpxpak_parse_fd(int fd);
  * array of pointers to lpxpak structures which holds the parsed data. If an
  * error occurs, NULL is returned and errno is set to indicate the error.
  *
- * The returned array can be freed with lpxpak_destroy_xpak().
+ * The returned array can be freed with lpxpak_destroy().
  * 
  * \param path Path to a gentoo binary package which needs to be
  *        readable by the current process.
@@ -152,7 +152,7 @@ lpxpak_parse_fd(int fd);
  * holds the parsed xpak data or \c NULL, if an error has occured.
  *
  * \sa lpxpak_t
- * \sa lpxpak_destroy_xpak()
+ * \sa lpxpak_destroy()
  * 
  * \b Errors:
  *
@@ -179,7 +179,7 @@ lpxpak_parse_path(const char *path);
  *
  * frees up the array and all of the underlying structures plus the pointers
  * they have using free(3). If a \c NULL pointer was given,
- * lpxpak_destroy_xpak() will just return.
+ * lpxpak_destroy() will just return.
  *
  * \param xpak a \c NULL terminated array of pointers to lpxpak_t structures.
  *
@@ -187,6 +187,6 @@ lpxpak_parse_path(const char *path);
  * anything can happen.
  */
 void
-lpxpak_destroy_xpak(lpxpak_t **xpak);
+lpxpak_destroy(lpxpak_t **xpak);
 
 #endif
