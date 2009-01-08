@@ -1,6 +1,8 @@
 2009-01-08  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* lib/liblpatom.c renamed REGEXP defines
+	(lpatom_init): does now also do the allocation.
+	(lpatom_suffix_init): does now also do the allocation.
 
 	* lib/liblpatom.c (__lpatom_parse_suffix): fixed segv
 

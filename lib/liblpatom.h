@@ -70,7 +70,7 @@ typedef enum {
       * _p
       */
      p
-} lpatom_suf_t;
+} lpatom_sufe_t;
 
 /**
  * \brief The atom struct
@@ -82,7 +82,7 @@ typedef struct {
      char *cat;
      char verc;
      int *ver;
-     lpatom_suf_t sufenum;
+     lpatom_sufe_t sufenum;
      int sufv;
      int rel;
 } lpatom_t;

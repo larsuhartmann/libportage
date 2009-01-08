@@ -75,21 +75,21 @@ rc|p)[0-9]*)?(-r[0-9]+)?)?$"
 
 
 typedef struct {
-     lpatom_suf_t se;
+     lpatom_sufe_t se;
      int rel;
-} __lpatom_suf_t;
+} lpatom_suf_t;
 
-static __lpatom_suf_t *
+static lpatom_suf_t *
 lpatom_suffix_parse(const char *s);
 
-static void
-lpatom_suffix_init(__lpatom_suf_t *suf);
+static lpatom_suf_t *
+lpatom_suffix_init(void);
+
+static lpatom_t *
+lpatom_init(void);
 
 static void
-lpatom_init(lpatom_t *atom);
-
-static void
-lpatom_suffix_destroy(__lpatom_suf_t *suffix);
+lpatom_suffix_destroy(lpatom_suf_t *suffix);
 
 static int *
 lpatom_version_parse(const char *v);
@@ -116,13 +116,12 @@ lpatom_parse(const char *s)
      char *ver, *vers;
      int count = 2;
      lpatom_t *atom = NULL;
-     __lpatom_suf_t *suf = NULL;
+     lpatom_suf_t *suf = NULL;
      bool has_cat = false;
 
      /* get enough memory for the atom object and initialize it */
-     if ( (atom = malloc(sizeof(lpatom_t))) == NULL)
+     if ( (atom = lpatom_init()) == NULL)
           return NULL;
-     lpatom_init(atom);
 
      /* compile the __LP_ATOM_RE regexp */
      regcomp (regexp, LPATOM_RE, REG_EXTENDED);
@@ -212,20 +211,18 @@ lpatom_parse(const char *s)
  *         The __lpatom_parse_suffix() function may also fail and set errno
  *         for any of the errors specified for the routine malloc(3).
  */
-static __lpatom_suf_t *
+static lpatom_suf_t *
 lpatom_suffix_parse(const char *s)
 {
      regmatch_t regmatch[2];
      regex_t regexp[1];
      char *sufs;
      char *rs;
-
-     __lpatom_suf_t *suf;
+     lpatom_suf_t *suf;
 
      /* allocate memory for the suf object and initialize it */
-     if ( (suf = malloc(sizeof(__lpatom_suf_t))) == NULL )
+     if ( (suf = lpatom_suffix_init()) == NULL)
           return NULL;
-     lpatom_suffix_init(suf);
 
      /* compile the regexp with __LP_VSUF_RE, check if it matches and assign
       * the matched string (the suffix) to sufs */
@@ -287,14 +284,15 @@ lpatom_suffix_parse(const char *s)
  *          from outside the API, as the way this function works can be
  *          changed regularly.
  */
-static void
-lpatom_suffix_init(__lpatom_suf_t *suf)
+static lpatom_suf_t *
+lpatom_suffix_init(void)
 {
-     if (suf != NULL) {
-          suf->se = no;
-          suf->rel = 0;
-     }
-     return;
+     lpatom_suf_t *suf;
+     if ( (suf = malloc(sizeof(lpatom_suf_t))) == NULL )
+          return NULL;
+     suf->se = no;
+     suf->rel = 0;
+     return suf;
 }
 
 /*
@@ -307,19 +305,22 @@ lpatom_suffix_init(__lpatom_suf_t *suf)
  *          from outside the API, as the way this function works can be
  *          changed regularly.
  */
-static void
-lpatom_init(lpatom_t *atom)
+static lpatom_t *
+lpatom_init(void)
 {
-     if(atom != NULL) {
-          atom->name = NULL;
-          atom->cat = NULL;
-          atom->ver = NULL;
-          atom->verc = 0;
-          atom->sufenum = no;
-          atom->sufv = 0;
-          atom->rel = 0;
-     }
-     return;
+     lpatom_t *atom;
+     
+     if ( (atom = malloc(sizeof(lpatom_t))) == NULL)
+          return NULL;
+     atom->name = NULL;
+     atom->cat = NULL;
+     atom->ver = NULL;
+     atom->verc = 0;
+     atom->sufenum = no;
+     atom->sufv = 0;
+     atom->rel = 0;
+
+     return atom;
 }
 
 /*
@@ -337,7 +338,7 @@ lpatom_init(lpatom_t *atom)
  *            unexpected things will happen
  */
 static void
-lpatom_suffix_destroy(__lpatom_suf_t *suffix)
+lpatom_suffix_destroy(lpatom_suf_t *suffix)
 {
      if (suffix != NULL ){
           free(suffix);
