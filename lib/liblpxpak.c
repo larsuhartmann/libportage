@@ -279,7 +279,8 @@ static lpxpak_t **
 lpxpak_init(size_t size);
 
 lpxpak_t **
-lpxpak_parse_data(const void *data, size_t len) {
+lpxpak_parse_data(const void *data, size_t len)
+{
      lpxpak_int_t count = 0;
      lpxpak_int_t index_len, data_len;
      const void *index_data = NULL;
