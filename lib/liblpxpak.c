@@ -84,7 +84,7 @@
 /**
  * \brief The Datatype for the offset/length values XPAK uses.
  */
-typedef uint32_t __lpxpak_int_t;
+typedef uint32_t lpxpak_int_t;
 
 /**
  * \private
@@ -167,27 +167,35 @@ lpxpak_index_parse(const void *data, size_t len);
  * \b Errors:
  *
  * - This function may fail and set errno for any of the errors specified for
- * the routine malloc(3).
+ *   the routine malloc(3).
  */
 static lpxpak_index_t **
 lpxpak_index_init(size_t size);
 
 /**
- * resize a \c NULL terminated array of pointers to lpxpak_index_t
- * structures.
+ * \private \brief resize a \c NULL terminated array of pointers to
+ * lpxpak_index_t structures.
  *
  * resizes the array and frees all unused structs if the new size is lower, or
  * allocate more space for structs if the size is higher. If the new size is
  * higher, the values and pointers of the newly allocated structs are set to
- * \c 0 or \c NULL. If the given pointer is \c NULL, a new array with the size
- * \c size is returned. If an error occurs, \c NULL is returned and errno is
- * set to indicate the error.
+ * \c 0 or \c NULL. If a \c NULL pointer was given, this function will just
+ * return. If an error occurs, \c NULL is returned and errno is set to
+ * indicate the error. If the resize fails, index is untouched.
  *
  * \param index a \c NULL terminated array of lpxpak_index_t structures which
  * is to be resized
  * \param size the new size.
  * 
  * \return the resized array or \c NULL if an error occured.
+ *
+ * \sa lpxpak_index_destroy()
+ *
+ * \b Errors:
+ *
+ * - \c EINVAL The given pointer was NULL.
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine realloc(3)
  */
 static lpxpak_index_t **
 lpxpak_index_resize(lpxpak_index_t **index, size_t size);
@@ -197,8 +205,8 @@ lpxpak_index_resize(lpxpak_index_t **index, size_t size);
  * lpxpak_index_t structures.
  *
  * frees up the array and all of the underlying structures plus the pointers
- * they have using free(3). If a \c NULL pointer was given,
- * lpxpak_index_destroy() will just return.
+ * they have using free(3). If a \c NULL pointer was given, this function will
+ * just return.
  *
  * \param index a \c NULL terminated array of pointers to lpxpak_index_t
  * structures.
@@ -272,8 +280,8 @@ lpxpak_init(size_t size);
 
 lpxpak_t **
 lpxpak_parse_data(const void *data, size_t len) {
-     __lpxpak_int_t count = 0;
-     __lpxpak_int_t index_len, data_len;
+     lpxpak_int_t count = 0;
+     lpxpak_int_t index_len, data_len;
      const void *index_data = NULL;
      const void *data_data = NULL;
      lpxpak_index_t **index = NULL;
@@ -294,11 +302,11 @@ lpxpak_parse_data(const void *data, size_t len) {
      }
      count += LPXPAK_INTRO_LEN;
      
-     memcpy(&index_len, (uint8_t *)data+count, sizeof(__lpxpak_int_t));
-     count+=sizeof(__lpxpak_int_t);
+     memcpy(&index_len, (uint8_t *)data+count, sizeof(lpxpak_int_t));
+     count+=sizeof(lpxpak_int_t);
      index_len = ntohl(index_len);
-     memcpy(&data_len, (uint8_t *)data+count, sizeof(__lpxpak_int_t));
-     count += sizeof(__lpxpak_int_t);
+     memcpy(&data_len, (uint8_t *)data+count, sizeof(lpxpak_int_t));
+     count += sizeof(lpxpak_int_t);
      data_len = ntohl(data_len);
 
      /* check if the sum of count, index_len, data_len and __LPXPAK_OUTRO_LEN
@@ -338,7 +346,7 @@ lpxpak_parse_fd(int fd)
      struct stat xpakstat;
      void *xpakdata = NULL;
      void *tmp = NULL;
-     __lpxpak_int_t *xpakoffset = NULL;
+     lpxpak_int_t *xpakoffset = NULL;
      lpxpak_t **xpak = NULL;
      ssize_t rs;
 
@@ -351,21 +359,21 @@ lpxpak_parse_fd(int fd)
      }
 
      /* seek to the start of the xpak offset */
-     if ( lseek(fd, (LPXPAK_STOP_OFFSET+sizeof(__lpxpak_int_t))*-1, SEEK_END)
+     if ( lseek(fd, (LPXPAK_STOP_OFFSET+sizeof(lpxpak_int_t))*-1, SEEK_END)
          == -1 )
           return NULL;
 
-     /* allocate __LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t) bytes from the heap,
+     /* allocate __LPXPAK_STOP_LEN+sizeof(lpxpak_int_t) bytes from the heap,
       * assign it to tmp, read in the xpak offset plus the__LPXPAK_STOP
       * string. */
-     if ( (tmp = malloc(LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t))) == NULL )
+     if ( (tmp = malloc(LPXPAK_STOP_LEN+sizeof(lpxpak_int_t))) == NULL )
           return NULL;
-     if ( (rs = read(fd, tmp, LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t)))
+     if ( (rs = read(fd, tmp, LPXPAK_STOP_LEN+sizeof(lpxpak_int_t)))
          == -1) {
           free(tmp);
           return NULL;
      }
-     if ( rs != LPXPAK_STOP_LEN+sizeof(__lpxpak_int_t) ){
+     if ( rs != LPXPAK_STOP_LEN+sizeof(lpxpak_int_t) ){
           
           free(tmp);
           errno = EBUSY;
@@ -375,7 +383,7 @@ lpxpak_parse_fd(int fd)
      /* check if the read in __LPXPAK_STOP string equals __LPXPAK_STOP.  If
       * not, free the allocated memory, set errno and return NULL as this is
       * an invalid xpak. */
-     if ( memcmp((uint8_t *)tmp+sizeof(__lpxpak_int_t), LPXPAK_STOP,
+     if ( memcmp((uint8_t *)tmp+sizeof(lpxpak_int_t), LPXPAK_STOP,
          LPXPAK_STOP_LEN) != 0 ) {
           free(tmp);
           errno = EINVAL;
@@ -383,7 +391,7 @@ lpxpak_parse_fd(int fd)
      }
      /* assign a pointer to the xpak offset data to xpakoffset and convert it
       * to local byte order */
-     xpakoffset = (__lpxpak_int_t *)tmp;
+     xpakoffset = (lpxpak_int_t *)tmp;
      *xpakoffset = ntohl(*xpakoffset);
         
      /* allocate <xpakoffset> bytes on the heap, assign it to xpakdata, seek
@@ -439,8 +447,8 @@ lpxpak_index_parse(const void *data, size_t len)
 {
      lpxpak_index_t **index = NULL;
      lpxpak_index_t **t = NULL;
-     __lpxpak_int_t count = 0;
-     __lpxpak_int_t name_len = 0;
+     lpxpak_int_t count = 0;
+     lpxpak_int_t name_len = 0;
      size_t ilen = 100;
      int i;
 
@@ -460,9 +468,9 @@ lpxpak_index_parse(const void *data, size_t len)
                t = NULL;
           }
           /* read name_len from data and increase the counter */
-          name_len = *((__lpxpak_int_t *)((uint8_t *)data+count));
+          name_len = *((lpxpak_int_t *)((uint8_t *)data+count));
           name_len = ntohl(name_len);
-          count += sizeof(__lpxpak_int_t);
+          count += sizeof(lpxpak_int_t);
 
           /* allocate name_len+1 bytes on the heap, assign it to t->name, read
            * name_len bytes from data into t->name, apply name_len+1 to
@@ -477,14 +485,14 @@ lpxpak_index_parse(const void *data, size_t len)
           
           /* read t->offset from data in local byte order and increase
            * counter */
-          index[i]->offset = *((__lpxpak_int_t *)((uint8_t *)data+count));
+          index[i]->offset = *((lpxpak_int_t *)((uint8_t *)data+count));
           index[i]->offset = ntohl(index[i]->offset);
-          count += sizeof(__lpxpak_int_t);
+          count += sizeof(lpxpak_int_t);
 
           /* read t->len from data in local byte order and increase counter */
-          index[i]->len = *((__lpxpak_int_t *)((uint8_t *)data+count));
+          index[i]->len = *((lpxpak_int_t *)((uint8_t *)data+count));
           index[i]->len = htonl(index[i]->len);
-          count += sizeof(__lpxpak_int_t);
+          count += sizeof(lpxpak_int_t);
      }
      if ( (t = lpxpak_index_resize(index, i)) == NULL) {
           lpxpak_index_destroy(index);
@@ -525,16 +533,19 @@ lpxpak_index_resize(lpxpak_index_t **index, size_t size)
      int i;
      int len;
 
-     if ( index == NULL )
-          return lpxpak_index_init(size);
+     if ( index == NULL ) {
+          errno = EINVAL;
+          return NULL;
+     }
      
      for (i = 0; index[i] != NULL; ++i)
           ;
      len = i;
      
      if ( (tindex = realloc(index, sizeof(lpxpak_index_t *)*(size+1)))
-         == NULL)
+         == NULL) {
           return NULL;
+     }
      index = tindex;
      if ( (t = realloc(index[0], sizeof(lpxpak_index_t)*size)) == NULL)
           return NULL;
