@@ -435,9 +435,12 @@ lpxpak_parse_path(const char *path)
      int fd;
      lpxpak_t **xpak = NULL;
 
+     /* open file descriptor in read only mode and call lpxpak_parse_fd */
      if ( (fd = open(path, O_RDONLY)) == -1 )
           return NULL;
      xpak = lpxpak_parse_fd(fd);
+     /* close file descriptor and return the pointer we got from
+      * lpxpak_parse_fd */
      close(fd);
      return xpak;
 }
@@ -460,6 +463,8 @@ lpxpak_index_parse(const void *data, size_t len)
      for ( i=0; count < len; ++i) {
           if ( i == ilen-1 ) {
                ilen += 50;
+               /* check if we got enough free entries in index, if not resize
+                * it */
                if ( (t = lpxpak_index_resize(index, ilen)) == NULL) {
                     lpxpak_index_destroy(index);
                     return NULL;
@@ -494,6 +499,7 @@ lpxpak_index_parse(const void *data, size_t len)
           index[i]->len = htonl(index[i]->len);
           count += sizeof(lpxpak_int_t);
      }
+     /* now that we know the actual size, resize index to that size */
      if ( (t = lpxpak_index_resize(index, i)) == NULL) {
           lpxpak_index_destroy(index);
           return NULL;
@@ -541,18 +547,20 @@ lpxpak_index_resize(lpxpak_index_t **index, size_t size)
      for (i = 0; index[i] != NULL; ++i)
           ;
      len = i;
-     
+
+     /* realloc the index */
      if ( (tindex = realloc(index, sizeof(lpxpak_index_t *)*(size+1)))
          == NULL) {
           return NULL;
      }
      index = tindex;
+     /* realloc the elements */
      if ( (t = realloc(index[0], sizeof(lpxpak_index_t)*size)) == NULL)
           return NULL;
      for ( i=0; i < size; ++i )
           index[i] = t+i;
-     /* set values and pointers to \c 0 or \c NULL if the new size is greater
-      * than the old */
+     /* set values and pointers of newly added entries to \c 0 or \c NULL if
+      * the new size is greater than the old */
      if ( len < size )
           /* zero out the memory region pointed to by index[0]+len - this is
            * far more effective compared to manually setting each element of
@@ -569,9 +577,12 @@ lpxpak_index_destroy(lpxpak_index_t **index)
 
      if ( index == NULL )
           return;
+     /* iterate over the elements and free the name strings */
      for ( i=0; index[i] != NULL; ++i )
           free(index[i]->name);
+     /* free the elements */
      free(index[0]);
+     /* free the main index */
      free(index);
      return;
 }
@@ -583,13 +594,17 @@ lpxpak_data_parse(const void *data, lpxpak_index_t **index)
      int i, isize, dlen = 0;
      void *tdata;
 
+     /* count the total length */
      for ( i=0; index[i] != NULL; ++i )
           dlen += index[i]->len;
      isize = i;
 
+     /* initialize a new empty NULL terminated array of lpxpak_t structures
+      * with the size len */
      if ( (xpak = lpxpak_init(isize)) == NULL )
           return NULL;
 
+     /* copy the data block */
      if ( (tdata = lputil_memdup(data, dlen)) == NULL ) {
           lpxpak_destroy(xpak);
           return NULL;
@@ -601,9 +616,7 @@ lpxpak_data_parse(const void *data, lpxpak_index_t **index)
           xpak[i]->name = index[i]->name;
           index[i]->name = NULL;
 
-          /* allocate ti->len bytes on the heap, assign it to tx->value, copy
-           * ti->len data from data+offset to tx->value and null-terminate
-           * tx->value  */
+          /* assign the index[i]->offset'th byte of tdata to xpak[i]->value */
           xpak[i]->value = (uint8_t*)tdata+index[i]->offset;
           xpak[i]->value_len = index[i]->len;
      }
@@ -641,13 +654,15 @@ lpxpak_destroy(lpxpak_t **xpak)
 
      if ( xpak == NULL )
           return;
-     if ( xpak == NULL )
-          return;
 
+     /* iterate over all entrys and free the name strings */
      for ( i=0; xpak[i] != NULL; ++i )
           free(xpak[i]->name);
+     /* free the data */
      free(xpak[0]->value);
+     /* free the elements */
      free(xpak[0]);
+     /* free the main xpak */
      free(xpak);
      return;
 }
@@ -656,6 +671,10 @@ lpxpak_t *
 lpxpak_get(lpxpak_t **xpak, char *key)
 {
      int i;
+
+     /* iterate over xpak until the end (NULL) or the searched entry was found
+      * and return the last processed entry which should be either NULL or the
+      * one we searched for */
      for (i=0; xpak[i] != NULL || strcmp(xpak[i]->name, key) != 0; ++i)
           ;
      return xpak[i];
