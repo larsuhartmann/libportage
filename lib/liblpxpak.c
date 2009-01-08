@@ -651,3 +651,12 @@ lpxpak_destroy(lpxpak_t **xpak)
      free(xpak);
      return;
 }
+
+lpxpak_t *
+lpxpak_get(lpxpak_t **xpak, char *key)
+{
+     int i;
+     for (i=0; xpak[i] != NULL || strcmp(xpak[i]->name, key) != 0; ++i)
+          ;
+     return xpak[i];
+}

@@ -189,4 +189,22 @@ lpxpak_parse_path(const char *path);
 void
 lpxpak_destroy(lpxpak_t **xpak);
 
+/**
+ * \brief Returns the value for a given key.
+ *
+ * Searches the provided array for an entry with the given key and returns it,
+ * if no corresponding element could be found, \c NULL is returned.
+ *
+ * \param xpak a \c NULL terminated array of pointers to lpxpak_t objects
+ * which as returned by lpxpak_parse_fd().
+ * \param key a \c null terminated C string with the key to search for.
+ *
+ * \return a pointer to a lpxpak_t object or NULL if no corresponding element
+ * could be found
+ *
+ * \sa lpxpak_parse_fd()
+ */
+lpxpak_t *
+lpxpak_get(lpxpak_t **xpak, char *key);
+
 #endif
