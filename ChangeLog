@@ -1,0 +1,8 @@
+2009-01-08  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* Changelog: started logging to a Changelog
+
+	* lib/Makefile: cleaned it up and made check-syntax CFLAG aware
+
+	* Makefile: added some variables
+
