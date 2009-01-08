@@ -245,10 +245,10 @@ __lpatom_parse_suffix(const char *s)
           if ( (rs = lputil_get_re_match(regmatch, 1, s)) == NULL)
                return NULL;
           suf->rel = atoi(rs);
+          free(rs);
      }
      /* clean up */
      regfree(regexp);
-     free(rs);
      return suf;
 }
 

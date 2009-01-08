@@ -1,5 +1,7 @@
 2009-01-08  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* lib/liblpatom.c (__lpatom_parse_suffix): fixed segv
+
 	* lib/liblputil.h (lputil_substr): renamed parameter oes to off
 	and oe to len
 
