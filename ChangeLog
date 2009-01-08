@@ -1,17 +1,20 @@
 2009-01-08  Lars Hartmann  <lars (at) chaotika (dot) org>
 
-	* lib/liblpatom.c renamed REGEXP defines
-	(lpatom_init): does now also do the allocation.
-	(lpatom_suffix_init): does now also do the allocation.
-
-	* lib/liblpatom.c (__lpatom_parse_suffix): fixed segv
-
-	* lib/liblputil.h (lputil_substr): renamed parameter oes to off
-	and oe to len
-
 	* lib/liblputil.h: added comments
 
 	* lib/liblpatom.h: added comments
+
+	* lib/liblpatom.c renamed REGEXP defines
+	(lpatom_init): does now also do the allocation.
+	(lpatom_suffix_init): does now also do the allocation.
+	(__lpatom_parse_suffix): fixed segv
+	
+	* lib/liblpxpak.h: added lpxpak_get
+
+	* lib/liblpxpak.c (lpxpak_get): added
+
+	* lib/liblputil.h: added comments.
+	(lputil_substr): renamed parameter oes to off and oe to len.
 
 	* Changelog: started logging to a Changelog
 
