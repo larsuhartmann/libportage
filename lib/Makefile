@@ -13,13 +13,13 @@ RM = rm
 INCS = -I.
 LIBS = -L.
 
-CFLAGS = -O0 ${INCS} -DVERSION=\"${VERSION}\" -pipe
+CFLAGS = -O0 ${INCS} -DVERSION=\"${VERSION}\" -fPIC -pipe
 #CFLAGS = -g -Wall -O0 ${INCS} -DVERSION=\"${VERSION}\" -pipe
 
-LDFLAGS = -Wl,-z,defs ${LIBS} -lc
-#LDFLAGS = -g -Wl,-z,defs ${LIBS} -lc
+LDFLAGS = -z,defs ${LIBS}
+#LDFLAGS = -g -z,defs ${LIBS}
 
-SOFLAGS = -fPIC -shared
+SOFLAGS = -shared
 
 all: libportage
 
@@ -31,33 +31,30 @@ libportage: liblputil.a liblputil.so liblpxpak.a liblpxpak.so liblpatom.a liblpa
 
 liblputil.a: liblputil.o
 	@echo AR $@
-	@${AR} $@ liblputil.o
+	@${AR} $@ $^
 	@${RANLIB} $@
 
-liblpxpak.a: liblpxpak.o liblputil.o
+liblpxpak.a: liblpxpak.o
 	@echo AR $@
-	@${AR} $@ liblputil.o liblpxpak.o
+	@${AR} $@ $^
 	@${RANLIB} $@
 
-liblpatom.a: liblpatom.o liblputil.o
+liblpatom.a: liblpatom.o
 	@echo AR $@
-	@${AR} $@ liblputil.o liblpatom.o
+	@${AR} $@ $^
 	@${RANLIB} $@
 
-liblputil.so: liblputil.h
-	@echo CC $@
+liblputil.so: liblputil.o
 	@echo LD $@
-	@${CC} ${CFLAGS} ${SOFLAGS} ${LDFLAGS} -o $@ liblputil.c
+	@${LD} ${SOFLAGS} ${LDFLAGS} -o $@ $^ -lc
 
-liblpxpak.so: liblpxpak.h liblputil.so
-	@echo CC $@
+liblpxpak.so: liblputil.so liblpxpak.o
 	@echo LD $@
-	@${CC} ${CFLAGS} ${SOFLAGS} ${LDFLAGS} -llputil -o $@ liblpxpak.c
+	@${LD} ${SOFLAGS} ${LDFLAGS} -o $@ -llputil liblpxpak.o -lc
 
-liblpatom.so: liblpatom.h liblputil.so
-	@echo CC $@
+liblpatom.so: liblputil.so liblpatom.o
 	@echo LD $@
-	@${CC} ${CFLAGS} ${SOFLAGS} ${LDFLAGS} -llputil -o $@ liblpatom.c
+	@${LD} ${SOFLAGS} ${LDFLAGS} -llputil -o $@ liblpatom.o -lc
 
 .PHONY: clean
 clean:
