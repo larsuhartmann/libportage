@@ -11,13 +11,13 @@ RANLIB = ranlib
 RM = rm
 
 INCS = -I.
-LIBS = -L/usr/lib -lc -L.
+LIBS = -L.
 
-CFLAGS = -O0 ${INCS} -DVERSION=\"${VERSION}\"
-#CFLAGS = -g -Wall -O0 ${INCS} -DVERSION=\"${VERSION}\"
+CFLAGS = -O0 ${INCS} -DVERSION=\"${VERSION}\" -pipe
+#CFLAGS = -g -Wall -O0 ${INCS} -DVERSION=\"${VERSION}\" -pipe
 
-#LDFLAGS = ${LIBS}
-LDFLAGS = -g ${LIBS}
+LDFLAGS = -Wl,-z,defs ${LIBS} -lc
+#LDFLAGS = -g -Wl,-z,defs ${LIBS} -lc
 
 SOFLAGS = -fPIC -shared
 
@@ -45,22 +45,19 @@ liblpatom.a: liblpatom.o liblputil.o
 	@${RANLIB} $@
 
 liblputil.so: liblputil.h
+	@echo CC $@
 	@echo LD $@
-	@${CC} -c ${CFLAGS} -fPIC -o liblputil.od liblputil.c
-	@${LD} ${SOFLAGS} -o $@ liblputil.od
-	@${RM} liblputil.od
+	@${CC} ${CFLAGS} ${SOFLAGS} ${LDFLAGS} -o $@ liblputil.c
 
-liblpxpak.so: liblpxpak.h
+liblpxpak.so: liblpxpak.h liblputil.so
+	@echo CC $@
 	@echo LD $@
-	@${CC} -c ${CFLAGS} -fPIC -o liblpxpak.od liblpxpak.c
-	@${LD} ${SOFLAGS} -o $@ liblpxpak.od
-	@${RM} liblpxpak.od
+	@${CC} ${CFLAGS} ${SOFLAGS} ${LDFLAGS} -llputil -o $@ liblpxpak.c
 
-liblpatom.so: liblpatom.h
+liblpatom.so: liblpatom.h liblputil.so
+	@echo CC $@
 	@echo LD $@
-	@${CC} -c ${CFLAGS} -fPIC -o liblpatom.od liblpatom.c
-	@${LD} ${SOFLAGS} -o $@ liblpatom.od
-	@${RM} liblpatom.od
+	@${CC} ${CFLAGS} ${SOFLAGS} ${LDFLAGS} -llputil -o $@ liblpatom.c
 
 .PHONY: clean
 clean:
