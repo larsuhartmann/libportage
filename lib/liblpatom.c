@@ -94,6 +94,9 @@ lpatom_suffix_destroy(lpatom_suf_t *suffix);
 static int *
 lpatom_version_parse(const char *v);
 
+static char *
+lpatom_suffe_to_string(lpatom_sufe_t suffix);
+
 /* 
  * lpatom_parse: Reads the atom data out of an packetname string
  *
@@ -425,42 +428,8 @@ lpatom_get_suffix(const lpatom_t *atom)
      char *sufv;
      char *r;
      size_t len;
-     switch(atom->sufenum){
-     case alpha:
-          if ( (suf = strdup("alpha")) == NULL)
-               return NULL;
-          break;
-     case beta:
-          if ( (suf = strdup("beta")) == NULL)
-               return NULL;
-          break;
-     case pre:
-          if ( (suf = strdup("pre")) == NULL)
-               return NULL;
-          break;
-     case rc:
-          if ( (suf = strdup("rc")) == NULL)
-               return NULL;
-          break;
-     case p:
-          if ( (suf = strdup("p")) == NULL)
-               return NULL;
-          break;
-     default:
-          if ( (suf = strdup("")) == NULL)
-               return NULL;
-          break;
-     }
-     if (atom->sufv > 0) {
-          if ( (sufv = malloc(sizeof(char)*11)) == NULL) {
-               free(suf);
-               return NULL;
-          }
-          sprintf(sufv, "%d", atom->sufv);
-     } else {
-          if ( (sufv = strdup("")) == NULL)
-               return NULL;
-     }
+     if ( (suf = lpatom_suffe_to_string(atom->sufenum)) == NULL)
+          return NULL;
      len = strlen(suf);
      len += strlen(sufv);
      ++len;
@@ -517,4 +486,38 @@ lpatom_get_qname(const lpatom_t *atom)
      strcpy(r, cat);
      strcat(r, name);
      return r;
+}
+
+static char *
+lpatom_suffe_to_string(lpatom_sufe_t suffix)
+{
+     char *suf;
+     
+     switch(suffix){
+     case alpha:
+          if ( (suf = strdup("alpha")) == NULL)
+               return NULL;
+          break;
+     case beta:
+          if ( (suf = strdup("beta")) == NULL)
+               return NULL;
+          break;
+     case pre:
+          if ( (suf = strdup("pre")) == NULL)
+               return NULL;
+          break;
+     case rc:
+          if ( (suf = strdup("rc")) == NULL)
+               return NULL;
+          break;
+     case p:
+          if ( (suf = strdup("p")) == NULL)
+               return NULL;
+          break;
+     default:
+          if ( (suf = strdup("")) == NULL)
+               return NULL;
+          break;
+     }
+     return suf;
 }
