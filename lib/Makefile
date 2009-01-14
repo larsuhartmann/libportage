@@ -23,7 +23,8 @@ SOFLAGS = -shared
 
 all: libportage
 
-libportage: liblputil.a liblputil.so liblpxpak.a liblpxpak.so liblpatom.a liblpatom.so
+libportage: liblputil.a liblputil.so liblpxpak.a liblpxpak.so liblpatom.a\
+            liblpatom.so
 
 .c.o:
 	@echo CC $<
@@ -31,32 +32,31 @@ libportage: liblputil.a liblputil.so liblpxpak.a liblpxpak.so liblpatom.a liblpa
 
 liblputil.a: liblputil.o
 	@echo AR $@
-	@${AR} $@ $^
+	@${AR} $@ $<
 	@${RANLIB} $@
 
 liblpxpak.a: liblpxpak.o
 	@echo AR $@
-	@${AR} $@ $^
+	@${AR} $@ $<
 	@${RANLIB} $@
 
 liblpatom.a: liblpatom.o
 	@echo AR $@
-	@${AR} $@ $^
+	@${AR} $@ $<
 	@${RANLIB} $@
 
 liblputil.so: liblputil.o
 	@echo LD $@
-	@${LD} ${SOFLAGS} ${LDFLAGS} -o $@ $^ -lc
+	@${LD} ${SOFLAGS} ${LDFLAGS} -o $@ $< -lc
 
-liblpxpak.so: liblputil.so liblpxpak.o
+liblpxpak.so: liblpxpak.o liblputil.so
 	@echo LD $@
-	@${LD} ${SOFLAGS} ${LDFLAGS} -o $@ -llputil liblpxpak.o -lc
+	@${LD} ${SOFLAGS} ${LDFLAGS} -llputil -o $@ $< -lc
 
-liblpatom.so: liblputil.so liblpatom.o
+liblpatom.so: liblpatom.o liblputil.so
 	@echo LD $@
-	@${LD} ${SOFLAGS} ${LDFLAGS} -llputil -o $@ liblpatom.o -lc
+	@${LD} ${SOFLAGS} ${LDFLAGS} -llputil -o $@ $< -lc
 
-.PHONY: clean
 clean:
 	@echo cleaning
 	@${RM} -f *.a *.so *.o
