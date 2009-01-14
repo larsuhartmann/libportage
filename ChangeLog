@@ -1,3 +1,12 @@
+2009-01-14  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* lib/liblpatom.c (lpatom_parse_version): deleted.
+	(lpatom_parse): does now directly store the version string in the
+	struct.
+
+	* lib/liblpatom.h (lpatom_t): changed ver to nul terminated
+	C-String.
+
 2009-01-12  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* lib/liblpatom.c (lpatom_suffe_to_string): added

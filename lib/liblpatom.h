@@ -81,7 +81,7 @@ typedef struct {
      char *name;
      char *cat;
      char verc;
-     int *ver;
+     char *ver;
      lpatom_sufe_t sufenum;
      int sufv;
      int rel;

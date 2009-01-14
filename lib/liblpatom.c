@@ -91,9 +91,6 @@ lpatom_init(void);
 static void
 lpatom_suffix_destroy(lpatom_suf_t *suffix);
 
-static int *
-lpatom_version_parse(const char *v);
-
 static char *
 lpatom_suffe_to_string(lpatom_sufe_t suffix);
 
@@ -155,7 +152,7 @@ lpatom_parse(const char *s)
           ++count;     
 
      /* assign the <count>th match (the version part)of the previously applied
-      * regexp (The package version to atom->ver */
+      * regexp (The package version) to ver */
      if ((ver = lputil_get_re_match(regmatch, count, s)) == NULL)
           return NULL;
      regcomp(regexp, LPATOM_RE_VER, REG_EXTENDED);
@@ -165,10 +162,11 @@ lpatom_parse(const char *s)
       * int-array to atom->ver */
      if ( (vers = lputil_get_re_match(regmatch, 1, ver)) == NULL)
           return NULL;
-     atom->ver = lpatom_version_parse(vers);
+     atom->ver = vers;
      /* free up the regexp object */
      regfree(regexp);
-
+     /* check if we have a version suffix (a-z) and if yes, add it to
+      * atom->verc */
      regcomp(regexp, LPATOM_RE_VER_SUF, REG_EXTENDED);
      if( regexec(regexp, ver, 2, regmatch, 0) == 0) {
           if ( (ver = lputil_get_re_match(regmatch, 1, ver)) == NULL)
@@ -368,57 +366,6 @@ lpatom_destroy(lpatom_t *atom)
           free(atom);
      }
      return;
-}
-
-/* 
- * __lpatom_parse_version: Reads the suffix data out of an suffix string.
- *
- * Gets an suffix string and returns an pointer to an -1 terminated int
- * array. If an error occurred, NULL is returned and errno is set to indicate
- * the error.
- *
- * PRIVATE: This is a private function and thus should not be called
- *          directly from outside the API, as the way this function works
- *          can be changed regularly.
- *
- * Errors:
- *         The __lpatom_parse_version() function may also fail and set errno
- *         for any of the errors specified for the routine malloc(3).
- */
-static int *
-lpatom_version_parse(const char *v)
-{
-     char **p;
-     int *r, i, len=10;
-
-     /* split version string by '.' and return if lputil_splitstr fails */
-     if ( (p = lputil_splitstr(v, ".")) == NULL)
-          return NULL;
-     /* allocate memory and return if not successfull */
-     if ( (r = malloc(sizeof(int)*len)) == NULL)
-          return NULL;
-     /* iterate over the array of strings, we got from lputil_splitstr */
-     for (i=0; p[i] != NULL; ++i) {
-          /* check if we got enough free space in r, if not reallocate it to
-           * gain more */
-          if (i == len-1) {
-               len +=5;
-               if ( (r = realloc(r, sizeof(int)*len)) == NULL ) {
-                    free(r);
-                    return NULL;
-               }
-          }
-          /* convert p[i] to int and assign that int to r[i] */
-          r[i] = atoi(p[i]);
-     }
-     /* terminate r with -1 */
-     r[i] = -1;
-     /* resize r to save memory */
-     if ( (r = realloc(r, sizeof(int)*(i+1))) == NULL ) {
-          free(r);
-          return NULL;
-     }
-     return r;
 }
 
 char *
