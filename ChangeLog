@@ -1,5 +1,7 @@
 2009-01-14  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* lib/liblputil.c (lputil_intlen): added
+
 	* lib/liblpatom.c (lpatom_parse_version): deleted.
 	(lpatom_parse): does now directly store the version string in the
 	struct.

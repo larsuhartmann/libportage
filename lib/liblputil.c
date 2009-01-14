@@ -144,3 +144,13 @@ lputil_splitstr(const char *s, const char *delim)
       * already NULL */
      return r;
 }
+
+size_t
+lputil_intlen(int d)
+{
+     int j;
+     size_t i;
+     for (i=1, j=10; j < d; ++i, j*=10)
+          ;
+     return i;
+}
