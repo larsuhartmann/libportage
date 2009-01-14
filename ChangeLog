@@ -1,5 +1,11 @@
 2009-01-14  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* lib/liblpatom.h (lpatom_get_version): added.
+
+	* lib/liblpatom.c (lpatom_suf_t): sufv member added.
+	(LPATOM_RE_SUFV): added.
+	(lpatom_suffix_parse): does now add sufv too.
+
 	* lib/liblputil.c (lputil_intlen): added
 
 	* lib/liblpatom.c (lpatom_parse_version): deleted.

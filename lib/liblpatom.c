@@ -57,9 +57,13 @@ rc|p)[0-9]*)?(-r[0-9]+)?)?$"
  */
 #define LPATOM_RE_SUF     "((_(alpha|beta|pre|rc|p)[0-9]*)?(-r[0-9]+)?)$"
 /**
- * \brief Regular expression for a package suffix version
+ * \brief Regular expression for a package suffix suffix
  */
 #define LPATOM_RE_VSUF    "^_((alpha|beta|pre|rc|p)[0-9]*)"
+/**
+ * \brief Regular expression to check for a suffix version
+ */
+#define LPATOM_RE_SUFV    "^_((alpha|beta|pre|rc|p)([0-9]+))"
 /**
  * \brief Regular expression for a package release version
  */
@@ -76,6 +80,7 @@ rc|p)[0-9]*)?(-r[0-9]+)?)?$"
 
 typedef struct {
      lpatom_sufe_t se;
+     int sufv;
      int rel;
 } lpatom_suf_t;
 
@@ -190,6 +195,7 @@ lpatom_parse(const char *s)
      free(ssuf);
      atom->sufenum = suf->se;
      atom->rel = suf->rel;
+     atom->sufv = suf->sufv;
 
      /* clean up the suf object  */
      lpatom_suffix_destroy(suf);
@@ -215,9 +221,10 @@ lpatom_parse(const char *s)
 static lpatom_suf_t *
 lpatom_suffix_parse(const char *s)
 {
-     regmatch_t regmatch[2];
+     regmatch_t regmatch[4];
      regex_t regexp[1];
      char *sufs;
+     char *sufv;
      char *rs;
      lpatom_suf_t *suf;
 
@@ -228,7 +235,7 @@ lpatom_suffix_parse(const char *s)
      /* compile the regexp with __LP_VSUF_RE, check if it matches and assign
       * the matched string (the suffix) to sufs */
      regcomp (regexp, LPATOM_RE_VSUF, REG_EXTENDED);
-     if (regexec(regexp, s, 2, regmatch, 0) == 0) {
+     if ( regexec(regexp, s, 2, regmatch, 0) == 0 ) {
           if ( (sufs = lputil_get_re_match(regmatch, 1, s)) == NULL)
                return NULL;
           /* simple switch cases for parsing the suffix (yeah, i know this
@@ -256,6 +263,13 @@ lpatom_suffix_parse(const char *s)
           default:
                suf->se = no;
                break;
+          }
+          regfree(regexp);
+          regcomp(regexp, LPATOM_RE_SUFV, REG_EXTENDED);
+          if ( regexec(regexp, s, 4, regmatch, 0) == 0) {
+               if ( (sufv = lputil_get_re_match(regmatch, 3, s)) == NULL)
+                    return NULL;
+               suf->sufv = atoi(sufv);
           }
      }
      /* clean up the compiled regexp */
@@ -372,23 +386,33 @@ char *
 lpatom_get_suffix(const lpatom_t *atom)
 {
      char *suf;
-     char *sufv;
      char *r;
+     char *sufv = NULL;
+     size_t sufvl;
      size_t len;
      if ( (suf = lpatom_suffe_to_string(atom->sufenum)) == NULL)
           return NULL;
      len = strlen(suf);
-     len += strlen(sufv);
+     if ( atom->sufv > 0 ) {
+          sufvl = lputil_intlen(atom->sufv)+1;;
+          len += sufvl;
+          if ( (sufv = malloc(sufvl)) == NULL) {
+               free(suf);
+               return NULL;
+          }
+          snprintf(sufv, sufvl, "%d", atom->sufv);
+     }
      ++len;
-     if ( (r = malloc(sizeof(char)*len)) == NULL) {
+     if ( (r = malloc(len)) == NULL) {
           free(suf);
-          free(sufv);
           return NULL;
      }
      strcpy(r, suf);
-     strcat(r, sufv);
+     if (sufv != NULL) {
+          strncat(r, sufv, len);
+          free(sufv);
+     }
      free(suf);
-     free(sufv);
      return r;
 }
 
@@ -467,4 +491,25 @@ lpatom_suffe_to_string(lpatom_sufe_t suffix)
           break;
      }
      return suf;
+}
+
+char *
+lpatom_get_version(const lpatom_t *atom)
+{
+     size_t len, lent = 0;
+     char *r;
+     
+     len = strlen(atom->ver);
+     lent = len;
+     if (atom->verc > 0) {
+          lent = len;
+          ++len;
+     }
+     if ( (r = malloc(len+1)) == NULL)
+          return NULL;
+     strcpy(r, atom->ver);
+     if (lent != 0)
+          r[lent] = atom->verc;
+     r[len] = '\0';
+     return r;
 }
