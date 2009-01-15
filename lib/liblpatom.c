@@ -45,25 +45,27 @@
 #include <errno.h>
 #include <string.h>
 #include <stdbool.h>
+#include <ctype.h>
 
 /**
  * \brief Regular expression for a package atom.
  */
-#define LPATOM_RE         "^(([A-Za-z0-9+_][A-Za-z0-9+_.-]*)/?([A-Za-z0-9+_-]\
+#define LPATOM_RE         "^(([A-Za-z0-9+_][A-Za-z0-9+_.-]*)?/?([A-Za-z0-9+_-]\
 *[A-Za-z+_-]|[A-Za-z+_][0-9]+))-([0-9]+([.][0-9]+)*[a-z]?)((_(alpha|beta|pre|\
 rc|p)[0-9]*)?(-r[0-9]+)?)?$"
 /**
- * \brief Regular expression for a package suffix
+ * \brief Regular expression for a category
  */
-#define LPATOM_RE_SUF     "((_(alpha|beta|pre|rc|p)[0-9]*)?(-r[0-9]+)?)$"
+#define LPATOM_RE_CAT     "^([A-Za-z0-9+_][A-Za-z0-9+_.-]*)/"
 /**
- * \brief Regular expression for a package suffix suffix
+ * \brief Regular expression for a package name
  */
-#define LPATOM_RE_VSUF    "^_((alpha|beta|pre|rc|p)[0-9]*)"
+#define LPATOM_RE_NAME    "^([A-Za-z0-9+_][A-Za-z0-9+_.-]*/)?([A-Za-z0-9+_-]*\
+([A-Za-z+_-]|[A-Za-z+_][0-9]+))-"
 /**
  * \brief Regular expression to check for a suffix version
  */
-#define LPATOM_RE_SUFV    "^_((alpha|beta|pre|rc|p)([0-9]+))"
+#define LPATOM_RE_SUF    "_(alpha|beta|pre|rc|p)([0-9]+)"
 /**
  * \brief Regular expression for a package release version
  */
@@ -71,30 +73,13 @@ rc|p)[0-9]*)?(-r[0-9]+)?)?$"
 /**
  * \brief Regular expression for a Package version
  */
-#define LPATOM_RE_VER     "([0-9]+([.][0-9]+)*)([a-z]?)"
-/**
- * \brief Regular expression for a Version suffix
- */
-#define LPATOM_RE_VER_SUF "([a-z])$"
+#define LPATOM_RE_VER     "^([0-9]+([.][0-9]+)*)([a-z]?)"
 
-
-typedef struct {
-     lpatom_sufe_t se;
-     int sufv;
-     int rel;
-} lpatom_suf_t;
-
-static lpatom_suf_t *
+static lpatom_sufe_t
 lpatom_suffix_parse(const char *s);
-
-static lpatom_suf_t *
-lpatom_suffix_init(void);
 
 static lpatom_t *
 lpatom_init(void);
-
-static void
-lpatom_suffix_destroy(lpatom_suf_t *suffix);
 
 static char *
 lpatom_suffe_to_string(lpatom_sufe_t suffix);
@@ -119,104 +104,158 @@ lpatom_t *
 lpatom_parse(const char *s)
 {
      regex_t regexp[1];
-     regmatch_t regmatch[5];
-     char *ssuf = NULL;
-     char *ver, *vers;
-     int count = 2;
+     regmatch_t regmatch[512];
      lpatom_t *atom = NULL;
-     lpatom_suf_t *suf = NULL;
+     char *relv, *suf, *sufv, *ver, *vers, *t;
+     size_t len = 0;
      bool has_cat = false;
 
-     /* get enough memory for the atom object and initialize it */
+     /* initialize atom struct */
      if ( (atom = lpatom_init()) == NULL)
           return NULL;
 
-     /* compile the __LP_ATOM_RE regexp */
-     if (regcomp (regexp, LPATOM_RE, REG_EXTENDED) != 0)
-          puts("fehler!\n");
-
-     /* check if this is a valid ebuild version atom by regexp matching */
-     if (! (regexec(regexp, s, 5, regmatch, 0) == 0)) {
+     /* compile regexp */
+     regcomp(regexp, LPATOM_RE, REG_EXTENDED);
+     /* check if this is a valid atom */
+     if ( regexec(regexp, s, 0, regmatch, 0) != 0) {
           regfree(regexp);
+          lpatom_destroy(atom);
           errno = EINVAL;
           return NULL;
      }
-     /* clean up the regexp object */
+     /* free up the compiled regexp */
      regfree(regexp);
 
-     /* check if the packet has a category prefix and assign that to atom->cat
-      * if possitive */
-     if(strstr(s, "/") != NULL) {
-          if ((atom->cat = lputil_get_re_match(regmatch, count, s))
-              ==NULL)
+     /* compile the category regexp */
+     regcomp(regexp, LPATOM_RE_CAT, REG_EXTENDED);
+     /* check if this atom has a category */
+     if ( regexec(regexp, s, 2, regmatch, 0) == 0) {
+          /* assign the category string to atom->cat */
+          if ( (atom->cat = lputil_get_re_match(regmatch, 1, s)) == NULL ) {
+               regfree(regexp);
+               lpatom_destroy(atom);
                return NULL;
-          ++count;
+          }
           has_cat = true;
      }
-     /* assign the <count>th match of the previously applied regexp (the name)
-      * to atom->name */
-     if ((atom->name = lputil_get_re_match(regmatch, count, s)) == NULL)
-          return NULL;
-     ++count;
-     if (has_cat == false)
-          ++count;     
-
-     /* assign the <count>th match (the version part)of the previously applied
-      * regexp (The package version) to ver */
-     if ((ver = lputil_get_re_match(regmatch, count, s)) == NULL)
-          return NULL;
-     regcomp(regexp, LPATOM_RE_VER, REG_EXTENDED);
-     regexec(regexp, ver, 2, regmatch, 0);
-     /* assign the first match of the previously applied regexp (The version
-      * number without the suffix to ver */
-     if ( (vers = lputil_get_re_match(regmatch, 1, ver)) == NULL)
-          return NULL;
-     atom->ver = vers;
-     /* free up the regexp object */
+     /* free up the compiled regexp */
      regfree(regexp);
-     /* assign the output of lpatom_version_explode to atom->ver_exploded */
-     if ( (atom->ver_ex = lpatom_version_explode(vers)) == NULL) {
+
+     /* compile the package name regexp */
+     regcomp(regexp, LPATOM_RE_NAME, REG_EXTENDED);
+     regexec(regexp, s, 3, regmatch, 0);
+     /* assign the package name to atom->name */
+     if ( (atom->name = lputil_get_re_match(regmatch, 2, s)) == NULL ) {
+          regfree(regexp);
           lpatom_destroy(atom);
           return NULL;
      }
-     /* check if we have a version suffix (a-z) and if yes, add it to
-      * atom->verc */
-     regcomp(regexp, LPATOM_RE_VER_SUF, REG_EXTENDED);
-     if( regexec(regexp, ver, 2, regmatch, 0) == 0) {
-          if ( (vers = lputil_get_re_match(regmatch, 1, ver)) == NULL) {
-               lpatom_destroy(atom);
-               regfree(regexp);
-               return NULL;
-          }
-          atom->verc = vers[0];
-          free(vers);
-     }
+     /* free up the compiled regexp */
      regfree(regexp);
-     free(ver);
 
-      /* compile __LP_SUF_RE regexp, check if it matches and assign the
-       * matched string to ssuf if so */
-     regcomp (regexp, LPATOM_RE_SUF, REG_EXTENDED);
-     if ( regexec(regexp, s, 5, regmatch, 0) == 0 ) {
-          if ( (ssuf = lputil_get_re_match(regmatch, 1, s)) == NULL ) {
-               regfree(regexp);
-               return NULL;
-          }
+     /* count the length of the part before the version */
+     if (has_cat)
+          len += (strlen(atom->cat) + 1);
+     len += strlen(atom->name);
+
+     /* snip off the rest of the string (shoud include the version plus the
+      * suffix and release version */
+     if ( (vers = strdup(s+len+1)) == NULL) {
+          lpatom_destroy(atom);
+          return NULL;
      }
 
+     /* compile the version regexp */
+     regcomp(regexp, LPATOM_RE_VER, REG_EXTENDED);
+     regexec(regexp, vers, 1, regmatch, 0);
+
+     /* get the version as string */
+     if ( (ver = lputil_get_re_match(regmatch, 0, vers)) == NULL ) {
+          free(vers);
+          regfree(regexp);
+          lpatom_destroy(atom);
+     }
      /* free up the regexp object */
      regfree(regexp);
+     
+     /* get the length of ver */
+     len = strlen(ver);
+     
+     /* check if the digit of the version is a lowercase char, if yes, assign
+      * that to atom->verc and resize ver */
+     if ( islower(ver[len-1]) ) {
+          atom->verc = ver[len-1];
+          ver[len-1] = '\0';
+          /* resize ver */
+          if ( (t = realloc(ver, len)) == NULL) {
+               free(vers);
+               free(ver);
+               regfree(regexp);
+               lpatom_destroy(atom);
+          }
+          ver = t;
+     }
+     
+     /* assign ver to atom->ver */
+     atom->ver = ver;
+     
+     /* parse the version into a string array */
+     if ( (atom->ver_ex = lpatom_version_explode(atom->ver)) == NULL ) {
+          free(vers);
+          lpatom_destroy(atom);
+          return NULL;
+     }
 
-     /* parse the suffix and assign the values to the atom object */
-     suf = lpatom_suffix_parse(ssuf);
-     free(ssuf);
-     atom->sufenum = suf->se;
-     atom->rel = suf->rel;
-     atom->sufv = suf->sufv;
+     /* compile the suffix regexp */
+     regcomp(regexp, LPATOM_RE_SUF, REG_EXTENDED);
+     /* check if it matches */
+     if ( regexec(regexp, vers, 3, regmatch, 0) == 0) {
+          /* assign the first match (the suffix string) to suf  */
+          if ( (suf = lputil_get_re_match(regmatch, 1, vers)) == NULL) {
+               free(vers);
+               regfree(regexp);
+               lpatom_destroy(atom);
+               return NULL;
+          }
+          /* assign the second match (the suffix version) to sufv */
+          if ( (sufv = lputil_get_re_match(regmatch, 2, vers)) == NULL) {
+               free(suf);
+               free(vers);
+               regfree(regexp);
+               lpatom_destroy(atom);
+               return NULL;
+          }
+          /* assign the parsed suffix string to atom->sufenum */
+          atom->sufenum = lpatom_suffix_parse(suf);
+          /* assign the converted sufv string to atom->sufv */
+          atom->sufv = atoi(sufv);
 
-     /* clean up the suf object  */
-     lpatom_suffix_destroy(suf);
+          /* free up the allocated memory */
+          free(suf);
+          free(sufv);
+     }
+     regfree(regexp);
 
+     
+     /* compile the release version regexp */
+     regcomp(regexp, LPATOM_RE_REL, REG_EXTENDED);
+
+     /* check if the regex matches */
+     if ( regexec(regexp, vers, 2, regmatch, 0) == 0) {
+          /* assign the matched substring to relv */
+          if ( (relv = lputil_get_re_match(regmatch, 1, vers)) == NULL) {
+               free(vers);
+               regfree(regexp);
+               lpatom_destroy(atom);
+               return NULL;
+          }
+          /* convert the substring to int and assign it to atom->rel */
+          atom->rel = atoi(relv);
+          free(relv);
+     }
+     /* free up the regexp object */
+     regfree(regexp);
+     free(vers);
      return atom;
 }
 
@@ -235,98 +274,34 @@ lpatom_parse(const char *s)
  *         The __lpatom_parse_suffix() function may also fail and set errno
  *         for any of the errors specified for the routine malloc(3).
  */
-static lpatom_suf_t *
+static lpatom_sufe_t
 lpatom_suffix_parse(const char *s)
 {
-     regmatch_t regmatch[4];
-     regex_t regexp[1];
-     char *sufs;
-     char *sufv = NULL;
-     char *rs;
-     lpatom_suf_t *suf;
-
-     /* allocate memory for the suf object and initialize it */
-     if ( (suf = lpatom_suffix_init()) == NULL)
-          return NULL;
-
-     /* compile the regexp with __LP_VSUF_RE, check if it matches and assign
-      * the matched string (the suffix) to sufs */
-     regcomp (regexp, LPATOM_RE_VSUF, REG_EXTENDED);
-     if ( regexec(regexp, s, 2, regmatch, 0) == 0 ) {
-          if ( (sufs = lputil_get_re_match(regmatch, 1, s)) == NULL)
-               return NULL;
-          /* simple switch cases for parsing the suffix (yeah, i know this
-           * would allow other non-valid suffixes to be parsed, but this would
-           * have been detected by the regexp matching earlier  */
-          switch(sufs[0]) {
-          case 'a':
-               suf->se = alpha;
-               break;
-          case 'b':
-               suf->se = beta;
-               break;
-          case 'p':
-               switch(sufs[1]) {
-               case 'r':
-                    suf->se = pre;
-                    break;
-               default:
-                    suf->se = p;
-               }
-               break;
+     lpatom_sufe_t suf;
+     
+     switch(s[0]) {
+     case 'a':
+          suf = alpha;
+          break;
+     case 'b':
+          suf = beta;
+          break;
+     case 'p':
+          switch(s[1]) {
           case 'r':
-               suf->se = rc;
+               suf = pre;
                break;
           default:
-               suf->se = no;
-               break;
+               suf = p;
           }
-          free(sufs);
-          regfree(regexp);
-          regcomp(regexp, LPATOM_RE_SUFV, REG_EXTENDED);
-          if ( regexec(regexp, s, 4, regmatch, 0) == 0) {
-               if ( (sufv = lputil_get_re_match(regmatch, 3, s)) == NULL)
-                    return NULL;
-               suf->sufv = atoi(sufv);
-               free(sufv);
-          }
+          break;
+     case 'r':
+          suf = rc;
+          break;
+     default:
+          suf = no;
+          break;
      }
-     /* clean up the compiled regexp */
-     regfree(regexp);
-
-     /* compile the regexp with __LP_REL_RE, check if it matches, convert the
-      * matched string to decimal and assign it to suf->rel  */
-     regcomp(regexp, LPATOM_RE_REL, REG_EXTENDED);
-     if (regexec(regexp, s, 2, regmatch, 0) == 0) {
-          if ( (rs = lputil_get_re_match(regmatch, 1, s)) == NULL)
-               return NULL;
-          suf->rel = atoi(rs);
-          free(rs);
-     }
-     /* clean up */
-     regfree(regexp);
-
-     return suf;
-}
-
-/*
- * __lpatom_init_suffix: initialize an __lpatom_suf_t object
- *
- * Gets an pointer to an lpatom_suf_t object and sets all of its pointers to
- * NULL. If a NULL pointer was given, __lpatom_init_suffix will just return.
- *
- * PRIVATE: This is a private function and thus should not be called directly
- *          from outside the API, as the way this function works can be
- *          changed regularly.
- */
-static lpatom_suf_t *
-lpatom_suffix_init(void)
-{
-     lpatom_suf_t *suf;
-     if ( (suf = malloc(sizeof(lpatom_suf_t))) == NULL )
-          return NULL;
-     suf->se = no;
-     suf->rel = 0;
      return suf;
 }
 
@@ -356,29 +331,6 @@ lpatom_init(void)
      atom->rel = 0;
 
      return atom;
-}
-
-/*
- * __lpatom_destroy_suffix: destroy an __lpatom_suffix_t object
- *
- * Gets an pointer to an __lpatom_suffix_t object and free(2)s up all memory
- * of that object. If a NULL pointer was given, __lpatom_destroy_suffix will
- * just return.
- *
- * PRIVATE: This is a private function and thus should not be called directly
- *          from outside the API, as the way this function works can be
- *          changed regularly.
- *
- * ATTENTION: Do not try to use a destroyed __lpatom_suffix_t object or
- *            unexpected things will happen
- */
-static void
-lpatom_suffix_destroy(lpatom_suf_t *suffix)
-{
-     if (suffix != NULL ){
-          free(suffix);
-     }
-     return;
 }
 
 /*
@@ -544,7 +496,7 @@ lpatom_version_explode(const char *ver) {
      char **sv;
 
      /* split up the version string */
-     if ( (sv = lputil_splitstr(ver, ".")) == NULL)
+     if ( (sv = lputil_splitstr(ver, ".")) == NULL )
           /* return NULL if error was received */
           return NULL;
      /* get the number of individual strings */
@@ -565,7 +517,7 @@ lpatom_version_explode(const char *ver) {
           ia[i] = atoi(sv[i]);
      /* clean up the string array which was returned by lputil_splitstr() */
      ia[i] = -1;
-     lputil_splitstr_destroy(sv);
+    lputil_splitstr_destroy(sv);
      return ia;
 }
 

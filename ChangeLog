@@ -2,7 +2,10 @@
 
 	* lib/liblputil.c (lputil_splitstr_destroy): fixed segfault
 
-	* lib/liblpatom.c (lpatom_version_explode): added.
+	* lib/liblpatom.c (lpatom_parse): redone most of it, can be marked
+	as stable now.
+
+	(lpatom_version_explode): added.
 
 	* lib/liblpatom.h (lpatom_t): added member ver_ex (a int array
 	which holds the exploded version string.
