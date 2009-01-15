@@ -7,7 +7,7 @@
 
 	(lpatom_version_cmp): added.
 
-	* lib/liblputil.h (lputil_splitstr): added.
+	* lib/liblputil.h (lputil_splitstr_destroy): added.
 
 2009-01-14  Lars Hartmann  <lars (at) chaotika (dot) org>
 
