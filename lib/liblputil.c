@@ -154,3 +154,13 @@ lputil_intlen(int d)
           ;
      return i;
 }
+
+void
+lputil_splitstr_destroy(char **splitstr)
+{
+     int i;
+     
+     for (i=0; splitstr[i] != NULL; ++i)
+          free(splitstr[i]);
+     free(splitstr);
+}

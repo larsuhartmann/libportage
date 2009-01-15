@@ -149,4 +149,7 @@ lputil_memdup(const void *s, size_t len);
 
 size_t
 lputil_intlen(int i);
+
+void
+lputil_splitstr_destroy(char **splitstr);
 #endif

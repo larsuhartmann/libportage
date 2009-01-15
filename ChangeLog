@@ -1,3 +1,7 @@
+2009-01-15  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* lib/liblputil.h (lputil_splitstr): added
+
 2009-01-14  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* lib/liblpatom.h (lpatom_get_version): added.
