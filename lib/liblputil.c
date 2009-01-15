@@ -177,7 +177,7 @@ lputil_strndup(char *s, size_t n)
      if ( (d=malloc(n)) == NULL )
           return NULL;
 
-     for ( i=0; ((d[i] = s[i]) != '\0') || (i < n-1); ++i)
+     for ( i=0; ((d[i] = s[i]) != '\0') || (i < n-1); ++i )
           ;
      if ( i == n-1 )
           d[i] = '\0';
