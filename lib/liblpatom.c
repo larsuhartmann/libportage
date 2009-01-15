@@ -136,6 +136,7 @@ lpatom_parse(const char *s)
 
      /* check if this is a valid ebuild version atom by regexp matching */
      if (! (regexec(regexp, s, 5, regmatch, 0) == 0)) {
+          regfree(regexp);
           errno = EINVAL;
           return NULL;
      }
@@ -171,10 +172,13 @@ lpatom_parse(const char *s)
      if ( (vers = lputil_get_re_match(regmatch, 1, ver)) == NULL)
           return NULL;
      atom->ver = vers;
-     /* assign the output of lpatom_version_explode to atom->ver_exploded */
-     atom->ver_ex = lpatom_version_explode(vers);
      /* free up the regexp object */
      regfree(regexp);
+     /* assign the output of lpatom_version_explode to atom->ver_exploded */
+     if ( (atom->ver_ex = lpatom_version_explode(vers)) == NULL) {
+          lpatom_destroy(atom);
+          return NULL;
+     }
      /* check if we have a version suffix (a-z) and if yes, add it to
       * atom->verc */
      regcomp(regexp, LPATOM_RE_VER_SUF, REG_EXTENDED);
@@ -188,8 +192,10 @@ lpatom_parse(const char *s)
        * matched string to ssuf if so */
      regcomp (regexp, LPATOM_RE_SUF, REG_EXTENDED);
      if ( regexec(regexp, s, 5, regmatch, 0) == 0 ) {
-          if ( (ssuf = lputil_get_re_match(regmatch, 1, s)) == NULL )
+          if ( (ssuf = lputil_get_re_match(regmatch, 1, s)) == NULL ) {
+               regfree(regexp);
                return NULL;
+          }
      }
 
      /* free up the regexp object */
