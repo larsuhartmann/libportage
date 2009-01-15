@@ -99,6 +99,9 @@ lpatom_suffix_destroy(lpatom_suf_t *suffix);
 static char *
 lpatom_suffe_to_string(lpatom_sufe_t suffix);
 
+static int *
+lpatom_version_explode(const char *ver);
+
 /* 
  * lpatom_parse: Reads the atom data out of an packetname string
  *
@@ -168,6 +171,8 @@ lpatom_parse(const char *s)
      if ( (vers = lputil_get_re_match(regmatch, 1, ver)) == NULL)
           return NULL;
      atom->ver = vers;
+     /* assign the output of lpatom_version_explode to atom->ver_exploded */
+     atom->ver_ex = lpatom_version_explode(vers);
      /* free up the regexp object */
      regfree(regexp);
      /* check if we have a version suffix (a-z) and if yes, add it to
@@ -377,6 +382,7 @@ lpatom_destroy(lpatom_t *atom)
           free(atom->name);
           free(atom->cat);
           free(atom->ver);
+          free(atom->ver_ex);
           free(atom);
      }
      return;
@@ -512,4 +518,64 @@ lpatom_get_version(const lpatom_t *atom)
           r[lent] = atom->verc;
      r[len] = '\0';
      return r;
+}
+
+static int *
+lpatom_version_explode(const char *ver) {
+     int *ia;
+     size_t i;
+     char **sv;
+
+     /* split up the version string */
+     if ( (sv = lputil_splitstr(ver, ".")) == NULL)
+          /* return NULL if error was received */
+          return NULL;
+     /* get the number of individual strings */
+     for (i=0; sv[i] != NULL; ++i)
+          ;
+     /* allocate space for an int array with i entrys */
+     if ( (ia = malloc(sizeof(int)*(i+1))) == NULL) {
+          /* if allocation wasnt successful, throw away sv and return NULL
+           * (errno is already set by malloc) */
+          lputil_splitstr_destroy(sv);
+          return NULL;
+     }
+     /* iterate over the string array which was returned by
+      * lputil_splitstr() */
+     for (i=0; sv[i] != NULL; ++i)
+          /* convert the current string to an int and assign that one to
+           * ia[i] */
+          ia[i] = atoi(sv[i]);
+     /* clean up the string array which was returned by lputil_splitstr() */
+     ia[i] = -1;
+     lputil_splitstr_destroy(sv);
+     return ia;
+}
+
+
+int
+lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
+{
+     int *ia1, *ia2;
+     int i;
+
+     ia1 = atom1->ver_ex;
+     ia2 = atom2->ver_ex;
+     
+     /* iterate over both int arrays until the end of one of em is reached */
+     for (i=0; ia1[i] != -1 || ia2[i] != -1; ++i)
+          /* check if both are different, if yes, return the difference */
+          if (ia1[i] != ia2[i])
+               /* return the difference */
+               return ia1[i] - ia2[i];
+     /* check if we reached the end of only one of the two versions */
+     if ( ia1[i] != ia2[i] )
+          /* return the difference */
+          return ia1[i] - ia2[i];
+     /* check if the two version characters differ */
+     if (atom1->verc != atom2->verc)
+          /* return the difference */
+          return atom1->verc - atom2->verc;
+     /* return the difference between the two suffixes */
+     return atom1->sufenum - atom2->sufenum;
 }

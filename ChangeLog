@@ -1,6 +1,13 @@
 2009-01-15  Lars Hartmann  <lars (at) chaotika (dot) org>
 
-	* lib/liblputil.h (lputil_splitstr): added
+	* lib/liblpatom.c (lpatom_version_explode): added.
+
+	* lib/liblpatom.h (lpatom_t): added member ver_ex (a int array
+	which holds the exploded version string.
+
+	(lpatom_version_cmp): added.
+
+	* lib/liblputil.h (lputil_splitstr): added.
 
 2009-01-14  Lars Hartmann  <lars (at) chaotika (dot) org>
 

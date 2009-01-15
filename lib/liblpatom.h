@@ -82,6 +82,7 @@ typedef struct {
      char *cat;
      char verc;
      char *ver;
+     int *ver_ex;
      lpatom_sufe_t sufenum;
      int sufv;
      int rel;
@@ -126,5 +127,8 @@ lpatom_get_qname(const lpatom_t *atom);
 
 char *
 lpatom_get_version(const lpatom_t *atom);
+
+int
+lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2);
 
 #endif
