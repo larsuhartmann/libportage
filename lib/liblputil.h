@@ -152,4 +152,8 @@ lputil_intlen(int i);
 
 void
 lputil_splitstr_destroy(char **splitstr);
+
+char *
+lputil_strndup(char *s, size_t n);
+
 #endif

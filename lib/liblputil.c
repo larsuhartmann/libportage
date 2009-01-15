@@ -90,18 +90,21 @@ lputil_memdup(const void *s, size_t len)
 }
 
 char **
-lputil_splitstr(const char *s, const char *delim)
+lputil_splitstr(const char *s, const char *delim) 
 {
      char **r;
      char **rt;
-     char *t = (char *)s;
-     size_t len = 10;
+     char *t;
+     size_t len = 128;
      int i, j;
 
      if ( s == NULL || delim == NULL) {
           errno = EINVAL;
           return NULL;
      }
+     
+     if ( (t = strdup(s)) == NULL)
+          return NULL;
      
      /* allocate len bytes on the heap and assign a pointer to that to that
       * region r */
@@ -113,11 +116,9 @@ lputil_splitstr(const char *s, const char *delim)
           if (t != NULL)
                t = NULL;
           /* check if we still got enough space in r, if not reallocate it
-           * with space for 5 more chars */
+           * with space for 5 more strings */
           if (i == len-2) {
-               len += sizeof(char)*5;
-               /* back up r */
-               rt = r;
+               len += 128;
                /* reallocate the region r points to and assign a pointer to
                 * that region to r, if not successfull, clean up everything we
                 * ve allocated so far and return */
@@ -126,22 +127,27 @@ lputil_splitstr(const char *s, const char *delim)
                     for (j=0; j <= i; ++j)
                          free(r[j]);
                     free(r);
+                    free(t);
                     return NULL;
                }
-               /* assign the pointer to the reallocated region(rt) to r*/
+               /* assign the pointer to the reallocated region(rt) to r */
                r = rt;
           }
      }
      /* reallocate r to the optimal size */
-     if ( (r = realloc(r, sizeof(char *)*(i+1))) == NULL ) {
+     if ( (rt = realloc(r, sizeof(char *)*(i+1))) == NULL ) {
           /* iterate over r and free up every entry */
           for (j=0; j < i; ++j)
                free(r[j]);
           free(r);
+          free(t);
           return NULL;
      }
+     r = rt;
+     r[i] = NULL;
      /* we do not need to NULL terminate the r, as strtok's last result was
       * already NULL */
+     free(t);
      return r;
 }
 
@@ -158,5 +164,29 @@ lputil_intlen(int d)
 void
 lputil_splitstr_destroy(char **splitstr)
 {
+     free(splitstr[0]);
      free(splitstr);
+}
+
+char *
+lputil_strndup(char *s, size_t n)
+{
+     char *d, *dt;
+     int i;
+
+     if ( (d=malloc(n)) == NULL )
+          return NULL;
+
+     for ( i=0; ((d[i] = s[i]) != '\0') || (i < n-1); ++i)
+          ;
+     if ( i == n-1 )
+          d[i] = '\0';
+     else {
+          if ( (dt = realloc(d, i+1)) == NULL ) {
+               free(d);
+               return NULL;
+          }
+          d = dt;
+     }
+     return d;
 }
