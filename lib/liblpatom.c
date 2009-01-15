@@ -176,6 +176,7 @@ lpatom_parse(const char *s)
      regfree(regexp);
      /* assign the output of lpatom_version_explode to atom->ver_exploded */
      if ( (atom->ver_ex = lpatom_version_explode(vers)) == NULL) {
+          free(ver);
           lpatom_destroy(atom);
           return NULL;
      }
@@ -183,10 +184,16 @@ lpatom_parse(const char *s)
       * atom->verc */
      regcomp(regexp, LPATOM_RE_VER_SUF, REG_EXTENDED);
      if( regexec(regexp, ver, 2, regmatch, 0) == 0) {
-          if ( (ver = lputil_get_re_match(regmatch, 1, ver)) == NULL)
+          if ( (vers = lputil_get_re_match(regmatch, 1, ver)) == NULL) {
+               free(ver);
+               regfree(regexp);
                return NULL;
-          atom->verc = ver[0];
+          }
+          atom->verc = vers[0];
      }
+     free(vers);
+     free(ver);
+     regfree(regexp);
 
       /* compile __LP_SUF_RE regexp, check if it matches and assign the
        * matched string to ssuf if so */
@@ -283,6 +290,7 @@ lpatom_suffix_parse(const char *s)
                suf->sufv = atoi(sufv);
           }
      }
+     free(sufs);
      /* clean up the compiled regexp */
      regfree(regexp);
 
@@ -468,6 +476,8 @@ lpatom_get_qname(const lpatom_t *atom)
           return NULL;
      strcpy(r, cat);
      strcat(r, name);
+     free(cat);
+     free(name);
      return r;
 }
 
