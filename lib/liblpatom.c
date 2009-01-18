@@ -101,7 +101,7 @@ lpatom_version_explode(const char *ver);
  *         the errors specified for the routine malloc(3).
  */
 lpatom_t *
-lpatom_parse(const char *s)
+lpatom_parse(const char *pname)
 {
      regex_t regexp[1];
      regmatch_t regmatch[512];
@@ -117,7 +117,7 @@ lpatom_parse(const char *s)
      /* compile regexp */
      regcomp(regexp, LPATOM_RE, REG_EXTENDED);
      /* check if this is a valid atom */
-     if ( regexec(regexp, s, 0, regmatch, 0) != 0) {
+     if ( regexec(regexp, pname, 0, regmatch, 0) != 0) {
           regfree(regexp);
           lpatom_destroy(atom);
           errno = EINVAL;
@@ -129,9 +129,9 @@ lpatom_parse(const char *s)
      /* compile the category regexp */
      regcomp(regexp, LPATOM_RE_CAT, REG_EXTENDED);
      /* check if this atom has a category */
-     if ( regexec(regexp, s, 2, regmatch, 0) == 0) {
+     if ( regexec(regexp, pname, 2, regmatch, 0) == 0) {
           /* assign the category string to atom->cat */
-          if ( (atom->cat = lputil_get_re_match(regmatch, 1, s)) == NULL ) {
+          if ( (atom->cat = lputil_get_re_match(regmatch, 1, pname)) == NULL ) {
                regfree(regexp);
                lpatom_destroy(atom);
                return NULL;
@@ -143,9 +143,9 @@ lpatom_parse(const char *s)
 
      /* compile the package name regexp */
      regcomp(regexp, LPATOM_RE_NAME, REG_EXTENDED);
-     regexec(regexp, s, 3, regmatch, 0);
+     regexec(regexp, pname, 3, regmatch, 0);
      /* assign the package name to atom->name */
-     if ( (atom->name = lputil_get_re_match(regmatch, 2, s)) == NULL ) {
+     if ( (atom->name = lputil_get_re_match(regmatch, 2, pname)) == NULL ) {
           regfree(regexp);
           lpatom_destroy(atom);
           return NULL;
@@ -160,7 +160,7 @@ lpatom_parse(const char *s)
 
      /* snip off the rest of the string (shoud include the version plus the
       * suffix and release version */
-     if ( (vers = strdup(s+len+1)) == NULL) {
+     if ( (vers = strdup(pname+len+1)) == NULL) {
           lpatom_destroy(atom);
           return NULL;
      }
@@ -333,15 +333,6 @@ lpatom_init(void)
      return atom;
 }
 
-/*
- * lpatom_destroy: destroy an lpatom_t object
- *
- * Gets an pointer to an lpatom_t object and free(2)s up all memory of that
- * object. If a NULL pointer was given, lpatom_destroy will just return.
- *
- * ATTENTION: Do not try to use a destroyed __lpatom_t object or unexpected
- *            things will happen
- */
 void
 lpatom_destroy(lpatom_t *atom)
 {
@@ -542,11 +533,15 @@ lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
           /* return the difference */
           return ia1[i] - ia2[i];
      /* check if the two version characters differ */
-     if (atom1->verc != atom2->verc)
+     if ( atom1->verc != atom2->verc )
           /* return the difference */
           return atom1->verc - atom2->verc;
-     /* return the difference between the two suffixes */
-     return atom1->sufenum - atom2->sufenum;
+     /* check if the two suffixes differ */
+     if ( atom1->sufenum != atom2->sufenum )
+          /* return the difference */
+          return atom1->sufenum - atom2->sufenum;
+     /* return the difference between the release versions */
+     return atom1->rel - atom2->rel;
 }
 
 int

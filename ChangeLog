@@ -1,5 +1,8 @@
 2009-01-18  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* lib/liblpatom.c (lpatom_version_cmp): now we also compare the
+	suffix.
+
 	* lib/liblpatom.h (lpatom_cmp): added.
 
 	(lpatom_get_fullname): added.
