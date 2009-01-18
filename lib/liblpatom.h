@@ -137,4 +137,7 @@ lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2);
 int
 lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2);
 
+char *
+lpatom_get_fullname(const lpatom_t *atom);
+
 #endif
