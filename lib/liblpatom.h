@@ -126,6 +126,9 @@ char *
 lpatom_get_qname(const lpatom_t *atom);
 
 char *
+lpatom_get_fullname(const lpatom_t *atom);
+
+char *
 lpatom_get_version(const lpatom_t *atom);
 
 int

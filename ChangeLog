@@ -2,6 +2,8 @@
 
 	* lib/liblpatom.h (lpatom_cmp): added.
 
+	(lpatom_get_fullname): added.
+
 2009-01-15  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* lib/liblputil.c (lputil_splitstr_destroy): fixed segfault.

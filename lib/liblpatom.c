@@ -558,3 +558,56 @@ lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
           return ret;
      return lpatom_version_cmp(atom1, atom2);
 }
+
+char *
+lpatom_get_fullname(const lpatom_t *atom)
+{
+     char *qname;
+     size_t qnamelen;
+     char *suffix;
+     size_t suffixlen = 0;
+     size_t rellen = 0;
+     size_t len = 0;
+     size_t verlen;
+     char *r;
+
+     qname = lpatom_get_qname(atom);
+     qnamelen = strlen(qname) + 1;
+     suffix = lpatom_get_suffix(atom);
+     suffixlen = strlen(suffix);
+     if ( suffixlen > 0 )
+          ++suffixlen;
+     
+     if ( atom->rel > 0)
+          rellen = lputil_intlen(atom->rel) + 2;
+
+     if (suffixlen > 0)
+          len += suffixlen;
+
+     verlen = strlen(atom->ver);
+     if (atom->verc != 0)
+          ++verlen;
+     
+
+     len = qnamelen + suffixlen + rellen + verlen;
+
+     if ( (r = malloc(len)) == NULL) {
+          free(qname);
+          free(suffix);
+          return NULL;
+     }
+
+     strcpy(r, qname);
+     r[qnamelen-1] = '-';
+     strcpy(r+qnamelen, atom->ver);
+     if ( atom->verc > 0 )
+          r[qnamelen+verlen-1] = atom->verc;
+     if ( suffixlen > 0 ) {
+          r[qnamelen+verlen] = '_';
+          strcpy(r+qnamelen+verlen+1, suffix);
+     }
+     if ( rellen > 0)
+          sprintf(r+qnamelen+verlen+suffixlen, "-r%d", atom->rel);
+     puts(r);
+     return r;
+}
