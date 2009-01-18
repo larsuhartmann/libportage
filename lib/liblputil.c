@@ -172,21 +172,17 @@ char *
 lputil_strndup(char *s, size_t n)
 {
      char *d, *dt;
-     int i;
+     size_t len;
 
-     if ( (d=malloc(n)) == NULL )
+     if ( (d = malloc(n)) == NULL )
           return NULL;
 
-     for ( i=0; ((d[i] = s[i]) != '\0') || (i < n-1); ++i )
-          ;
-     if ( i == n-1 )
-          d[i] = '\0';
-     else {
-          if ( (dt = realloc(d, i+1)) == NULL ) {
+     strncpy(d, s, n);
+     if ( ( len = strlen(d)) < n-1)
+          if ( (dt = realloc(d, len+1)) == NULL) {
                free(d);
                return NULL;
           }
-          d = dt;
-     }
+     d = dt;
      return d;
 }
