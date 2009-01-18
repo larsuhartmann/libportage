@@ -1,6 +1,10 @@
+2009-01-18  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* lib/liblpatom.h (lpatom_cmp): added.
+
 2009-01-15  Lars Hartmann  <lars (at) chaotika (dot) org>
 
-	* lib/liblputil.c (lputil_splitstr_destroy): fixed segfault
+	* lib/liblputil.c (lputil_splitstr_destroy): fixed segfault.
 
 	* lib/liblpatom.c (lpatom_parse): redone most of it, can be marked
 	as stable now.

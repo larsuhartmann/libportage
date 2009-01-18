@@ -131,4 +131,7 @@ lpatom_get_version(const lpatom_t *atom);
 int
 lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2);
 
+int
+lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2);
+
 #endif

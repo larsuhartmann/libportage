@@ -154,7 +154,7 @@ lpatom_parse(const char *s)
      regfree(regexp);
 
      /* count the length of the part before the version */
-     if (has_cat)
+     if ( has_cat )
           len += (strlen(atom->cat) + 1);
      len += strlen(atom->name);
 
@@ -547,4 +547,14 @@ lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
           return atom1->verc - atom2->verc;
      /* return the difference between the two suffixes */
      return atom1->sufenum - atom2->sufenum;
+}
+
+int
+lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
+{
+     int ret;
+     if ( (ret = strcmp(lpatom_get_qname(atom1), lpatom_get_qname(atom2)))
+         != 0 )
+          return ret;
+     return lpatom_version_cmp(atom1, atom2);
 }
