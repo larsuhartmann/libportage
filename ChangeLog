@@ -1,10 +1,20 @@
+2009-01-19  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* lib/liblpatom.c (lpatom_get_version): does now return the full
+	version (including suffix and release).
+	(lpatom_get_version): does now use strcat instead of manual string
+	handling.
+	(lpatom_get_fullname): does now use the new lpatom_get_version()
+	function instead of calling get_suffix, get_release.
+	(lpatom_get_fullname): does now use strcat instead of manual
+	string handling.
+
 2009-01-18  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* lib/liblpatom.c (lpatom_version_cmp): now we also compare the
 	suffix.
 
 	* lib/liblpatom.h (lpatom_cmp): added.
-
 	(lpatom_get_fullname): added.
 
 2009-01-15  Lars Hartmann  <lars (at) chaotika (dot) org>
@@ -13,16 +23,13 @@
 
 	* lib/liblpatom.c (lpatom_parse): redone most of it, can be marked
 	as stable now.
-
 	(lpatom_version_explode): added.
 
 	* lib/liblpatom.h (lpatom_t): added member ver_ex (a int array
 	which holds the exploded version string.
-
 	(lpatom_version_cmp): added.
 
 	* lib/liblputil.h (lputil_splitstr_destroy): added.
-
 	(lputil_strndup): added.
 
 2009-01-14  Lars Hartmann  <lars (at) chaotika (dot) org>

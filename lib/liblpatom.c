@@ -87,6 +87,33 @@ lpatom_suffe_to_string(lpatom_sufe_t suffix);
 static int *
 lpatom_version_explode(const char *ver);
 
+/**
+ * \brief returns the suffix of an atom as a c string.
+ *
+ * Returns a string containing the version suffix of a given lpatom_t data
+ * structure.
+ *
+ * If the atom has no suffix, an empty string ("") is returned.
+ *
+ * If an error occured, \c NULL is returned and \c errno is set to indicate
+ * the error.
+ *
+ * \param atom a pointer to an lpatom_t data structure that was returned by
+ * lpatom_parse().
+ *
+ * \return a string containing the suffix, an empty string if the atom has no
+ * suffix or \c NULL if an error has occured.
+ *
+ * \b Errors:
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine malloc(3).
+ */
+char *
+lpatom_get_suffix(const lpatom_t *atom);
+
+char *
+lpatom_get_release(const lpatom_t *atom);
+
 /* 
  * lpatom_parse: Reads the atom data out of an packetname string
  *
@@ -386,7 +413,7 @@ lpatom_get_release(const lpatom_t *atom)
      char *r;
      char *t;
      if (atom->rel > 0) {
-          if ( (t = malloc(sizeof(char)*12)) == NULL )
+          if ( (t = malloc(lputil_intlen(atom->rel)+1)) == NULL )
                return NULL;
           sprintf(t, "r%d", atom->rel);
      } else
@@ -462,21 +489,48 @@ lpatom_suffe_to_string(lpatom_sufe_t suffix)
 char *
 lpatom_get_version(const lpatom_t *atom)
 {
-     size_t len, lent = 0;
+     size_t len, suflen, rellen;
      char *r;
+     char *suf;
+     char *rel;
+     char *verc = NULL;
      
      len = strlen(atom->ver);
-     lent = len;
+     suf = lpatom_get_suffix(atom);
+     suflen = strlen(suf);
+     if ( suflen > 0 )
+          len += suflen + 1;
+     rel = lpatom_get_release(atom);
+     rellen = strlen(rel);
+     if ( rellen > 0 )
+          len += rellen + 1;
      if (atom->verc > 0) {
-          lent = len;
+          if ( (verc = malloc(1)) == NULL) {
+               free(suf);
+               free(rel);
+               return NULL;
+          }
+          sprintf(verc, "%c", atom->verc);
           ++len;
      }
-     if ( (r = malloc(len+1)) == NULL)
+     if ( (r = malloc(len)) == NULL)
           return NULL;
      strcpy(r, atom->ver);
-     if (lent != 0)
-          r[lent] = atom->verc;
-     r[len] = '\0';
+     if ( atom->verc > 0) {
+          sprintf(verc, "%c", atom->verc);
+          strcat(r, verc);
+     }
+     if ( suflen > 0) {
+          strcat(r, "_");
+          strcat(r, suf);
+     }
+     if (rellen > 1) {
+          strcat(r, "-");
+          strcat(r, rel);
+     }
+     free(rel);
+     free(verc);
+     free(suf);
      return r;
 }
 
@@ -495,7 +549,7 @@ lpatom_version_explode(const char *ver) {
           ;
      /* allocate space for an int array with i entrys */
      if ( (ia = malloc(sizeof(int)*(i+1))) == NULL) {
-          /* if allocation wasnt successful, throw away sv and return NULL
+          /* if allocation wasnt successful, throw away sv and return NULL *
            * (errno is already set by malloc) */
           lputil_splitstr_destroy(sv);
           return NULL;
@@ -558,51 +612,24 @@ char *
 lpatom_get_fullname(const lpatom_t *atom)
 {
      char *qname;
-     size_t qnamelen;
-     char *suffix;
-     size_t suffixlen = 0;
-     size_t rellen = 0;
+     char *ver;
      size_t len = 0;
-     size_t verlen;
      char *r;
 
      qname = lpatom_get_qname(atom);
-     qnamelen = strlen(qname) + 1;
-     suffix = lpatom_get_suffix(atom);
-     suffixlen = strlen(suffix);
-     if ( suffixlen > 0 )
-          ++suffixlen;
-     
-     if ( atom->rel > 0)
-          rellen = lputil_intlen(atom->rel) + 2;
-
-     if (suffixlen > 0)
-          len += suffixlen;
-
-     verlen = strlen(atom->ver);
-     if (atom->verc != 0)
-          ++verlen;
-     
-
-     len = qnamelen + suffixlen + rellen + verlen;
+     len = strlen(qname) + 1;
+     ver = lpatom_get_version(atom);
+     len += strlen(ver);
 
      if ( (r = malloc(len)) == NULL) {
           free(qname);
-          free(suffix);
+          free(ver);
           return NULL;
      }
 
      strcpy(r, qname);
-     r[qnamelen-1] = '-';
-     strcpy(r+qnamelen, atom->ver);
-     if ( atom->verc > 0 )
-          r[qnamelen+verlen-1] = atom->verc;
-     if ( suffixlen > 0 ) {
-          r[qnamelen+verlen] = '_';
-          strcpy(r+qnamelen+verlen+1, suffix);
-     }
-     if ( rellen > 0)
-          sprintf(r+qnamelen+verlen+suffixlen, "-r%d", atom->rel);
-     puts(r);
+     strcat(r, "-");
+     strcat(r, ver);
+
      return r;
 }

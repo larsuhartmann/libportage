@@ -88,39 +88,52 @@ typedef struct {
      int rel;
 } lpatom_t;
 
-/*
- * lpatom_parse: Reads the atom data out of an packetname string
+/**
+ * \brief Reads the atom data out of an packetname string.
  *
- * Gets an version string and returns an pointer to an lpatom_t struct. If an
- * error occured, Null is returned and errno is set to indicate the error.
+ * Gets the full name of a packet as a c string and returns an pointer to an
+ * lpatom_t struct which holds the parsed data.
  *
- * Errors:
- *         EINVAL The file either is no valid gentoo binary package or has an
- *                invalid xpak.
+ * The given string must be a valid gentoo package name (see documentation for
+ * more information)
  *
- *         The lpatom_parse() function may also fail and set errno for any of
- *         the errors specified for the routine malloc(3).
+ * The memory for the returned struct is allocated by malloc and is not used
+ * elsewhere in this lib, if you want to destroy it, use lpatom_destroy().
+ *
+ * If an error occured, \c Null is returned and \c errno is set to indicate the
+ * error.
+ *
+ * \param pname a string with the full package version.
+ *
+ * \return a pointer to an lpatom_t struct or \c NULL if an error has occured.
+ *
+ * \sa lpatom_t lpatom_destroy()
+ *
+ * \b Errors:
+ * 
+ * - \c EINVAL pname is not a valid package atom.
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine malloc(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine strdup(3). 
  */
 lpatom_t *
-lpatom_parse(const char *s);
+lpatom_parse(const char *pname);
 
-/*
- * lpatom_destroy: destroy an lpatom_t object
+/**
+ * \brief destroys an lpatom_t object.
  *
- * Gets an pointer to an lpatom_t object and free(2)s up all memory of that
- * object. If a NULL pointer was given, lpatom_destroy will just return.
+ * frees up all corresponding memory regions using free(3). If a \c NULL
+ * pointer was given, lpatom_destroy() will just return
+ * 
+ * \param atom a pointer to an lpxpak_t data structure that was returned by
+ * lpatom_parse().
  *
- * ATTENTION: Do not try to use a destroyed __lpatom_t object or unexpected
- *            things will happen
+ * \b ATTENTION: Do not try to access the datastructure after destroying it or
+ * anything can happen.
  */
 void
 lpatom_destroy(lpatom_t *atom);
-
-char *
-lpatom_get_suffix(const lpatom_t *atom);
-
-char *
-lpatom_get_release(const lpatom_t *atom);
 
 char *
 lpatom_get_qname(const lpatom_t *atom);
