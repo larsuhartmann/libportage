@@ -135,6 +135,31 @@ lpatom_parse(const char *pname);
 void
 lpatom_destroy(lpatom_t *atom);
 
+/**
+ * \brief get the qualified name of a atom.
+ *
+ * Returns the qualified name(the category if one exists plus the name) of the
+ * given atom as a \c nul terminated C string
+ *
+ * If an Error occurs, \c NULL is returned and \c errno is set to indicate the
+ * error.
+ *
+ * \param atom a pointer to an lpxpak_t data structure that was returned by
+ * lpatom_parse().
+ *
+ * \return a \c nul terminated C string with the qualified name or \c NULL if
+ * an error has occured.
+ *
+ * \sa lpatom_get_fullname()
+ * \sa lpatom_get_version()
+ *
+ * \b Errors:
+ * 
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine malloc(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine strdup(3). 
+ */
 char *
 lpatom_get_qname(const lpatom_t *atom);
 
