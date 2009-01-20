@@ -113,7 +113,9 @@ char * lputil_substr(const char *s, size_t off, size_t len);
  * 
  * - \c EINVAL one or both of the given pointers are \c NULL
  * - This routine may also fail and set errno for any of the errors specified
- *    for the routine malloc(3).
+ *   for the routine malloc(3).
+ * - This routine may also fail and set errno for any of the errors specified
+ *   for the routine strdup(3).
  */
 char **
 lputil_splitstr(const char *s, const char *delim);
