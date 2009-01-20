@@ -1,3 +1,7 @@
+2009-01-20  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* lib/liblpatom.h: documented.
+
 2009-01-19  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* lib/liblpatom.c (lpatom_get_version): does now return the full
