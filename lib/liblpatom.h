@@ -107,7 +107,8 @@ typedef struct {
  *
  * \return a pointer to an lpatom_t struct or \c NULL if an error has occured.
  *
- * \sa lpatom_t lpatom_destroy()
+ * \sa lpatom_t, lpatom_destroy(), lpatom_get_version(),
+ * lpatom_get_fullname(), lpatom_get_qname()
  *
  * \b Errors:
  * 
@@ -128,6 +129,8 @@ lpatom_parse(const char *pname);
  * 
  * \param atom a pointer to an lpxpak_t data structure that was returned by
  * lpatom_parse().
+ *
+ * \sa lpatom_t, lpatom_parse()
  *
  * \b ATTENTION: Do not try to access the datastructure after destroying it or
  * anything can happen.
@@ -150,7 +153,7 @@ lpatom_destroy(lpatom_t *atom);
  * \return a \c nul terminated C string with the qualified name or \c NULL if
  * an error has occured.
  *
- * \sa lpatom_get_fullname() lpatom_get_version()
+ * \sa lpatom_t, lpatom_get_fullname(), lpatom_get_version(), lpatom_parse()
  *
  * \b Errors:
  * 
@@ -177,7 +180,7 @@ lpatom_get_qname(const lpatom_t *atom);
  * \return a \c nul terminated C string with the qualified name or \c NULL if
  * an error has occured.
  *
- * \sa lpatom_get_qname() lpatom_get_version()
+ * \sa lpatom_t, lpatom_get_qname(), lpatom_get_version(), lpatom_parse()
  *
  * \b Errors:
  * 
@@ -204,7 +207,7 @@ lpatom_get_fullname(const lpatom_t *atom);
  * \return a \c nul terminated C string with the version or \c NULL if an
  * error has occured.
  *
- * \sa lpatom_get_qname() lpatom_get_fullname()
+ * \sa lpatom_t, lpatom_get_qname(), lpatom_get_fullname(), lpatom_parse()
  *
  * \b Errors:
  * 
