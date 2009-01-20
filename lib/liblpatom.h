@@ -241,6 +241,23 @@ lpatom_get_version(const lpatom_t *atom);
 int
 lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2);
 
+/**
+ * \brief compare two lpatom_t data structures.
+ *
+ * Compares the two lpatom_t structures and returns an Integer less than,
+ * equal to or greater than zero if atom1 is found, respectively, to be less
+ * than, to match, or greater than atom2.
+ *
+ * This function can directly be used in qsort(3).
+ *
+ * \param atom1 the first lpatom_t struct which is going to be compared.
+ *
+ * \param atom2 the second lpatom_t struct which is being compared to atom1.
+ *
+ * \return an integer less than, equal to, or greater than zero.
+ *
+ * \sa lpatom_t, lpatom_version_cmp()
+ */
 int
 lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2);
 
