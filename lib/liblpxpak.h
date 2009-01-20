@@ -174,12 +174,12 @@ lpxpak_t **
 lpxpak_parse_path(const char *path);
 
 /**
- * \brief Destroy an \c NULL terminated array of pointers to
- * lpxpak_t structures.
+ * \brief Destroys an \c NULL terminated array of pointers to lpxpak_t
+ * structures.
  *
  * frees up the array and all of the underlying structures plus the pointers
- * they have using free(3). If a \c NULL pointer was given,
- * lpxpak_destroy() will just return.
+ * they have using free(3). If a \c NULL pointer was given, lpxpak_destroy()
+ * will just return.
  *
  * \param xpak a \c NULL terminated array of pointers to lpxpak_t structures.
  *

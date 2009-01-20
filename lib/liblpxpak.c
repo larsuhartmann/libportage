@@ -618,7 +618,7 @@ lpxpak_data_parse(const void *data, lpxpak_index_t **index)
           index[i]->name = NULL;
 
           /* assign the index[i]->offset'th byte of tdata to xpak[i]->value */
-          xpak[i]->value = (uint8_t*)tdata+index[i]->offset;
+          xpak[i]->value = (uint8_t*)tdata + index[i]->offset;
           xpak[i]->value_len = index[i]->len;
      }
      return xpak;
