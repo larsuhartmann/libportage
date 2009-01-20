@@ -5,7 +5,7 @@ CC = cc
 LD = ${CC}
 DX = doxygen
 
-INCS = -I.
+INCS = -Ilib
 LIBS = -L/usr/lib -lc -L.
 
 CFLAGS = -O0 ${INCS}
