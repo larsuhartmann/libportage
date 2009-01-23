@@ -431,7 +431,7 @@ lpatom_get_qname(const lpatom_t *atom)
      size_t len = 0;
      if (atom->cat != NULL) {
           len = strlen(atom->cat);
-          if ( (cat = malloc(sizeof(char)*(len+2))) == NULL )
+          if ( (cat = malloc(len+2)) == NULL )
                return NULL;
           memcpy(cat, atom->cat, len);
           cat[len] = '/';
@@ -443,7 +443,7 @@ lpatom_get_qname(const lpatom_t *atom)
      if ( (name = strdup(atom->name)) == NULL)
           return NULL;
      len += strlen(name);
-     if ( (r = malloc(sizeof(char)*len)) == NULL )
+     if ( (r = malloc(len)) == NULL )
           return NULL;
      strcpy(r, cat);
      strcat(r, name);
