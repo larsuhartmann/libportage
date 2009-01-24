@@ -112,6 +112,23 @@ lpatom_suffix_parse(const char *s);
 static lpatom_t *
 lpatom_init(void);
 
+/**
+ * \brief parses a atom_suffe_t enum into a string.
+ *
+ * Returns a String with the suffix.
+ *
+ * If an error occured, \c NULL is returned and \c errno is set to indicate
+ * the Error.
+ *
+ * \param suffix a lpatom_sufe_t enum.
+ *
+ * \return a \c nul terminated c string with the suffix.
+ *
+ * \b Errors:
+ *
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine strdup(3).
+ */
 static char *
 lpatom_suffe_to_string(lpatom_sufe_t suffix);
 
@@ -121,7 +138,7 @@ lpatom_version_explode(const char *ver);
 /**
  * \brief returns the suffix of an atom as a c string.
  *
- * Returns a string containing the version suffix of a given lpatom_t data
+ * Returns a String containing the version suffix of a given lpatom_t data
  * structure.
  *
  * If the atom has no suffix, an empty string ("") is returned.
