@@ -108,10 +108,10 @@ lpatom_version_explode(const char *ver);
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine malloc(3).
  */
-char *
+static char *
 lpatom_get_suffix(const lpatom_t *atom);
 
-char *
+static char *
 lpatom_get_release(const lpatom_t *atom);
 
 /* 
@@ -373,7 +373,7 @@ lpatom_destroy(lpatom_t *atom)
      return;
 }
 
-char *
+static char *
 lpatom_get_suffix(const lpatom_t *atom)
 {
      char *suf;
@@ -407,7 +407,7 @@ lpatom_get_suffix(const lpatom_t *atom)
      return r;
 }
 
-char *
+static char *
 lpatom_get_release(const lpatom_t *atom)
 {
      char *r;
