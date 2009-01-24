@@ -132,6 +132,28 @@ lpatom_init(void);
 static char *
 lpatom_suffe_to_string(lpatom_sufe_t suffix);
 
+/**
+ * \brief parses an version string.
+ *
+ * Parses an version string into multiple integers and returns a \c -1
+ * terminated int array.
+ *
+ * If an error occured, \c NULL is returned and \c errno is set to indicate
+ * the error.
+ *
+ * \param suffix a \c nul terminated version string eg: 4.2.1.9
+ *
+ * \return a \c -1 terminated integer array.
+ *
+ * \b Errors:
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ *   the routine strdup(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine malloc(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine realloc(3).
+ */
 static int *
 lpatom_version_explode(const char *ver);
 
@@ -153,12 +175,36 @@ lpatom_version_explode(const char *ver);
  * suffix or \c NULL if an error has occured.
  *
  * \b Errors:
+ *
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine malloc(3).
  */
 static char *
 lpatom_get_suffix(const lpatom_t *atom);
 
+/**
+ * \brief returns the release of a given atom.
+ *
+ * Returns a \c nul terminated string with the release of the given atom - eg
+ * "r29".
+ *
+ * If an error occured, \c NULL is returned and \c errno is set to indicate
+ * the error.
+ *
+ * \param atom a pointer to an lpatom_t data structure that was returned by
+ * lpatom_parse().
+ *
+ * \return a string containing the release version, an empty string if the
+ * atom has no release version or \c NULL if an error has occured.
+ *
+ * \b Errors:
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ *   the routine strdup(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine malloc(3).
+ */
+ 
 static char *
 lpatom_get_release(const lpatom_t *atom);
 
