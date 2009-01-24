@@ -75,9 +75,40 @@ rc|p)[0-9]*)?(-r[0-9]+)?)?$"
  */
 #define LPATOM_RE_VER     "^([0-9]+([.][0-9]+)*)([a-z]?)"
 
+/**
+ * Reads the suffix out of an suffix string
+ * 
+ * gets an suffix string (eg alpha) and returns an lpatom_suffe_t enum.
+ *
+ * \param s a \c nul terminated c string with the suffix
+ *
+ * \return an lpatom_suffe_t enum.
+ */
 static lpatom_sufe_t
 lpatom_suffix_parse(const char *s);
 
+/**
+ * allocates and initializes a new lpatom_t memory structure.
+ *
+ * Allocates enough space for a lpatom_t memory structure on the heap and sets
+ * all of its pointers or integers to \c NULL or \c NULL.
+ *
+ * The memory for the returned struct is allocated by malloc and is not used
+ * elsewhere in this lib, if you want to destroy it, use lpatom_destroy().
+ * 
+ * If an error occured, \c Null is returned and \c errno is set to indicate the
+ * error.
+ *
+ * \return a pointer to an newly initialized lpatom_t memory structure or \c
+ * NULL if an error has occured.
+ *
+ * \b Errors:
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ *   the routine malloc(3).
+ *
+ * \sa lpatom_destroy().
+ */
 static lpatom_t *
 lpatom_init(void);
 
@@ -114,19 +145,6 @@ lpatom_get_suffix(const lpatom_t *atom);
 static char *
 lpatom_get_release(const lpatom_t *atom);
 
-/* 
- * lpatom_parse: Reads the atom data out of an packetname string
- *
- * Gets an version string and returns an pointer to an lpatom_t struct. If an
- * error occured, Null is returned and errno is set to indicate the error.
- *
- * Errors:
- *         EINVAL The file either is no valid gentoo binary package or has an
- *                invalid xpak.
- *
- *         The lpatom_parse() function may also fail and set errno for any of
- *         the errors specified for the routine malloc(3).
- */
 lpatom_t *
 lpatom_parse(const char *pname)
 {
@@ -286,21 +304,6 @@ lpatom_parse(const char *pname)
      return atom;
 }
 
-/* 
- * __lpatom_parse_suffix: Reads the suffix data out of an suffix string.
- *
- * Gets an suffix string and returns an pointer to an __lpatom_suf_t
- * object. If an error occurred, NULL is returned and errno is set to indicate
- * the error.
- *
- * PRIVATE: This is a private function and thus should not be called
- *          directly from outside the API, as the way this function works
- *          can be changed regularly.
- *
- * Errors:
- *         The __lpatom_parse_suffix() function may also fail and set errno
- *         for any of the errors specified for the routine malloc(3).
- */
 static lpatom_sufe_t
 lpatom_suffix_parse(const char *s)
 {
@@ -332,16 +335,7 @@ lpatom_suffix_parse(const char *s)
      return suf;
 }
 
-/*
- * __lpatom_init: initialize an __lpatom_t object
- *
- * Gets an pointer to an lpatom_suf_t object and sets all of its pointers to
- * NULL. If a NULL pointer was given, __lpatom_init will just return.
- *
- * PRIVATE: This is a private function and thus should not be called directly
- *          from outside the API, as the way this function works can be
- *          changed regularly.
- */
+
 static lpatom_t *
 lpatom_init(void)
 {
