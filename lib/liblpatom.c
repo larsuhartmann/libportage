@@ -475,7 +475,7 @@ lpatom_get_release(const lpatom_t *atom)
      char *t;
      size_t rellen;
      if (atom->rel > 0) {
-          rellen = lputil_intlen(atom->rel)+1;
+          rellen = lputil_intlen(atom->rel)+2;
           if ( (t = malloc(rellen)) == NULL )
                return NULL;
           snprintf(t, rellen, "r%d", atom->rel);
