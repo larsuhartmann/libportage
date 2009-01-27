@@ -184,6 +184,11 @@ lputil_splitstr_destroy(char **splitstr);
  * If an Error occures, \c NULL is returned and \c errno is set to indicate
  * the error.
  *
+ * \param s a \c nul terminated C string.
+ * \param n the maximal count of characters to be duplicated.
+ *
+ * \return a \c nul terminated C string.
+ *
  * \b Errors:
  *
  * - This routine may fail and set errno for any of the errors specified for
