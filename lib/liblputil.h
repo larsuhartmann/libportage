@@ -39,7 +39,7 @@
 #include <regex.h>
 
 /**
- * Get regexp match
+ * \brief Get regexp match
  *
  * Returns a string with the given match from a array of regmatch_t
  * structs. The Memory for the returned string is obtained by malloc(3) and
@@ -66,7 +66,7 @@ char *
 lputil_get_re_match(const regmatch_t *match, int n, const char *s);
 
 /**
- * Copy substring from a string.
+ * \brief Copy substring from a string.
  *
  * Copies a substring with the length len starting at off and returns it. The
  * memory for the returned String is obtained by malloc(3) and can be freed
@@ -92,11 +92,14 @@ lputil_get_re_match(const regmatch_t *match, int n, const char *s);
 char * lputil_substr(const char *s, size_t off, size_t len);
 
 /**
- * Split a String into tokens.
+ * \brief Split a String into tokens.
  *
  * Splits a string into tokens with a given delimiter. Delimiter Characters at
  * the Start or the End of the String are ignored. Memory for the returned
  * Data is obtained by malloc(3) and can be freed with free(3).
+ *
+ * If you want to free the returned data, you can so so by using
+ * lputil_splitstr_destroy().
  *
  * If an error occurs, \c NULL is returned and errno is set to indicate the
  * error.
@@ -107,7 +110,7 @@ char * lputil_substr(const char *s, size_t off, size_t len);
  *
  * \return a array of c strings which is terminated by the value \c NULL.
  *
- * \sa strtok(3)
+ * \sa strtok(3), lputil_splitstr_destroy()
  *
  * \b Errors:
  * 
@@ -121,7 +124,7 @@ char **
 lputil_splitstr(const char *s, const char *delim);
 
 /**
- * duplicates a memory region.
+ * \brief duplicates a memory region.
  *
  * returns a pointer to a new memory region which is a duplicate of the given
  * memory region. Memory for the new region is obtained by malloc(3) and can
@@ -144,17 +147,50 @@ lputil_splitstr(const char *s, const char *delim);
  *
  * - \c EINVAL s is \c NULL.
  * - This routine may also fail and set errno for any of the errors specified
-     for the routine malloc(3)
+ *   for the routine malloc(3)
  */
 void *
 lputil_memdup(const void *s, size_t len);
 
+/**
+ * \brief calculates the length in digits of a int.
+ * 
+ * \param d an integer which's length is to be calculated.
+ *
+ * \return the length of the integer \c d in digits.
+ */
 size_t
-lputil_intlen(int i);
+lputil_intlen(int d);
 
+/**
+ * \brief destroys an \c NULL terminated array of \c nul terminated C Strings
+ * as returned by lputil_splitstr().
+ *
+ * \param splitstr an \c NULL terminated array of \c nul terminated C Strings
+ * as returned by lputil_splitstr().
+ *
+ * \sa lputil_splitstr()
+ */
 void
 lputil_splitstr_destroy(char **splitstr);
 
+/**
+ * \brief another strndup() implementation.
+ *
+ * a strdup implementation that only copies at most \c n characters. If \c s
+ * is longer than \c n, only \c n characters are copied, and a terminating \c
+ * null byte ('\0') is added.
+ *
+ * If an Error occures, \c NULL is returned and \c errno is set to indicate
+ * the error.
+ *
+ * \b Errors:
+ *
+ * - This routine may fail and set errno for any of the errors specified for
+ *   the routine malloc(3).
+ * - This routine may also fail and set errno for any of the errors specified
+ *   for the routine realloc(3).
+ */
 char *
 lputil_strndup(char *s, size_t n);
 
