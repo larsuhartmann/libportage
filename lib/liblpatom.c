@@ -214,7 +214,7 @@ lpatom_parse(const char *pname)
      regex_t regexp[1];
      regmatch_t regmatch[512];
      lpatom_t *atom = NULL;
-     char *relv, *suf, *sufv, *ver, *vers, *t;
+     char *relv, *suf, *sufv, *ver, *vers, *vert;
      size_t len = 0;
      bool has_cat = false;
 
@@ -296,14 +296,14 @@ lpatom_parse(const char *pname)
           atom->verc = ver[len-1];
           ver[len-1] = '\0';
           /* resize ver */
-          if ( (t = realloc(ver, len)) == NULL) {
+          if ( (vert = realloc(ver, len)) == NULL) {
                free(vers);
                free(ver);
                regfree(regexp);
                lpatom_destroy(atom);
                return NULL;
           }
-          ver = t;
+          ver = vert;
      }
      
      /* assign ver to atom->ver */
@@ -411,6 +411,7 @@ lpatom_init(void)
      atom->name = NULL;
      atom->cat = NULL;
      atom->ver = NULL;
+     atom->ver_ex = NULL;
      atom->verc = 0;
      atom->sufenum = no;
      atom->sufv = 0;
@@ -471,10 +472,12 @@ lpatom_get_release(const lpatom_t *atom)
 {
      char *r;
      char *t;
+     size_t rellen;
      if (atom->rel > 0) {
-          if ( (t = malloc(lputil_intlen(atom->rel)+1)) == NULL )
+          rellen = lputil_intlen(atom->rel)+1;
+          if ( (t = malloc(rellen)) == NULL )
                return NULL;
-          sprintf(t, "r%d", atom->rel);
+          snprintf(t, rellen, "r%d", atom->rel);
      } else
           if ( (t = strdup("")) == NULL)
                return NULL;
