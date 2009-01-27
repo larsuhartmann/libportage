@@ -59,7 +59,7 @@ lputil_substr(const char *s, size_t off, size_t len)
      }
      /* allocate oe+1 bytes on the Heap and assign a pointer to that region to
       * r */
-     if ( (r = malloc(sizeof(char)*(len+1) )) == NULL )
+     if ( (r = malloc(len+1)) == NULL )
           return NULL;
 
      /* copy oe bytes starting from s+os to r, null terminate r and return the
