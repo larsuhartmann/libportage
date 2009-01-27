@@ -282,6 +282,7 @@ lpatom_parse(const char *pname)
           free(vers);
           regfree(regexp);
           lpatom_destroy(atom);
+          return NULL;
      }
      /* free up the regexp object */
      regfree(regexp);
