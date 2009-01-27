@@ -388,6 +388,7 @@ lpatom_suffix_parse(const char *s)
                break;
           default:
                suf = p;
+               break;
           }
           break;
      case 'r':
@@ -567,12 +568,12 @@ lpatom_get_version(const lpatom_t *atom)
      if ( rellen > 0 )
           len += rellen + 1;
      if (atom->verc > 0) {
-          if ( (verc = malloc(1)) == NULL) {
+          if ( (verc = malloc(2)) == NULL) {
                free(suf);
                free(rel);
                return NULL;
           }
-          sprintf(verc, "%c", atom->verc);
+          snprintf(verc, 2, "%c", atom->verc);
           ++len;
      }
      if ( (r = malloc(len)) == NULL)
