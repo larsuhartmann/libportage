@@ -490,7 +490,7 @@ lpatom_get_release(const lpatom_t *atom)
 char *
 lpatom_get_qname(const lpatom_t *atom)
 {
-     char *cat = NULL, *name, *r;
+     char *cat, *name, *r;
      size_t len = 0;
      if (atom->cat != NULL) {
           len = strlen(atom->cat);
@@ -508,7 +508,7 @@ lpatom_get_qname(const lpatom_t *atom)
           return NULL;
      }
      len += strlen(name);
-     if ( (r = malloc(len)) == NULL ) {
+     if ( (r = malloc(len+1)) == NULL ) {
           free(cat);
           return NULL;
      }
@@ -580,7 +580,7 @@ lpatom_get_version(const lpatom_t *atom)
           snprintf(verc, 2, "%c", atom->verc);
           ++len;
      }
-     if ( (r = malloc(len)) == NULL)
+     if ( (r = malloc(len+1)) == NULL)
           return NULL;
      strcpy(r, atom->ver);
      if ( atom->verc > 0) {
@@ -688,7 +688,7 @@ lpatom_get_fullname(const lpatom_t *atom)
      ver = lpatom_get_version(atom);
      len += strlen(ver);
 
-     if ( (r = malloc(len)) == NULL) {
+     if ( (r = malloc(len+1)) == NULL) {
           free(qname);
           free(ver);
           return NULL;

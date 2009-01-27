@@ -1,3 +1,8 @@
+2009-01-27  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* lib/liblpatom.c: fixed memleaks, buffer overflows and several
+	other memory related problems valgrind was complaining about.
+
 2009-01-20  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* lib/liblpatom.h: documented.
