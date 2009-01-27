@@ -78,13 +78,37 @@ typedef enum {
  * This is the data structure that holds the parsed data of a version atom.
  */
 typedef struct {
+     /**
+      * \brief the name.
+      */
      char *name;
+     /**
+      * \brief the category.
+      */
      char *cat;
+     /**
+      * \brief the version character.
+      */
      char verc;
+     /**
+      * \brief the version.
+      */
      char *ver;
+     /**
+      * \brief the exploded version.
+      */
      int *ver_ex;
+     /**
+      * \brief the suffix.
+      */
      lpatom_sufe_t sufenum;
+     /**
+      * \brief the suffix version.
+      */
      int sufv;
+     /**
+      * \brief the release version.
+      */
      int rel;
 } lpatom_t;
 

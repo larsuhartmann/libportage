@@ -91,7 +91,7 @@ lpatom_suffix_parse(const char *s);
  * allocates and initializes a new lpatom_t memory structure.
  *
  * Allocates enough space for a lpatom_t memory structure on the heap and sets
- * all of its pointers or integers to \c NULL or \c NULL.
+ * all of its pointers or integers to \c NULL or \c 0.
  *
  * The memory for the returned struct is allocated by malloc and is not used
  * elsewhere in this lib, if you want to destroy it, use lpatom_destroy().
@@ -114,8 +114,8 @@ lpatom_init(void);
 
 /**
  * \brief parses a atom_suffe_t enum into a string.
- *
- * Returns a String with the suffix.
+ * 
+ * Returns the Suffix as a \c nul terminated c String.
  *
  * If an error occured, \c NULL is returned and \c errno is set to indicate
  * the Error.
@@ -141,7 +141,7 @@ lpatom_suffe_to_string(lpatom_sufe_t suffix);
  * If an error occured, \c NULL is returned and \c errno is set to indicate
  * the error.
  *
- * \param suffix a \c nul terminated version string eg: 4.2.1.9
+ * \param ver a \c nul terminated version string eg: 4.2.1.9
  *
  * \return a \c -1 terminated integer array.
  *
@@ -186,7 +186,7 @@ lpatom_get_suffix(const lpatom_t *atom);
  * \brief returns the release of a given atom.
  *
  * Returns a \c nul terminated string with the release of the given atom - eg
- * "r29".
+ * \c "r29".
  *
  * If an error occured, \c NULL is returned and \c errno is set to indicate
  * the error.
@@ -204,7 +204,7 @@ lpatom_get_suffix(const lpatom_t *atom);
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine malloc(3).
  */
- 
+
 static char *
 lpatom_get_release(const lpatom_t *atom);
 
