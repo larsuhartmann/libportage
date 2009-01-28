@@ -102,15 +102,13 @@ typedef struct {
  *
  * The returned array can be freed with lpxpak_destroy().
  *
- * \param data a pointer to the start of a memory region which holds the xpak
- * blob.
- * \param len the length of the xpak pointed to by data.
+ * \param blob a pointer to an lpxpak_blob_t data structure which holds the
+ * xpak blob.
  * 
  * \return a \c NULL terminated array of pointers to lpxpak_t structures which
  * holds the parsed xpak data or \c NULL, if an error has occured.
  * 
- * \sa lpxpak_t
- * \sa lpxpak_destroy()
+ * \sa lpxpak_t lpxpak_destroy()
  *
  * \b Errors:
  * 
@@ -122,7 +120,7 @@ typedef struct {
  *   for the routine strdup(3).
  */
 lpxpak_t **
-lpxpak_parse_data(const void *data, size_t len);
+lpxpak_parse_data(const lpxpak_blob_t *blob);
 
 /**
  * \brief Reads the xpak data out of a file-descriptor.

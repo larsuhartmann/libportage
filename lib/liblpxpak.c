@@ -279,7 +279,7 @@ static lpxpak_t **
 lpxpak_init(size_t size);
 
 lpxpak_t **
-lpxpak_parse_data(const void *data, size_t len)
+lpxpak_parse_data(const lpxpak_blob_t *blob)
 {
      lpxpak_int_t count = 0;
      lpxpak_int_t index_len, data_len;
@@ -295,30 +295,30 @@ lpxpak_parse_data(const void *data, size_t len)
       * __LPXPAK_OUTRO to make sure we have a valid xpak, if not, set errno
       * and return. Otherwise increase count which we will be using as an seek
       * counter */
-     if ( (memcmp(data, LPXPAK_INTRO, LPXPAK_INTRO_LEN) != 0) ||
-         (memcmp((uint8_t *)data+len-LPXPAK_OUTRO_LEN, LPXPAK_OUTRO,
-         LPXPAK_OUTRO_LEN != 0)) ) {
+     if ( (memcmp(blob->data, LPXPAK_INTRO, LPXPAK_INTRO_LEN) != 0) ||
+         (memcmp((uint8_t *)blob->data+blob->len-LPXPAK_OUTRO_LEN,
+         LPXPAK_OUTRO, LPXPAK_OUTRO_LEN != 0)) ) {
           errno = EINVAL;
           return NULL;
      }
      count += LPXPAK_INTRO_LEN;
      
-     memcpy(&index_len, (uint8_t *)data+count, sizeof(lpxpak_int_t));
+     memcpy(&index_len, (uint8_t *)blob->data+count, sizeof(lpxpak_int_t));
      count+=sizeof(lpxpak_int_t);
      index_len = ntohl(index_len);
-     memcpy(&data_len, (uint8_t *)data+count, sizeof(lpxpak_int_t));
+     memcpy(&data_len, (uint8_t *)blob->data+count, sizeof(lpxpak_int_t));
      count += sizeof(lpxpak_int_t);
      data_len = ntohl(data_len);
 
      /* check if the sum of count, index_len, data_len and __LPXPAK_OUTRO_LEN
       * is equal to len to make sure the len values are correct */
-     if ( count+index_len+data_len+LPXPAK_OUTRO_LEN != len ) {
+     if ( count+index_len+data_len+LPXPAK_OUTRO_LEN != blob->len ) {
           errno = EINVAL;
           return NULL;
      }
 
-     index_data = (uint8_t *)data+count;
-     data_data = (uint8_t *)data+count+index_len;
+     index_data = (uint8_t *)blob->data+count;
+     data_data = (uint8_t *)blob->data+count+index_len;
 
      /* get index */
      index = lpxpak_index_parse(index_data, (size_t)index_len);
@@ -345,11 +345,8 @@ lpxpak_t **
 lpxpak_parse_fd(int fd)
 {
      struct stat xpakstat;
-     void *xpakdata = NULL;
-     void *tmp = NULL;
-     lpxpak_int_t *xpakoffset = NULL;
+     lpxpak_blob_t *xpakblob;
      lpxpak_t **xpak = NULL;
-     ssize_t rs;
 
      /* check if the given fd belongs to a file */
      if ( fstat(fd, &xpakstat) == -1 )
@@ -359,74 +356,11 @@ lpxpak_parse_fd(int fd)
           return NULL;
      }
 
-     /* seek to the start of the xpak offset */
-     if ( lseek(fd, (LPXPAK_STOP_OFFSET+sizeof(lpxpak_int_t))*-1, SEEK_END)
-         == -1 )
+     if ( (xpakblob = lpxpak_get_blob_fd(fd)) == NULL)
           return NULL;
-
-     /* allocate __LPXPAK_STOP_LEN+sizeof(lpxpak_int_t) bytes from the heap,
-      * assign it to tmp, read in the xpak offset plus the__LPXPAK_STOP
-      * string. */
-     if ( (tmp = malloc(LPXPAK_STOP_LEN+sizeof(lpxpak_int_t))) == NULL )
-          return NULL;
-     if ( (rs = read(fd, tmp, LPXPAK_STOP_LEN+sizeof(lpxpak_int_t)))
-         == -1) {
-          free(tmp);
-          return NULL;
-     }
-     if ( rs != LPXPAK_STOP_LEN+sizeof(lpxpak_int_t) ){
-          
-          free(tmp);
-          errno = EBUSY;
-          return NULL;
-     }
      
-     /* check if the read in __LPXPAK_STOP string equals __LPXPAK_STOP.  If
-      * not, free the allocated memory, set errno and return NULL as this is
-      * an invalid xpak. */
-     if ( memcmp((uint8_t *)tmp+sizeof(lpxpak_int_t), LPXPAK_STOP,
-         LPXPAK_STOP_LEN) != 0 ) {
-          free(tmp);
-          errno = EINVAL;
-          return NULL;
-     }
-     /* assign a pointer to the xpak offset data to xpakoffset and convert it
-      * to local byte order */
-     xpakoffset = (lpxpak_int_t *)tmp;
-     *xpakoffset = ntohl(*xpakoffset);
-        
-     /* allocate <xpakoffset> bytes on the heap, assign it to xpakdata, seek
-      * to the start of the xpak data, read in the xpak data and store it in
-      * xpakdata. */
-     if ( lseek(fd, (off_t)((off_t)*xpakoffset+LPXPAK_OFFSET_LEN)*-1,
-         SEEK_END) == -1 ) {
-          free(tmp);
-          free(xpakdata);
-          return NULL;
-     }
-     if ( (xpakdata = malloc((size_t)*xpakoffset)) == NULL ) {
-          free(tmp);
-          return NULL;
-     }
-     /* check if a error occured while data was read in */
-     if ( (rs = read(fd, xpakdata, (off_t)*xpakoffset)) == -1 ) {
-          free(tmp);
-          free(xpakdata);
-          return NULL;
-     }
-     /* check if all of the data was read, if not, set errno and return with
-      * failure  */
-     if ( rs != (size_t)*xpakoffset ) {
-          free(tmp);
-          free(xpakdata);
-          errno = EBUSY;
-          return NULL;
-     }
-     xpak = lpxpak_parse_data(xpakdata, (size_t)(*xpakoffset));
+     xpak = lpxpak_parse_data(xpakblob);
      
-     /* clear up allocated memory*/
-     free(tmp);
-     free(xpakdata);
      return xpak;
 }
 
