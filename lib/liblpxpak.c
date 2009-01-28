@@ -346,6 +346,7 @@ lpxpak_parse_fd(int fd)
 {
      struct stat xpakstat;
      lpxpak_blob_t *xpakblob;
+     lpxpak_t **xpak;
 
      /* check if the given fd belongs to a file */
      if ( fstat(fd, &xpakstat) == -1 )
@@ -359,8 +360,12 @@ lpxpak_parse_fd(int fd)
      if ( (xpakblob = lpxpak_get_blob_fd(fd)) == NULL)
           return NULL;
 
-     /* return the result from lpxpak_parse_data */
-     return lpxpak_parse_data(xpakblob);
+     /* parse the xpakblob */
+     if ( (xpak = lpxpak_parse_data(xpakblob)) == NULL) {
+          lpxpak_blob_destroy(xpakblob);
+          return NULL;
+     }
+     return xpak;
 }
 
 lpxpak_blob_t *
@@ -435,8 +440,8 @@ lpxpak_get_blob_fd(int fd)
           errno = EBUSY;
           return NULL;
      }
-     /* allocate enough memory for xpakdata */
-     if ( (xpakblob = malloc(sizeof(xpakblob))) == NULL) {
+     /* initialize data structure for xpakblob */
+     if ( (xpakblob = lpxpak_blob_init()) == NULL) {
           free(tmp);
           free(xpakdata);
           return NULL;
