@@ -48,8 +48,10 @@
  *
  * None of the Pointers in this struct will point to memory regions which are
  * used elsewhere by the lpxpak library.
+ *
+ * \sa lpxpak_destroy()
  */
-typedef struct lpxpak{
+typedef struct {
      /**
       * \brief The Name of the element.
       *
@@ -68,6 +70,27 @@ typedef struct lpxpak{
       */
      void *value;
 } lpxpak_t;
+
+/**
+ * \brief A xpak blob.
+ *
+ * This is the data structure that holds a compiled xpak-blob as attached to
+ * gentoo binary packages.
+ */
+typedef struct {
+     /**
+      * \brief The xpak data.
+      *
+      * a Pointer to the start of a memory segment that holds the xpak data.
+      */
+     void *data;
+     /**
+      * \brief the length of the xpak data.
+      *
+      * the length of the memory block pointed to by data.
+      */
+     size_t len;
+} lpxpak_blob_t;
 
 /**
  * \brief Reads the xpak data out of a xpak binary blob.
