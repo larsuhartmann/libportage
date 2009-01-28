@@ -263,7 +263,7 @@ lpxpak_blob_t *
 lpxpak_blob_get_fd(int fd);
 
 /**
- * \private \brief Allocates and initialises a new lpxpak_blob_t structure.
+ * \brief Allocates and initialises a new lpxpak_blob_t structure.
  *
  * This function allocates a new lpxpak_blob_t data structure, sets all its
  * pointers to \c NULL and all its integers to \c 0 and returns a pointer to
@@ -335,4 +335,18 @@ lpxpak_blob_destroy(lpxpak_blob_t *blob);
  */
 lpxpak_blob_t *
 lpxpak_blob_get_path(const char *path);
+
+/**
+ * \brief compiles an \c NULL terminated array of lpxpak_t structs to a xpak
+ * binary-blob.
+ *
+ * If an error occurs, \c NULL is returned and \c errno is set to indicate the
+ * error.
+ *
+ * \param xpak a \c NULL terminated array of lpxpak_t structs.
+ *
+ * \return a pointer to a lpxpak_blob_t data structure with the compiled xpak.
+ */
+lpxpak_blob_t *
+lpxpak_blob_compile(lpxpak_t **xpak);
 #endif

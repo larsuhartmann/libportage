@@ -96,7 +96,7 @@ typedef uint32_t lpxpak_int_t;
  * None of the Pointers in this struct will point to memory regions which are
  * used elsewhere by the lpxpak library.
  */
-typedef struct lpxpak_index{
+typedef struct {
      /**
       * \brief The Name of the Element.
       *
@@ -117,6 +117,23 @@ typedef struct lpxpak_index{
       */
      size_t len;
 } lpxpak_index_t;
+
+/**
+ * \brief the data structure for the compiled index-block of a xpak blob.
+ *
+ * None of the Pointers in this struct will point to memory regions which are
+ * used elsewhere by the lpxpak library.
+ */
+typedef struct {
+     /**
+      * \brief a pointer the the begin of the index block.
+      */
+     void *index;
+     /**
+      * \brief the length of the index block.
+      */
+     size_t len;
+} lpxpak_indexblob_t;
 
 /**
  * \private
@@ -278,6 +295,58 @@ lpxpak_data_parse(const void *data, lpxpak_index_t **index);
 static lpxpak_t **
 lpxpak_init(size_t size);
 
+/**
+ * \brief compiles the index data of a \c NULL terminated array of lpxpak_t
+ * structs into a xpak index binary blob.
+ *
+ * If an error occurs, \c NULL is returned and \c errno is set to indicate the
+ * error.
+ *
+ * \param xpak a \c NULL terminated array of lpxpak_t data structures.
+ *
+ * \return a pointer to a lpxpak_indexblob_t data structure or \c NULL if an
+ * error occured.
+ */
+static lpxpak_indexblob_t *
+lpxpak_indexblob_compile(lpxpak_t **xpak);
+
+/**
+ * \brief Allocates and initialises a new lpxpak_blob_t structure.
+ *
+ * This function allocates a new lpxpak_indexblob_t data structure, sets all
+ * its pointers to \c NULL and all its integers to \c 0 and returns a pointer
+ * to that function.
+ *
+ * If an error occurs, \c NULL is returned and errno is set.
+ *
+ * The Memory for the returned array including all its members can be freed
+ * with lpxpak_indexblob_destroy().
+ *
+ * \return a pointer to an lpxpak_indexblob_t data structure or \c NULL if an
+ * error occured.
+ *
+ * \sa lpxpak_indexblob_destroy()
+ * 
+ * \b Errors:
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ * the routine malloc(3).
+ */
+static lpxpak_indexblob_t *
+lpxpak_indexblob_init(void);
+
+/**
+ * \brief Destroys an lpxpak_indexblob_t data structure using free(3). If a \c
+ * NULL pointer was given, it will just return.
+ *
+ * \param blob a pointer to an lpxpak_indexblob_t data structure.
+ *
+ * \b Attention: Do not try to access the data structure after destroying it
+ * or anything can happen.
+ */
+static void
+lpxpak_indexblob_destroy(lpxpak_indexblob_t *index);
+
 lpxpak_t **
 lpxpak_parse_data(const lpxpak_blob_t *blob)
 {
@@ -393,7 +462,6 @@ lpxpak_blob_get_fd(int fd)
           return NULL;
      }
      if ( rs != LPXPAK_STOP_LEN+sizeof(lpxpak_int_t) ){
-          
           free(tmp);
           errno = EBUSY;
           return NULL;
@@ -477,20 +545,20 @@ lpxpak_index_parse(const void *data, size_t len)
      lpxpak_index_t **t = NULL;
      lpxpak_int_t count = 0;
      lpxpak_int_t name_len = 0;
-     size_t ilen = 100;
+     size_t intlen = 100;
      int i;
 
      /* initialize a array of lpxpak_index_t structs with len entries */
-     if ( (index = lpxpak_index_init(ilen)) == NULL )
+     if ( (index = lpxpak_index_init(intlen)) == NULL )
           return NULL;
      
      /* iterate over the index block  */
      for ( i=0; count < len; ++i) {
-          if ( i == ilen-1 ) {
-               ilen += 50;
+          if ( i == intlen-1 ) {
+               intlen += 50;
                /* check if we got enough free entries in index, if not resize
                 * it */
-               if ( (t = lpxpak_index_resize(index, ilen)) == NULL) {
+               if ( (t = lpxpak_index_resize(index, intlen)) == NULL) {
                     lpxpak_index_destroy(index);
                     return NULL;
                }
@@ -742,4 +810,134 @@ lpxpak_blob_get_path(const char *path)
       * lpxpak_parse_fd */
      close(fd);
      return xpakblob;
+}
+
+lpxpak_blob_t *
+lpxpak_blob_compile(lpxpak_t **xpak)
+{
+     size_t datalen = 0;
+     size_t offset = 0;
+     size_t bloblen;
+     size_t count = 0;
+     size_t intlen;
+     int i;
+     lpxpak_indexblob_t *index;
+     lpxpak_blob_t *blob;
+     lpxpak_int_t bil, bdl;
+
+     intlen = sizeof(lpxpak_int_t);
+
+     /* build index blob */
+     if ( (index = lpxpak_indexblob_compile(xpak)) == NULL)
+          return NULL;
+
+     /* get len of the data blob */
+     for ( i=0; xpak[i] != NULL; ++i)
+          datalen += xpak[i]->value_len;
+
+     bloblen = LPXPAK_INTRO_LEN + (intlen*2) + datalen +
+          index->len + LPXPAK_OUTRO_LEN;
+
+     if ( (blob = lpxpak_blob_init()) == NULL) {
+          lpxpak_indexblob_destroy(index);
+          return NULL;
+     }
+     if ( (blob->data = malloc(bloblen)) == NULL ) {
+          lpxpak_indexblob_destroy(index);
+          lpxpak_blob_destroy(blob);
+          return NULL;
+     }
+     bil = htonl(index->len);
+     bdl = htonl(datalen);
+     
+     memcpy(blob->data, LPXPAK_INTRO, LPXPAK_INTRO_LEN);
+     count += LPXPAK_INTRO_LEN;
+     memcpy(((char *)blob->data)+count, &bil, intlen);
+     count += intlen;
+     memcpy(((char *)blob->data)+count, &bdl, intlen);
+     count += intlen;
+     memcpy(((char *)blob->data)+count, index->index, index->len);
+     count += index->len;
+     for ( i=0; xpak[i] != NULL; ++i) {
+          memcpy(((char *)blob->data)+count, xpak[i]->value,
+                 xpak[i]->value_len);
+          count += xpak[i]->value_len;
+     }
+     memcpy(((char *)blob->data)+count, LPXPAK_OUTRO, LPXPAK_OUTRO_LEN);
+     count += LPXPAK_OUTRO_LEN;
+     blob->len = count;
+
+     lpxpak_indexblob_destroy(index);
+
+     return blob;
+}
+
+static lpxpak_indexblob_t *
+lpxpak_indexblob_compile(lpxpak_t **xpak)
+{
+     int i;
+     size_t count = 0;
+     lpxpak_int_t indexslen;
+     lpxpak_int_t offset = 0;
+     size_t intlen;
+     lpxpak_int_t bil, bol, bsl;
+     size_t index_len = 0;
+     lpxpak_indexblob_t *index;
+
+     intlen = sizeof(lpxpak_int_t);
+
+     for ( i=0; xpak[i] != NULL; ++i) {
+          index_len += strlen(xpak[i]->name);
+          index_len += intlen*3;
+     }
+
+     if ( (index = lpxpak_indexblob_init()) == NULL )
+          return NULL;
+     if ( (index->index = malloc(index_len)) == NULL ) {
+          lpxpak_indexblob_destroy(index);
+          return NULL;
+     }
+     index->len = index_len;
+
+     for ( i=0; xpak[i] != NULL; ++i) {
+          indexslen = (lpxpak_int_t)strlen(xpak[i]->name);
+          bil = htonl(indexslen);
+          memcpy((char *)index->index+count, &bil, intlen);
+          count += intlen;
+          memcpy((char *)index->index+count, xpak[i]->name, indexslen);
+          count += indexslen;
+          bsl = htonl(offset);
+          memcpy((char *)index->index+count, &bsl, intlen);
+          count += intlen;
+          bol = htonl(xpak[i]->value_len);
+          memcpy((char *)index->index+count, &bol, intlen);
+          offset += xpak[i]->value_len;
+          count += intlen;
+     }
+     index->len = count;
+     return index;
+}
+
+static lpxpak_indexblob_t *
+lpxpak_indexblob_init(void)
+{
+     lpxpak_indexblob_t *indexblob;
+
+     if ( (indexblob = malloc(sizeof(lpxpak_indexblob_t))) == NULL )
+          return NULL;
+
+     indexblob->index = NULL;
+     indexblob->len = 0;
+
+     return indexblob;
+}
+
+static void
+lpxpak_indexblob_destroy(lpxpak_indexblob_t *index)
+{
+     if (index == NULL)
+          return;
+     free(index->index);
+     free(index);
+     return;
 }
