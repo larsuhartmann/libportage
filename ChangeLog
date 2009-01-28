@@ -10,6 +10,8 @@
 	(lpxpak_blob_destroy): added.
 	(lpxpak_get_blob_fd): changed to use newly introduced
 	lpxpak_blob_init().
+	(lpxpak_get_blob_fd): renamed to lpxpak_blob_get_fd().
+	(lpxpak_blob_get_path): added.
 
 2009-01-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 

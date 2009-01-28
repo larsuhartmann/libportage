@@ -357,7 +357,7 @@ lpxpak_parse_fd(int fd)
      }
 
      /* get the xpakblob from lpxpak_get_blob_fd */
-     if ( (xpakblob = lpxpak_get_blob_fd(fd)) == NULL)
+     if ( (xpakblob = lpxpak_blob_get_fd(fd)) == NULL)
           return NULL;
 
      /* parse the xpakblob */
@@ -369,7 +369,7 @@ lpxpak_parse_fd(int fd)
 }
 
 lpxpak_blob_t *
-lpxpak_get_blob_fd(int fd)
+lpxpak_blob_get_fd(int fd)
 {
      void *xpakdata = NULL;
      void *tmp = NULL;
@@ -726,4 +726,20 @@ lpxpak_get(lpxpak_t **xpak, char *key)
      for (i=0; xpak[i] != NULL || strcmp(xpak[i]->name, key) != 0; ++i)
           ;
      return xpak[i];
+}
+
+lpxpak_blob_t *
+lpxpak_blob_get_path(const char *path)
+{
+     int fd;
+     lpxpak_blob_t *xpakblob = NULL;
+
+     /* open file descriptor in read only mode and call lpxpak_parse_fd */
+     if ( (fd = open(path, O_RDONLY)) == -1 )
+          return NULL;
+     xpakblob = lpxpak_blob_get_fd(fd);
+     /* close file descriptor and return the pointer we got from
+      * lpxpak_parse_fd */
+     close(fd);
+     return xpakblob;
 }

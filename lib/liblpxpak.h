@@ -166,8 +166,8 @@ lpxpak_parse_fd(int fd);
  *
  * The returned array can be freed with lpxpak_destroy().
  * 
- * \param path Path to a gentoo binary package which needs to be
- *        readable by the current process.
+ * \param path Path to a gentoo binary package which needs to be readable by
+ *        the current process.
  *
  * \return a \c NULL terminated array of pointers to lpxpak_t structures which
  * holds the parsed xpak data or \c NULL, if an error has occured.
@@ -231,8 +231,8 @@ lpxpak_get(lpxpak_t **xpak, char *key);
 /**
  * \brief Reads the xpak data out of a Gentoo binary package.
  *
- * Gets an path to a Gentoo binary package and returns a pointer to an
- * lpxpak_blob_t data structure which holds the xpak blob.
+ * Gets an file-descriptor (fd) for a Gentoo binary package and returns a
+ * pointer to an lpxpak_blob_t data structure which holds the xpak blob.
  *
  * If an error occurs, NULL is returned and errno is set to indicate the
  * error.
@@ -260,7 +260,7 @@ lpxpak_get(lpxpak_t **xpak, char *key);
  *   for the routine read(2).
  */
 lpxpak_blob_t *
-lpxpak_get_blob_fd(int fd);
+lpxpak_blob_get_fd(int fd);
 
 /**
  * \private \brief Allocates and initialises a new lpxpak_blob_t structure.
@@ -298,4 +298,39 @@ lpxpak_blob_init(void);
  */
 void
 lpxpak_blob_destroy(lpxpak_blob_t *blob);
+
+
+/**
+ * \brief Reads the xpak data out of a Gentoo binary package.
+ *
+ * Gets an path to a Gentoo binary package and returns a pointer to an
+ * lpxpak_blob_t data structure which holds the xpak blob.
+ *
+ * If an error occurs, NULL is returned and errno is set to indicate the
+ * error.
+ *
+ * The returned data structure can be freed with lpxpak_blob_destroy().
+ * 
+ * \param path Path to a gentoo binary package which needs to be readable by
+ *        the current process.
+ *        
+ * \return a pointer to an lpxpak_blob_t data structure which holds the parsed
+ * xpak data or \c NULL, if an error has occured.
+ *
+ * \sa lpxpak_blob_t lpxpak_blob_destroy()
+ * 
+ * \b Errors:
+ *
+ * - \c EINVAL The file either is no valid gentoo binary package or has an
+ *   invalid xpak.
+ * - \c EBUSY The xpak could not be fully read in.
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine malloc(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine lseek(2).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine read(2).
+ */
+lpxpak_blob_t *
+lpxpak_blob_get_path(const char *path);
 #endif
