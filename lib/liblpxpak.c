@@ -346,7 +346,6 @@ lpxpak_parse_fd(int fd)
 {
      struct stat xpakstat;
      lpxpak_blob_t *xpakblob;
-     lpxpak_t **xpak = NULL;
 
      /* check if the given fd belongs to a file */
      if ( fstat(fd, &xpakstat) == -1 )
@@ -356,12 +355,12 @@ lpxpak_parse_fd(int fd)
           return NULL;
      }
 
+     /* get the xpakblob from lpxpak_get_blob_fd */
      if ( (xpakblob = lpxpak_get_blob_fd(fd)) == NULL)
           return NULL;
-     
-     xpak = lpxpak_parse_data(xpakblob);
-     
-     return xpak;
+
+     /* return the result from lpxpak_parse_data */
+     return lpxpak_parse_data(xpakblob);
 }
 
 lpxpak_blob_t *
