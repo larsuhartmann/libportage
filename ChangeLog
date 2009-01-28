@@ -2,13 +2,12 @@
 
 	* lib/liblpxpak.h (lpxpak_parse_fd): changed to use the newly
 	introduced lpxpak_blob_get_fd
-
-	* lib/liblpxpak.h (lpxpak_parse_data): changed to use
-	lpxpak_blob_t structures as input.
-
-	* lib/liblpxpak.h (lpxpak_blob_t): added.
-
-	* lib/liblpxpak.h (lpxpak_get_blob_fd): added.
+	(lpxpak_parse_data): changed to use lpxpak_blob_t structures as
+	input.
+	(lpxpak_blob_t): added.
+	(lpxpak_get_blob_fd): added.
+	(lpxpak_blob_init): added.
+	(lpxpak_blob_destroy): added.
 
 2009-01-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 

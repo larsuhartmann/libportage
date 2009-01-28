@@ -262,4 +262,40 @@ lpxpak_get(lpxpak_t **xpak, char *key);
 lpxpak_blob_t *
 lpxpak_get_blob_fd(int fd);
 
+/**
+ * \private \brief Allocates and initialises a new lpxpak_blob_t structure.
+ *
+ * This function allocates a new lpxpak_blob_t data structure, sets all its
+ * pointers to \c NULL and all its integers to \c 0 and returns a pointer to
+ * that function.
+ *
+ * If an error occurs, \c NULL is returned and errno is set.
+ *
+ * The Memory for the returned array including all its members can be freed
+ * with lpxpak_blob_destroy().
+ *
+ * \return a pointer to an lpxpak_blob_t data structure or \c NULL if an error
+ * occured.
+ *
+ * \sa lpxpak_blob_destroy()
+ * 
+ * \b Errors:
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ * the routine malloc(3).
+ */
+lpxpak_blob_t *
+lpxpak_blob_init(void);
+
+/**
+ * \brief Destroys an lpxpak_blob_t data structure using free(3). If a \c NULL
+ * pointer was given, lpxpak_destroy() will just return.
+ *
+ * \param xpak a pointer to an lpxpak_blob_t data structure.
+ *
+ * \b Attention: Do not try to access the data structure after destroying it
+ * or anything can happen.
+ */
+void
+lpxpak_blob_destroy(lpxpak_blob_t *blob);
 #endif

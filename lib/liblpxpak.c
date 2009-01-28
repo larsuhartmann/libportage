@@ -687,6 +687,29 @@ lpxpak_destroy(lpxpak_t **xpak)
      return;
 }
 
+lpxpak_blob_t *
+lpxpak_blob_init(void)
+{
+     lpxpak_blob_t *blob;
+
+     if ( (blob = malloc(sizeof(lpxpak_blob_t))) == NULL) {
+          return NULL;
+     }
+     blob->data = NULL;
+     blob->len = 0;
+
+     return blob;
+}
+
+void
+lpxpak_blob_destroy(lpxpak_blob_t *blob)
+{
+     if (blob == NULL)
+          return;
+     free(blob->data);
+     free(blob);
+}
+
 lpxpak_t *
 lpxpak_get(lpxpak_t **xpak, char *key)
 {
