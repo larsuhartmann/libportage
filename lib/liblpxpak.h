@@ -325,6 +325,8 @@ lpxpak_blob_destroy(lpxpak_blob_t *blob);
  *   invalid xpak.
  * - \c EBUSY The xpak could not be fully read in.
  * - This function may also fail and set errno for any of the errors specified
+ *   for the routing fdopen(3).
+ * - This function may also fail and set errno for any of the errors specified
  *   for the routine malloc(3).
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine lseek(2).
