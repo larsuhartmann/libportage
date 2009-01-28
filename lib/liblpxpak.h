@@ -230,4 +230,38 @@ lpxpak_destroy(lpxpak_t **xpak);
 lpxpak_t *
 lpxpak_get(lpxpak_t **xpak, char *key);
 
+/**
+ * \brief Reads the xpak data out of a Gentoo binary package.
+ *
+ * Gets an path to a Gentoo binary package and returns a pointer to an
+ * lpxpak_blob_t data structure which holds the xpak blob.
+ *
+ * If an error occurs, NULL is returned and errno is set to indicate the
+ * error.
+ *
+ * The returned data structure can be freed with lpxpak_blob_destroy().
+ * 
+ * \param fd a file descriptor with the gentoo binary package which needs to
+ *        be opened in O_RDONLY mode.
+ *        
+ * \return a pointer to an lpxpak_blob_t data structure which holds the parsed
+ * xpak data or \c NULL, if an error has occured.
+ *
+ * \sa lpxpak_blob_t lpxpak_blob_destroy()
+ * 
+ * \b Errors:
+ *
+ * - \c EINVAL The file either is no valid gentoo binary package or has an
+ *   invalid xpak.
+ * - \c EBUSY The xpak could not be fully read in.
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine malloc(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine lseek(2).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine read(2).
+ */
+lpxpak_blob_t *
+lpxpak_get_blob_fd(int fd);
+
 #endif

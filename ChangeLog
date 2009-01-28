@@ -1,3 +1,9 @@
+2009-01-28  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* lib/liblpxpak.h (lpxpak_blob_t): added.
+
+	* lib/liblpxpak.c (lpxpak_get_blob_fd): added.
+
 2009-01-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* lib/liblpatom.c: fixed memleaks, buffer overflows and several
