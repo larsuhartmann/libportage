@@ -118,39 +118,6 @@ typedef struct {
      size_t len;
 } lpxpak_index_t;
 
-/**
- * \brief the data structure for the compiled index-block of a xpak blob.
- *
- * None of the Pointers in this struct will point to memory regions which are
- * used elsewhere by the lpxpak library.
- */
-typedef struct {
-     /**
-      * \brief a pointer the the begin of the index block.
-      */
-     void *data;
-     /**
-      * \brief the length of the index block.
-      */
-     size_t len;
-} lpxpak_indexblob_t;
-
-/**
- * \brief the data structure for the compiled data-block of a xpak blob.
- *
- * None of the Pointers in this struct will point to memory regions which are
- * used elsewhere by the lpxpak library.
- */
-typedef struct {
-     /**
-      * \brief a pointer the the begin of the data block.
-      */
-     void *data;
-     /**
-      * \brief the length of the data block.
-      */
-     size_t len;
-} lpxpak_datablob_t;
 
 /**
  * \private

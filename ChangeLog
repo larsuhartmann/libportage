@@ -8,6 +8,8 @@
 	have 3 structs of the same kind for different purposes when you
 	can have one..)
 	(lpxpak_indexblob_compile): same as for lpxpak_datablob_compile.
+	(lpxpak_datablob_t): removed.
+	(lpxpak_indexblob_t): removed.
 
 2009-01-28  Lars Hartmann  <lars (at) chaotika (dot) org>
 
