@@ -295,7 +295,6 @@ lpxpak_blob_init(void);
  *
  * \b Attention: Do not try to access the data structure after destroying it
  * or anything can happen.
- * 
  */
 void
 lpxpak_blob_destroy(lpxpak_blob_t *blob);
@@ -325,8 +324,6 @@ lpxpak_blob_destroy(lpxpak_blob_t *blob);
  * - \c EINVAL The file either is no valid gentoo binary package or has an
  *   invalid xpak.
  * - \c EBUSY The xpak could not be fully read in.
- * - This function may also fail and set errno for any of the errors specified
- *   for the routing fdopen(3).
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine malloc(3).
  * - This function may also fail and set errno for any of the errors specified
