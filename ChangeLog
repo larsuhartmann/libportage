@@ -1,3 +1,10 @@
+2009-01-29  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* lib/liblpxpak.c (lpxpak_datablob_init): added.
+	(lpxpak_datablob_destroy): added.
+	(lpxpak_datablob_compile): added.
+	(lpxpak_blob_compile): changed to use lpxpak_datablob_compile.
+
 2009-01-28  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* lib/liblpxpak.c (lpxpak_indexblob_init): added.
