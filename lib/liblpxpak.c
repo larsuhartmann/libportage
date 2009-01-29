@@ -798,7 +798,7 @@ lpxpak_blob_compile(lpxpak_t **xpak)
           return NULL;
      }
      bil = htonl(index->len);
-     bdl = htonl(datalen);
+     bdl = htonl(data->len);
      
      memcpy(blob->data, LPXPAK_INTRO, LPXPAK_INTRO_LEN);
      count += LPXPAK_INTRO_LEN;
