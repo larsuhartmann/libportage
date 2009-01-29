@@ -4,6 +4,10 @@
 	(lpxpak_datablob_destroy): added.
 	(lpxpak_datablob_compile): added.
 	(lpxpak_blob_compile): changed to use lpxpak_datablob_compile.
+	(lpxpak_datablob_compile): changed to return a lpxpak_blob_t (why
+	have 3 structs of the same kind for different purposes when you
+	can have one..)
+	(lpxpak_indexblob_compile): same as for lpxpak_datablob_compile.
 
 2009-01-28  Lars Hartmann  <lars (at) chaotika (dot) org>
 

@@ -74,18 +74,18 @@ typedef struct {
 /**
  * \brief A xpak blob.
  *
- * This is the data structure that holds a compiled xpak-blob as attached to
- * gentoo binary packages.
+ * This is the data structure that holds binary data just as a compiled
+ * xpak-blob as attached to gentoo binary packages.
  */
 typedef struct {
      /**
-      * \brief The xpak data.
+      * \brief The data.
       *
-      * a Pointer to the start of a memory segment that holds the xpak data.
+      * a Pointer to the start of a memory segment that holds the data.
       */
      void *data;
      /**
-      * \brief the length of the xpak data.
+      * \brief the length of the data.
       *
       * the length of the memory block pointed to by data.
       */
@@ -271,7 +271,7 @@ lpxpak_blob_get_fd(int fd);
  *
  * If an error occurs, \c NULL is returned and errno is set.
  *
- * The Memory for the returned array including all its members can be freed
+ * The Memory of the returned data structure and all its members can be freed
  * with lpxpak_blob_destroy().
  *
  * \return a pointer to an lpxpak_blob_t data structure or \c NULL if an error
