@@ -1,3 +1,4 @@
+
 /*
  * Copyright (c) 2008-2009 Lars Hartmann
  * All rights reserved.
@@ -87,7 +88,6 @@
 typedef uint32_t lpxpak_int_t;
 
 /**
- * \private
  * \brief A xpak index element.
  *
  * This is the Datastructure that holds one element of the Index Data parsed
@@ -118,9 +118,7 @@ typedef struct {
      size_t len;
 } lpxpak_index_t;
 
-
 /**
- * \private
  * \brief Parses the Index block of an XPAK.
  *
  * Gets a pointer to the index block of an xpak and the length of that index
@@ -148,8 +146,8 @@ static lpxpak_index_t **
 lpxpak_index_parse(const void *data, size_t len);
 
 /**
- * \private \brief Allocates and initialises a new \c NULL terminated array of
- * pointers to lpxpak_index_t structures with the length \c size.
+ * \brief Allocates and initialises a new \c NULL terminated array of pointers
+ * to lpxpak_index_t structures with the length \c size.
  *
  * This function sets all values of the returned structures to \c 0 and all
  * pointers to \c NULL. If an error occurs, \c NULL is returned and errno is
@@ -174,8 +172,8 @@ static lpxpak_index_t **
 lpxpak_index_init(size_t size);
 
 /**
- * \private \brief resize a \c NULL terminated array of pointers to
- * lpxpak_index_t structures.
+ * \brief resize a \c NULL terminated array of pointers to lpxpak_index_t
+ * structures.
  *
  * resizes the array and frees all unused structs if the new size is lower, or
  * allocate more space for structs if the size is higher. If the new size is
@@ -202,8 +200,8 @@ static lpxpak_index_t **
 lpxpak_index_resize(lpxpak_index_t **index, size_t size);
 
 /**
- * \private \brief Destroy an \c NULL terminated array of pointers to
- * lpxpak_index_t structures.
+ * \brief Destroy an \c NULL terminated array of pointers to lpxpak_index_t
+ * structures.
  *
  * frees up the array and all of the underlying structures plus the pointers
  * they have using free(3). If a \c NULL pointer was given, this function will
@@ -219,7 +217,6 @@ static void
 lpxpak_index_destroy(lpxpak_index_t **index);
 
 /**
- * \private
  * \brief Parses an data block according to the provided index
  *
  * Gets a pointer to the data block of an xpak and a \c NULL terminated array
@@ -254,8 +251,8 @@ static lpxpak_t **
 lpxpak_data_parse(const void *data, lpxpak_index_t **index);
 
 /**
- * \private \brief Allocates and initialises a new \c NULL terminated array of
- * pointers to lpxpak_t structures with the length \c size.
+ * \brief Allocates and initialises a new \c NULL terminated array of pointers
+ * to lpxpak_t structures with the length \c size.
  *
  * This function sets all values of the returned structures to \c 0 and all
  * pointers to \c NULL. If an error occurs, \c NULL is returned and errno is
@@ -290,10 +287,32 @@ lpxpak_init(size_t size);
  *
  * \return a pointer to a lpxpak_blob_t data structure or \c NULL if an error
  * occured.
+ * 
+ * \b Errors:
+ * 
+ * - This function may fail and set errno for any of the errors specified for
+ *   the routine malloc(3).
  */
 static lpxpak_blob_t *
 lpxpak_indexblob_compile(lpxpak_t **xpak);
 
+/**
+ * \brief compiles the data data of a \c NULL terminated array of lpxpak_t
+ * structs into a xpak data binary blob.
+ *
+ * If an error occurs, \c NULL is returned and \c errno is set to indicate the
+ * error.
+ *
+ * \param xpak a \c NULL terminated array of lpxpak_t data structures.
+ *
+ * \return a pointer to a lpxpak_blob_t data structure or \c NULL if an error
+ * occured.
+ * 
+ * \b Errors:
+ * 
+ * - This function may fail and set errno for any of the errors specified for
+ *   the routine malloc(3).
+ */
 static lpxpak_blob_t *
 lpxpak_datablob_compile(lpxpak_t **xpak);
 
@@ -765,7 +784,6 @@ lpxpak_blob_get_path(const char *path)
 lpxpak_blob_t *
 lpxpak_blob_compile(lpxpak_t **xpak)
 {
-     size_t datalen = 0;
      size_t bloblen;
      size_t count = 0;
      size_t intlen;

@@ -295,6 +295,7 @@ lpxpak_blob_init(void);
  *
  * \b Attention: Do not try to access the data structure after destroying it
  * or anything can happen.
+ * 
  */
 void
 lpxpak_blob_destroy(lpxpak_blob_t *blob);
@@ -346,6 +347,13 @@ lpxpak_blob_get_path(const char *path);
  * \param xpak a \c NULL terminated array of lpxpak_t structs.
  *
  * \return a pointer to a lpxpak_blob_t data structure with the compiled xpak.
+ *
+ * \sa lpxpak_blob_t lpxpak_blob_destroy()
+ * 
+ * \b Errors:
+ * 
+ * - This function may fail and set errno for any of the errors specified for
+ *   the routine malloc(3).
  */
 lpxpak_blob_t *
 lpxpak_blob_compile(lpxpak_t **xpak);
