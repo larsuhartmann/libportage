@@ -4,6 +4,13 @@
 	* t/Makefile: deleted doxygen targets
 	* Makefile: moved doxygen targets here.
 
+	Moved header files to directory "include" :
+	* t/Makefile (INCS): changed to new header path.
+	* lib/Makefile (INCS): changed to new header path.
+	* lib/liblpatom.h: moved.
+	* lib/liblpxpak.h: moved.
+	* lib/liblputil.h: moved.
+
 	Added tests:
 	* Makefile: moved to t/Makefile
 	* t/atom_positive.txt: added.

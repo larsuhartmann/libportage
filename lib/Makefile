@@ -9,7 +9,7 @@ LD = ld
 RANLIB = ranlib
 RM = rm
 
-INCS = -I.
+INCS = -I../include
 LIBS = -L.
 
 CFLAGS = -O0 ${INCS} -DVERSION=\"${VERSION}\" -fPIC -pipe

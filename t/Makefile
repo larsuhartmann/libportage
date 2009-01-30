@@ -4,7 +4,7 @@ MANPREFIX = ${PREFIX}/share/man
 CC = cc
 LD = ${CC}
 
-INCS = -I../lib
+INCS = -I../include
 LIBS = -L/usr/lib -lc -L.
 
 CFLAGS = -O0 ${INCS}
