@@ -33,6 +33,10 @@
 /**
  * \file liblpxpak.h
  * \brief Functions to decode/encode/manipulate xpaks.
+ *
+ * In here you ll find many functions to deal with xpak files (the binary
+ * thing that is attached to every gentoo binary package). If you are seeking
+ * for more information regarding the xpak data format, look at doc/xpak.txt
  */
 
 #ifndef __LPXPAK
