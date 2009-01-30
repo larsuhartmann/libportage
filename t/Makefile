@@ -5,7 +5,7 @@ CC = cc
 LD = ${CC}
 DX = doxygen
 
-INCS = -Ilib
+INCS = -I../lib
 LIBS = -L/usr/lib -lc -L.
 
 CFLAGS = -O0 ${INCS}
@@ -17,7 +17,7 @@ check-syntax:
 	${CC} -o nul -Wall ${CFLAGS} -S ${CHK_SOURCES}
 
 devdoc:
-	${DX} doxygen/dev-doc
+	${DX} ../doxygen/dev-doc
 
 apidoc:
-	${DX} doxygen/api-doc
+	${DX} ../doxygen/api-doc

@@ -1,3 +1,11 @@
+2009-01-30  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* Makefile: moved to t/Makefile
+	* t/atom_positive.txt: added.
+	* t/atom_test.c: added.
+	* t/xpak_test.c: added.
+	* t/xpak_test.tbz2: added.
+
 2009-01-29  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* lib/liblpxpak.c (lpxpak_datablob_init): added.
