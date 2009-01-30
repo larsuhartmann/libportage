@@ -1,5 +1,10 @@
 2009-01-30  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Moved doxygen make targets:
+	* t/Makefile: deleted doxygen targets
+	* Makefile: moved doxygen targets here.
+
+	Added tests:
 	* Makefile: moved to t/Makefile
 	* t/atom_positive.txt: added.
 	* t/atom_test.c: added.

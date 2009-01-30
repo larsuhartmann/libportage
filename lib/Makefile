@@ -6,7 +6,6 @@ MANPREFIX = ${PREFIX}/share/man
 AR = ar cr
 CC = cc
 LD = ld
-DX = doxygen
 RANLIB = ranlib
 RM = rm
 
