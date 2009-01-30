@@ -142,7 +142,7 @@ typedef struct {
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine strdup(3). 
  */
-lpatom_t *
+extern lpatom_t *
 lpatom_parse(const char *pname);
 
 /**
@@ -159,7 +159,7 @@ lpatom_parse(const char *pname);
  * \b ATTENTION: Do not try to access the datastructure after destroying it or
  * anything can happen.
  */
-void
+extern void
 lpatom_destroy(lpatom_t *atom);
 
 /**
@@ -186,7 +186,7 @@ lpatom_destroy(lpatom_t *atom);
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine strdup(3). 
  */
-char *
+extern char *
 lpatom_get_qname(const lpatom_t *atom);
 
 /**
@@ -213,7 +213,7 @@ lpatom_get_qname(const lpatom_t *atom);
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine strdup(3). 
  */
-char *
+extern char *
 lpatom_get_fullname(const lpatom_t *atom);
 
 /**
@@ -240,7 +240,7 @@ lpatom_get_fullname(const lpatom_t *atom);
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine strdup(3). 
  */
-char *
+extern char *
 lpatom_get_version(const lpatom_t *atom);
 
 /**
@@ -262,7 +262,7 @@ lpatom_get_version(const lpatom_t *atom);
  *
  * \sa lpatom_t, lpatom_cmp()
  */
-int
+extern int
 lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2);
 
 /**
@@ -282,7 +282,7 @@ lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2);
  *
  * \sa lpatom_t, lpatom_version_cmp()
  */
-int
+extern int
 lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2);
 
 #endif

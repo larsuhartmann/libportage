@@ -62,7 +62,7 @@
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine malloc(3)
  */
-char *
+extern char *
 lputil_get_re_match(const regmatch_t *match, int n, const char *s);
 
 /**
@@ -89,7 +89,8 @@ lputil_get_re_match(const regmatch_t *match, int n, const char *s);
  * - This routine may also fail and set errno for any of the errors specified
  *    for the routine malloc(3).
  */
-char * lputil_substr(const char *s, size_t off, size_t len);
+extern char *
+lputil_substr(const char *s, size_t off, size_t len);
 
 /**
  * \brief Split a String into tokens.
@@ -120,7 +121,7 @@ char * lputil_substr(const char *s, size_t off, size_t len);
  * - This routine may also fail and set errno for any of the errors specified
  *   for the routine strdup(3).
  */
-char **
+extern char **
 lputil_splitstr(const char *s, const char *delim);
 
 /**
@@ -149,7 +150,7 @@ lputil_splitstr(const char *s, const char *delim);
  * - This routine may also fail and set errno for any of the errors specified
  *   for the routine malloc(3)
  */
-void *
+extern void *
 lputil_memdup(const void *s, size_t len);
 
 /**
@@ -171,7 +172,7 @@ lputil_intlen(int d);
  *
  * \sa lputil_splitstr()
  */
-void
+extern void
 lputil_splitstr_destroy(char **splitstr);
 
 /**
@@ -196,7 +197,7 @@ lputil_splitstr_destroy(char **splitstr);
  * - This routine may also fail and set errno for any of the errors specified
  *   for the routine realloc(3).
  */
-char *
+extern char *
 lputil_strndup(char *s, size_t n);
 
 #endif

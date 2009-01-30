@@ -316,7 +316,7 @@ lpxpak_indexblob_compile(lpxpak_t **xpak);
 static lpxpak_blob_t *
 lpxpak_datablob_compile(lpxpak_t **xpak);
 
-lpxpak_t **
+extern lpxpak_t **
 lpxpak_parse_data(const lpxpak_blob_t *blob)
 {
      lpxpak_int_t count = 0;
@@ -379,7 +379,7 @@ lpxpak_parse_data(const lpxpak_blob_t *blob)
      return xpak;
 }
 
-lpxpak_t **
+extern lpxpak_t **
 lpxpak_parse_fd(int fd)
 {
      struct stat xpakstat;
@@ -406,7 +406,7 @@ lpxpak_parse_fd(int fd)
      return xpak;
 }
 
-lpxpak_blob_t *
+extern lpxpak_blob_t *
 lpxpak_blob_get_fd(int fd)
 {
      void *xpakdata = NULL;
@@ -491,7 +491,7 @@ lpxpak_blob_get_fd(int fd)
      return xpakblob;
 }
 
-lpxpak_t **
+extern lpxpak_t **
 lpxpak_parse_path(const char *path)
 {
      int fd;
@@ -709,7 +709,7 @@ lpxpak_init(size_t size)
      return xpak;
 }
 
-void
+extern void
 lpxpak_destroy(lpxpak_t **xpak)
 {
      int i;
@@ -729,7 +729,7 @@ lpxpak_destroy(lpxpak_t **xpak)
      return;
 }
 
-lpxpak_blob_t *
+extern lpxpak_blob_t *
 lpxpak_blob_init(void)
 {
      lpxpak_blob_t *blob;
@@ -743,7 +743,7 @@ lpxpak_blob_init(void)
      return blob;
 }
 
-void
+extern void
 lpxpak_blob_destroy(lpxpak_blob_t *blob)
 {
      if (blob == NULL)
@@ -752,7 +752,7 @@ lpxpak_blob_destroy(lpxpak_blob_t *blob)
      free(blob);
 }
 
-lpxpak_t *
+extern lpxpak_t *
 lpxpak_get(lpxpak_t **xpak, char *key)
 {
      int i;
@@ -781,7 +781,7 @@ lpxpak_blob_get_path(const char *path)
      return xpakblob;
 }
 
-lpxpak_blob_t *
+extern lpxpak_blob_t *
 lpxpak_blob_compile(lpxpak_t **xpak)
 {
      size_t bloblen;

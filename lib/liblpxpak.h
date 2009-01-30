@@ -119,7 +119,7 @@ typedef struct {
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine strdup(3).
  */
-lpxpak_t **
+extern lpxpak_t **
 lpxpak_parse_data(const lpxpak_blob_t *blob);
 
 /**
@@ -154,7 +154,7 @@ lpxpak_parse_data(const lpxpak_blob_t *blob);
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine read(2).
  */
-lpxpak_t **
+extern lpxpak_t **
 lpxpak_parse_fd(int fd);
 
 /**
@@ -191,7 +191,7 @@ lpxpak_parse_fd(int fd);
  * - This function may also fail and set errno for any of
  *   the errors specified for the routine open(2).
  */
-lpxpak_t **
+extern lpxpak_t **
 lpxpak_parse_path(const char *path);
 
 /**
@@ -207,7 +207,7 @@ lpxpak_parse_path(const char *path);
  * \b Attention: Do not try to access the array after destroying it or
  * anything can happen.
  */
-void
+extern void
 lpxpak_destroy(lpxpak_t **xpak);
 
 /**
@@ -225,7 +225,7 @@ lpxpak_destroy(lpxpak_t **xpak);
  *
  * \sa lpxpak_parse_fd()
  */
-lpxpak_t *
+extern lpxpak_t *
 lpxpak_get(lpxpak_t **xpak, char *key);
 
 /**
@@ -259,7 +259,7 @@ lpxpak_get(lpxpak_t **xpak, char *key);
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine read(2).
  */
-lpxpak_blob_t *
+extern lpxpak_blob_t *
 lpxpak_blob_get_fd(int fd);
 
 /**
@@ -284,7 +284,7 @@ lpxpak_blob_get_fd(int fd);
  * - This function may fail and set errno for any of the errors specified for
  * the routine malloc(3).
  */
-lpxpak_blob_t *
+extern lpxpak_blob_t *
 lpxpak_blob_init(void);
 
 /**
@@ -296,7 +296,7 @@ lpxpak_blob_init(void);
  * \b Attention: Do not try to access the data structure after destroying it
  * or anything can happen.
  */
-void
+extern void
 lpxpak_blob_destroy(lpxpak_blob_t *blob);
 
 
@@ -331,7 +331,7 @@ lpxpak_blob_destroy(lpxpak_blob_t *blob);
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine read(2).
  */
-lpxpak_blob_t *
+extern lpxpak_blob_t *
 lpxpak_blob_get_path(const char *path);
 
 /**
@@ -352,6 +352,6 @@ lpxpak_blob_get_path(const char *path);
  * - This function may fail and set errno for any of the errors specified for
  *   the routine malloc(3).
  */
-lpxpak_blob_t *
+extern lpxpak_blob_t *
 lpxpak_blob_compile(lpxpak_t **xpak);
 #endif

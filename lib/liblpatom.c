@@ -208,7 +208,7 @@ lpatom_get_suffix(const lpatom_t *atom);
 static char *
 lpatom_get_release(const lpatom_t *atom);
 
-lpatom_t *
+extern lpatom_t *
 lpatom_parse(const char *pname)
 {
      regex_t regexp[1];
@@ -421,7 +421,7 @@ lpatom_init(void)
      return atom;
 }
 
-void
+extern void
 lpatom_destroy(lpatom_t *atom)
 {
      if (atom != NULL) {
@@ -487,7 +487,7 @@ lpatom_get_release(const lpatom_t *atom)
      return r;
 }
 
-char *
+extern char *
 lpatom_get_qname(const lpatom_t *atom)
 {
      char *cat, *name, *r;
@@ -553,7 +553,7 @@ lpatom_suffe_to_string(lpatom_sufe_t suffix)
      return suf;
 }
 
-char *
+extern char *
 lpatom_get_version(const lpatom_t *atom)
 {
      size_t len, suflen, rellen;
@@ -634,7 +634,7 @@ lpatom_version_explode(const char *ver) {
 }
 
 
-int
+extern int
 lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
 {
      int *ia1, *ia2;
@@ -665,7 +665,7 @@ lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
      return atom1->rel - atom2->rel;
 }
 
-int
+extern int
 lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
 {
      int ret;
@@ -675,7 +675,7 @@ lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
      return lpatom_version_cmp(atom1, atom2);
 }
 
-char *
+extern char *
 lpatom_get_fullname(const lpatom_t *atom)
 {
      char *qname;

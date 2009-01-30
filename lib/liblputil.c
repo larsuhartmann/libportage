@@ -36,7 +36,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
-char *
+extern char *
 lputil_get_re_match(const regmatch_t *match, int n, const char *s)
 {
      /* check if one of the given pointers is NULL  */
@@ -48,7 +48,7 @@ lputil_get_re_match(const regmatch_t *match, int n, const char *s)
      return lputil_substr(s, match[n].rm_so, match[n].rm_eo-match[n].rm_so);
 }
 
-char *
+extern char *
 lputil_substr(const char *s, size_t off, size_t len)
 {
      char *r;
@@ -69,7 +69,7 @@ lputil_substr(const char *s, size_t off, size_t len)
      return r;
 }
 
-void *
+extern void *
 lputil_memdup(const void *s, size_t len)
 {
      void *r;
@@ -89,7 +89,7 @@ lputil_memdup(const void *s, size_t len)
      return r;
 }
 
-char **
+extern char **
 lputil_splitstr(const char *s, const char *delim) 
 {
      char **r;
@@ -151,7 +151,7 @@ lputil_splitstr(const char *s, const char *delim)
      return r;
 }
 
-size_t
+extern size_t
 lputil_intlen(int d)
 {
      int j;
@@ -161,14 +161,14 @@ lputil_intlen(int d)
      return i;
 }
 
-void
+extern void
 lputil_splitstr_destroy(char **splitstr)
 {
      free(splitstr[0]);
      free(splitstr);
 }
 
-char *
+extern char *
 lputil_strndup(char *s, size_t n)
 {
      char *d, *dt;
