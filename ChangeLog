@@ -1,5 +1,7 @@
 2009-01-30  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* t/xpak_test.c: cleaned up includes
+
 	Moved doxygen make targets:
 	* t/Makefile: deleted doxygen targets
 	* Makefile: moved doxygen targets here.

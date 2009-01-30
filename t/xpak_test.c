@@ -1,13 +1,8 @@
 #include <liblpxpak.h>
-#include <liblputil.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <bzlib.h>
-#include <sys/stat.h>
-#include <sys/types.h>
 #include <fcntl.h>
-#include <signal.h>
 #include <stdbool.h>
 #include <string.h>
 
