@@ -395,11 +395,11 @@ lpxpak_parse_fd(int fd)
      }
 
      /* get the xpakblob from lpxpak_get_blob_fd */
-     if ( (xpakblob = lpxpak_blob_get_fd(fd)) == NULL)
+     if ( (xpakblob = lpxpak_blob_get_fd(fd)) == NULL )
           return NULL;
 
      /* parse the xpakblob */
-     if ( (xpak = lpxpak_parse_data(xpakblob)) == NULL) {
+     if ( (xpak = lpxpak_parse_data(xpakblob)) == NULL ) {
           lpxpak_blob_destroy(xpakblob);
           return NULL;
      }
@@ -426,11 +426,11 @@ lpxpak_blob_get_fd(int fd)
      if ( (tmp = malloc(LPXPAK_STOP_LEN+sizeof(lpxpak_int_t))) == NULL )
           return NULL;
      if ( (rs = read(fd, tmp, LPXPAK_STOP_LEN+sizeof(lpxpak_int_t)))
-         == -1) {
+         == -1 ) {
           free(tmp);
           return NULL;
      }
-     if ( rs != LPXPAK_STOP_LEN+sizeof(lpxpak_int_t) ){
+     if ( rs != LPXPAK_STOP_LEN+sizeof(lpxpak_int_t) ) {
           free(tmp);
           errno = EBUSY;
           return NULL;
@@ -478,7 +478,7 @@ lpxpak_blob_get_fd(int fd)
           return NULL;
      }
      /* initialize data structure for xpakblob */
-     if ( (xpakblob = lpxpak_blob_init()) == NULL) {
+     if ( (xpakblob = lpxpak_blob_init()) == NULL ) {
           free(tmp);
           free(xpakdata);
           return NULL;
@@ -522,12 +522,12 @@ lpxpak_index_parse(const void *data, size_t len)
           return NULL;
      
      /* iterate over the index block  */
-     for ( i=0; count < len; ++i) {
+     for ( i=0; count < len; ++i ) {
           if ( i == intlen-1 ) {
                intlen += 50;
                /* check if we got enough free entries in index, if not resize
                 * it */
-               if ( (t = lpxpak_index_resize(index, intlen)) == NULL) {
+               if ( (t = lpxpak_index_resize(index, intlen)) == NULL ) {
                     lpxpak_index_destroy(index);
                     return NULL;
                }
@@ -562,7 +562,7 @@ lpxpak_index_parse(const void *data, size_t len)
           count += sizeof(lpxpak_int_t);
      }
      /* now that we know the actual size, resize index to that size */
-     if ( (t = lpxpak_index_resize(index, i)) == NULL) {
+     if ( (t = lpxpak_index_resize(index, i)) == NULL ) {
           lpxpak_index_destroy(index);
           return NULL;
      }
@@ -579,7 +579,7 @@ lpxpak_index_init(size_t size)
 
      if ( (index = malloc(sizeof(lpxpak_index_t *)*(size+1))) == NULL )
           return NULL;
-     if ( (mem = malloc(sizeof(lpxpak_index_t)*size)) == NULL) {
+     if ( (mem = malloc(sizeof(lpxpak_index_t)*size)) == NULL ) {
           free(index);
           return NULL;
      }
@@ -606,18 +606,18 @@ lpxpak_index_resize(lpxpak_index_t **index, size_t size)
           return NULL;
      }
      
-     for (i = 0; index[i] != NULL; ++i)
+     for ( i = 0; index[i] != NULL; ++i )
           ;
      len = i;
 
      /* realloc the index */
      if ( (tindex = realloc(index, sizeof(lpxpak_index_t *)*(size+1)))
-         == NULL) {
+         == NULL ) {
           return NULL;
      }
      index = tindex;
      /* realloc the elements */
-     if ( (t = realloc(index[0], sizeof(lpxpak_index_t)*size)) == NULL)
+     if ( (t = realloc(index[0], sizeof(lpxpak_index_t)*size)) == NULL )
           return NULL;
      for ( i=0; i < size; ++i )
           index[i] = t+i;
@@ -734,7 +734,7 @@ lpxpak_blob_init(void)
 {
      lpxpak_blob_t *blob;
 
-     if ( (blob = malloc(sizeof(lpxpak_blob_t))) == NULL) {
+     if ( (blob = malloc(sizeof(lpxpak_blob_t))) == NULL ) {
           return NULL;
      }
      blob->data = NULL;
@@ -746,7 +746,7 @@ lpxpak_blob_init(void)
 extern void
 lpxpak_blob_destroy(lpxpak_blob_t *blob)
 {
-     if (blob == NULL)
+     if ( blob == NULL )
           return;
      free(blob->data);
      free(blob);
@@ -760,7 +760,7 @@ lpxpak_get(lpxpak_t **xpak, char *key)
      /* iterate over xpak until the end (NULL) or the searched entry was found
       * and return the last processed entry which should be either NULL or the
       * one we searched for */
-     for (i=0; xpak[i] != NULL || strcmp(xpak[i]->name, key) != 0; ++i)
+     for ( i=0; xpak[i] != NULL || strcmp(xpak[i]->name, key) != 0; ++i )
           ;
      return xpak[i];
 }
@@ -795,10 +795,10 @@ lpxpak_blob_compile(lpxpak_t **xpak)
      intlen = sizeof(lpxpak_int_t);
 
      /* build index blob */
-     if ( (index = lpxpak_indexblob_compile(xpak)) == NULL)
+     if ( (index = lpxpak_indexblob_compile(xpak)) == NULL )
           return NULL;
 
-     if ( (data = lpxpak_datablob_compile(xpak)) == NULL) {
+     if ( (data = lpxpak_datablob_compile(xpak)) == NULL ) {
           lpxpak_blob_destroy(index);
           return NULL;
      }
@@ -806,7 +806,7 @@ lpxpak_blob_compile(lpxpak_t **xpak)
      bloblen = LPXPAK_INTRO_LEN + (intlen*2) + data->len +
           index->len + LPXPAK_OUTRO_LEN;
 
-     if ( (blob = lpxpak_blob_init()) == NULL) {
+     if ( (blob = lpxpak_blob_init()) == NULL ) {
           lpxpak_blob_destroy(index);
           return NULL;
      }
@@ -846,11 +846,11 @@ lpxpak_datablob_compile(lpxpak_t **xpak)
      size_t datalen = 0;
 
      /* initialise the datablob data structure */
-     if ( (datablob = lpxpak_blob_init()) == NULL)
+     if ( (datablob = lpxpak_blob_init()) == NULL )
           return NULL;
      
      /* get len of the data blob */
-     for ( i=0; xpak[i] != NULL; ++i)
+     for ( i=0; xpak[i] != NULL; ++i )
           datalen += xpak[i]->value_len;
 
      /* allocate enough memory for the datablob */
@@ -861,7 +861,7 @@ lpxpak_datablob_compile(lpxpak_t **xpak)
      datablob->len = datalen;
      
      /* copy data to datablob */
-     for ( i=0; xpak[i] != NULL; ++i) {
+     for ( i=0; xpak[i] != NULL; ++i ) {
           memcpy((uint8_t *)datablob->data+count, xpak[i]->value,
                  xpak[i]->value_len);
           count += xpak[i]->value_len;
@@ -884,7 +884,7 @@ lpxpak_indexblob_compile(lpxpak_t **xpak)
 
      intlen = sizeof(lpxpak_int_t);
 
-     for ( i=0; xpak[i] != NULL; ++i) {
+     for ( i=0; xpak[i] != NULL; ++i ) {
           index_len += strlen(xpak[i]->name);
           index_len += intlen*3;
      }
@@ -897,7 +897,7 @@ lpxpak_indexblob_compile(lpxpak_t **xpak)
      }
      index->len = index_len;
 
-     for ( i=0; xpak[i] != NULL; ++i) {
+     for ( i=0; xpak[i] != NULL; ++i ) {
           indexslen = (lpxpak_int_t)strlen(xpak[i]->name);
           bil = htonl(indexslen);
           memcpy((uint8_t *)index->data+count, &bil, intlen);

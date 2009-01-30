@@ -40,7 +40,7 @@ extern char *
 lputil_get_re_match(const regmatch_t *match, int n, const char *s)
 {
      /* check if one of the given pointers is NULL  */
-     if (match == NULL || s == NULL) {
+     if ( match == NULL || s == NULL ) {
           errno = EINVAL;
           return NULL;
      }
@@ -98,12 +98,12 @@ lputil_splitstr(const char *s, const char *delim)
      size_t len = 128;
      int i, j;
 
-     if ( s == NULL || delim == NULL) {
+     if ( s == NULL || delim == NULL ) {
           errno = EINVAL;
           return NULL;
      }
      
-     if ( (t = strdup(s)) == NULL)
+     if ( (t = strdup(s)) == NULL )
           return NULL;
      
      /* allocate len bytes on the heap and assign a pointer to that to that
@@ -112,19 +112,19 @@ lputil_splitstr(const char *s, const char *delim)
           return NULL;
 
      /* iterate over all strtok matches */
-     for (i=0; (r[i] = strtok(t, delim)) != NULL; ++i) {
-          if (t != NULL)
+     for ( i=0; (r[i] = strtok(t, delim)) != NULL; ++i ) {
+          if ( t != NULL )
                t = NULL;
           /* check if we still got enough space in r, if not reallocate it
            * with space for 5 more strings */
-          if (i == len-2) {
+          if ( i == len-2 ) {
                len += 128;
                /* reallocate the region r points to and assign a pointer to
                 * that region to r, if not successfull, clean up everything we
                 * ve allocated so far and return */
                if ( (rt = realloc(r, sizeof(char *)*len)) == NULL ) {
                     /* iterate over r and free up every entry */
-                    for (j=0; j <= i; ++j)
+                    for ( j=0; j <= i; ++j )
                          free(r[j]);
                     free(r);
                     free(t);
@@ -137,7 +137,7 @@ lputil_splitstr(const char *s, const char *delim)
      /* reallocate r to the optimal size */
      if ( (rt = realloc(r, sizeof(char *)*(i+1))) == NULL ) {
           /* iterate over r and free up every entry */
-          for (j=0; j < i; ++j)
+          for ( j=0; j < i; ++j )
                free(r[j]);
           free(r);
           free(t);
@@ -156,7 +156,7 @@ lputil_intlen(int d)
 {
      int j;
      size_t i;
-     for (i=1, j=10; j < d; ++i, j*=10)
+     for ( i = 1, j = 10; j < d; ++i, j*=10 )
           ;
      return i;
 }
@@ -179,7 +179,7 @@ lputil_strndup(char *s, size_t n)
 
      strncpy(d, s, n);
      if ( ( len = strlen(d)) < n-1)
-          if ( (dt = realloc(d, len+1)) == NULL) {
+          if ( (dt = realloc(d, len+1)) == NULL ) {
                free(d);
                return NULL;
           }

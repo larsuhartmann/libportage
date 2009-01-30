@@ -219,7 +219,7 @@ lpatom_parse(const char *pname)
      bool has_cat = false;
 
      /* initialize atom struct */
-     if ( (atom = lpatom_init()) == NULL)
+     if ( (atom = lpatom_init()) == NULL )
           return NULL;
 
      /* compile regexp */
@@ -268,7 +268,7 @@ lpatom_parse(const char *pname)
 
      /* snip off the rest of the string (shoud include the version plus the
       * suffix and release version */
-     if ( (vers = strdup(pname+len+1)) == NULL) {
+     if ( (vers = strdup(pname+len+1)) == NULL ) {
           lpatom_destroy(atom);
           return NULL;
      }
@@ -296,7 +296,7 @@ lpatom_parse(const char *pname)
           atom->verc = ver[len-1];
           ver[len-1] = '\0';
           /* resize ver */
-          if ( (vert = realloc(ver, len)) == NULL) {
+          if ( (vert = realloc(ver, len)) == NULL ) {
                free(vers);
                free(ver);
                regfree(regexp);
@@ -321,14 +321,14 @@ lpatom_parse(const char *pname)
      /* check if it matches */
      if ( regexec(regexp, vers, 3, regmatch, 0) == 0) {
           /* assign the first match (the suffix string) to suf  */
-          if ( (suf = lputil_get_re_match(regmatch, 1, vers)) == NULL) {
+          if ( (suf = lputil_get_re_match(regmatch, 1, vers)) == NULL ) {
                free(vers);
                regfree(regexp);
                lpatom_destroy(atom);
                return NULL;
           }
           /* assign the second match (the suffix version) to sufv */
-          if ( (sufv = lputil_get_re_match(regmatch, 2, vers)) == NULL) {
+          if ( (sufv = lputil_get_re_match(regmatch, 2, vers)) == NULL ) {
                free(suf);
                free(vers);
                regfree(regexp);
@@ -351,9 +351,9 @@ lpatom_parse(const char *pname)
      regcomp(regexp, LPATOM_RE_REL, REG_EXTENDED);
 
      /* check if the regex matches */
-     if ( regexec(regexp, vers, 2, regmatch, 0) == 0) {
+     if ( regexec(regexp, vers, 2, regmatch, 0) == 0 ) {
           /* assign the matched substring to relv */
-          if ( (relv = lputil_get_re_match(regmatch, 1, vers)) == NULL) {
+          if ( (relv = lputil_get_re_match(regmatch, 1, vers)) == NULL ) {
                free(vers);
                regfree(regexp);
                lpatom_destroy(atom);
@@ -407,7 +407,7 @@ lpatom_init(void)
 {
      lpatom_t *atom;
      
-     if ( (atom = malloc(sizeof(lpatom_t))) == NULL)
+     if ( (atom = malloc(sizeof(lpatom_t))) == NULL )
           return NULL;
      atom->name = NULL;
      atom->cat = NULL;
@@ -442,25 +442,25 @@ lpatom_get_suffix(const lpatom_t *atom)
      char *sufv = NULL;
      size_t sufvl;
      size_t len;
-     if ( (suf = lpatom_suffe_to_string(atom->sufenum)) == NULL)
+     if ( (suf = lpatom_suffe_to_string(atom->sufenum)) == NULL )
           return NULL;
      len = strlen(suf);
      if ( atom->sufv > 0 ) {
           sufvl = lputil_intlen(atom->sufv)+1;;
           len += sufvl;
-          if ( (sufv = malloc(sufvl)) == NULL) {
+          if ( (sufv = malloc(sufvl)) == NULL ) {
                free(suf);
                return NULL;
           }
           snprintf(sufv, sufvl, "%d", atom->sufv);
      }
      ++len;
-     if ( (r = malloc(len)) == NULL) {
+     if ( (r = malloc(len)) == NULL ) {
           free(suf);
           return NULL;
      }
      strcpy(r, suf);
-     if (sufv != NULL) {
+     if ( sufv != NULL ) {
           strncat(r, sufv, len);
           free(sufv);
      }
@@ -480,7 +480,7 @@ lpatom_get_release(const lpatom_t *atom)
                return NULL;
           snprintf(t, rellen, "r%d", atom->rel);
      } else
-          if ( (t = strdup("")) == NULL)
+          if ( (t = strdup("")) == NULL )
                return NULL;
      r = strdup(t);
      free(t);
@@ -492,7 +492,7 @@ lpatom_get_qname(const lpatom_t *atom)
 {
      char *cat, *name, *r;
      size_t len = 0;
-     if (atom->cat != NULL) {
+     if ( atom->cat != NULL ) {
           len = strlen(atom->cat);
           if ( (cat = malloc(len+2)) == NULL )
                return NULL;
@@ -501,9 +501,9 @@ lpatom_get_qname(const lpatom_t *atom)
           cat[len+1] = '\0';
           len += 2;
      } else
-          if ( (cat = strdup("")) == NULL)
+          if ( (cat = strdup("")) == NULL )
                return NULL;
-     if ( (name = strdup(atom->name)) == NULL) {
+     if ( (name = strdup(atom->name)) == NULL ) {
           free(cat);
           return NULL;
      }
@@ -526,27 +526,27 @@ lpatom_suffe_to_string(lpatom_sufe_t suffix)
      
      switch(suffix){
      case alpha:
-          if ( (suf = strdup("alpha")) == NULL)
+          if ( (suf = strdup("alpha")) == NULL )
                return NULL;
           break;
      case beta:
-          if ( (suf = strdup("beta")) == NULL)
+          if ( (suf = strdup("beta")) == NULL )
                return NULL;
           break;
      case pre:
-          if ( (suf = strdup("pre")) == NULL)
+          if ( (suf = strdup("pre")) == NULL )
                return NULL;
           break;
      case rc:
-          if ( (suf = strdup("rc")) == NULL)
+          if ( (suf = strdup("rc")) == NULL )
                return NULL;
           break;
      case p:
-          if ( (suf = strdup("p")) == NULL)
+          if ( (suf = strdup("p")) == NULL )
                return NULL;
           break;
      default:
-          if ( (suf = strdup("")) == NULL)
+          if ( (suf = strdup("")) == NULL )
                return NULL;
           break;
      }
@@ -572,7 +572,7 @@ lpatom_get_version(const lpatom_t *atom)
      if ( rellen > 0 )
           len += rellen + 1;
      if (atom->verc > 0) {
-          if ( (verc = malloc(2)) == NULL) {
+          if ( (verc = malloc(2)) == NULL ) {
                free(suf);
                free(rel);
                return NULL;
@@ -580,7 +580,7 @@ lpatom_get_version(const lpatom_t *atom)
           snprintf(verc, 2, "%c", atom->verc);
           ++len;
      }
-     if ( (r = malloc(len+1)) == NULL)
+     if ( (r = malloc(len+1)) == NULL )
           return NULL;
      strcpy(r, atom->ver);
      if ( atom->verc > 0) {
@@ -612,10 +612,10 @@ lpatom_version_explode(const char *ver) {
           /* return NULL if error was received */
           return NULL;
      /* get the number of individual strings */
-     for (i=0; sv[i] != NULL; ++i)
+     for ( i=0; sv[i] != NULL; ++i )
           ;
      /* allocate space for an int array with i entrys */
-     if ( (ia = malloc(sizeof(int)*(i+1))) == NULL) {
+     if ( (ia = malloc(sizeof(int)*(i+1))) == NULL ) {
           /* if allocation wasnt successful, throw away sv and return NULL *
            * (errno is already set by malloc) */
           lputil_splitstr_destroy(sv);
@@ -623,7 +623,7 @@ lpatom_version_explode(const char *ver) {
      }
      /* iterate over the string array which was returned by
       * lputil_splitstr() */
-     for (i=0; sv[i] != NULL; ++i)
+     for ( i=0; sv[i] != NULL; ++i )
           /* convert the current string to an int and assign that one to
            * ia[i] */
           ia[i] = atoi(sv[i]);
@@ -644,9 +644,9 @@ lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
      ia2 = atom2->ver_ex;
      
      /* iterate over both int arrays until the end of one of em is reached */
-     for (i=0; ia1[i] != -1 || ia2[i] != -1; ++i)
+     for ( i=0; ia1[i] != -1 || ia2[i] != -1; ++i )
           /* check if both are different, if yes, return the difference */
-          if (ia1[i] != ia2[i])
+          if ( ia1[i] != ia2[i] )
                /* return the difference */
                return ia1[i] - ia2[i];
      /* check if we reached the end of only one of the two versions */
@@ -669,6 +669,7 @@ extern int
 lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
 {
      int ret;
+     
      if ( (ret = strcmp(lpatom_get_qname(atom1), lpatom_get_qname(atom2)))
          != 0 )
           return ret;
@@ -688,7 +689,7 @@ lpatom_get_fullname(const lpatom_t *atom)
      ver = lpatom_get_version(atom);
      len += strlen(ver);
 
-     if ( (r = malloc(len+1)) == NULL) {
+     if ( (r = malloc(len+1)) == NULL ) {
           free(qname);
           free(ver);
           return NULL;
