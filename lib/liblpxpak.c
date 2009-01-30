@@ -820,17 +820,17 @@ lpxpak_blob_compile(lpxpak_t **xpak)
      
      memcpy(blob->data, LPXPAK_INTRO, LPXPAK_INTRO_LEN);
      count += LPXPAK_INTRO_LEN;
-     memcpy(((char *)blob->data)+count, &bil, intlen);
+     memcpy((uint8_t *)blob->data+count, &bil, intlen);
      count += intlen;
-     memcpy(((char *)blob->data)+count, &bdl, intlen);
+     memcpy((uint8_t *)blob->data+count, &bdl, intlen);
      count += intlen;
-     memcpy(((char *)blob->data)+count, index->data, index->len);
+     memcpy((uint8_t *)blob->data+count, index->data, index->len);
      count += index->len;
      lpxpak_blob_destroy(index);
-     memcpy(((char *)blob->data)+count, data->data, data->len);
+     memcpy((uint8_t *)blob->data+count, data->data, data->len);
      count += data->len;
      lpxpak_blob_destroy(data);
-     memcpy(((char *)blob->data)+count, LPXPAK_OUTRO, LPXPAK_OUTRO_LEN);
+     memcpy((uint8_t *)blob->data+count, LPXPAK_OUTRO, LPXPAK_OUTRO_LEN);
      count += LPXPAK_OUTRO_LEN;
      blob->len = count;
 
@@ -862,7 +862,7 @@ lpxpak_datablob_compile(lpxpak_t **xpak)
      
      /* copy data to datablob */
      for ( i=0; xpak[i] != NULL; ++i) {
-          memcpy(((char *)datablob->data)+count, xpak[i]->value,
+          memcpy((uint8_t *)datablob->data+count, xpak[i]->value,
                  xpak[i]->value_len);
           count += xpak[i]->value_len;
      }
@@ -900,15 +900,15 @@ lpxpak_indexblob_compile(lpxpak_t **xpak)
      for ( i=0; xpak[i] != NULL; ++i) {
           indexslen = (lpxpak_int_t)strlen(xpak[i]->name);
           bil = htonl(indexslen);
-          memcpy((char *)index->data+count, &bil, intlen);
+          memcpy((uint8_t *)index->data+count, &bil, intlen);
           count += intlen;
-          memcpy((char *)index->data+count, xpak[i]->name, indexslen);
+          memcpy((uint8_t *)index->data+count, xpak[i]->name, indexslen);
           count += indexslen;
           bsl = htonl(offset);
-          memcpy((char *)index->data+count, &bsl, intlen);
+          memcpy((uint8_t *)index->data+count, &bsl, intlen);
           count += intlen;
           bol = htonl(xpak[i]->value_len);
-          memcpy((char *)index->data+count, &bol, intlen);
+          memcpy((uint8_t *)index->data+count, &bol, intlen);
           offset += xpak[i]->value_len;
           count += intlen;
      }
