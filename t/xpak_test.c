@@ -22,7 +22,6 @@ main(void)
      lpxpak_t **xpak1;
      lpxpak_blob_t *blob1;
      lpxpak_blob_t *blob2;
-     char *s;
      bool dump = false;
      int fd;
 
