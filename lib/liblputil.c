@@ -35,6 +35,7 @@
 #include <string.h>
 #include <errno.h>
 #include <stdlib.h>
+#include <limits.h>
 
 extern char *
 lputil_get_re_match(const regmatch_t *match, int n, const char *s)
@@ -154,10 +155,24 @@ lputil_splitstr(const char *s, const char *delim)
 extern size_t
 lputil_intlen(int d)
 {
-     int j;
-     size_t i;
-     for ( i = 1, j = 10; j < d; ++i, j*=10 )
-          ;
+     size_t i = 0;
+
+     /* avoid overflow on negation: value range -2^n .. (2^n)-1 */
+     if ( d == INT_MIN ) {
+          d = INT_MAX;
+          ++i;
+     }
+     if ( d < 0 ) {
+          d = -d;
+          ++i;
+     }
+
+     while ( d >= 10 ) {
+          ++i;
+          d /= 10;
+     }
+     /* we still got one digit left */
+     ++i;
      return i;
 }
 
