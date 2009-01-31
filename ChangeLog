@@ -1,5 +1,10 @@
 2009-01-31  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Made Doxygen work again:
+	* doxygen/api-doc: added path to include files.
+	* doxygen/dev-doc: added path to include files.
+	* Makefile: added variable paths.
+
 	Code Cleanup according to Hayati Ayguens code review:
 	* lib/liblpatom.c (lpatom_cmp): rewritten from scratch.
 	(lpatom_get_fullname): cleaned up

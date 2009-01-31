@@ -1,6 +1,8 @@
 DX = doxygen
+DXPATH = doxygen
+
 devdoc:
-	${DX} ../doxygen/dev-doc
+	${DX} ${DXPATH}/dev-doc
 
 apidoc:
-	${DX} ../doxygen/api-doc
+	${DX} ${DXPATH}/api-doc

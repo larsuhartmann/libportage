@@ -81,7 +81,8 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = lib/
+INPUT                  = lib/ \
+                         include/
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.h
