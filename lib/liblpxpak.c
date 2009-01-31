@@ -1,4 +1,3 @@
-
 /*
  * Copyright (c) 2008-2009 Lars Hartmann
  * All rights reserved.
@@ -146,13 +145,13 @@ static lpxpak_index_t **
 lpxpak_index_parse(const void *data, size_t len);
 
 /**
- * \brief Allocates and initialises a new \c NULL terminated array of pointers
- * to lpxpak_index_t structures with the length \c size.
+ * \brief Allocates a new \c NULL terminated array of pointers to
+ * lpxpak_index_t structures.
  *
- * This function sets all values of the returned structures to \c 0 and all
- * pointers to \c NULL. If an error occurs, \c NULL is returned and errno is
- * set.
+ * If an error occurs, \c NULL is returned and errno is set.
  *
+ * The returned data structure can be initialized by lpxpak_index_init().
+ * 
  * The Memory for the returned array including all its members can be freed
  * with lpxpak_index_destroy().
  *
@@ -161,7 +160,7 @@ lpxpak_index_parse(const void *data, size_t len);
  * \return a \c NULL terminated array of lpxpak_index_t or \c NULL if an
  * error occured.
  *
- * \sa lpxpak_index_destroy()
+ * \sa lpxpak_index_init() lpxpak_index_destroy()
  * 
  * \b Errors:
  *
@@ -169,7 +168,22 @@ lpxpak_index_parse(const void *data, size_t len);
  *   the routine malloc(3).
  */
 static lpxpak_index_t **
-lpxpak_index_init(size_t size);
+lpxpak_index_create(size_t size);
+
+/**
+ * \brief Initialises a \c NULL terminated array of pointers to lpxpak_index_t
+ * structures with the length \c size.
+ *
+ * This function sets all values of the structure to \c 0 and all pointers to
+ * \c NULL.
+ *
+ * \param index a \c NULL terminated array of pointers to lpxpak_index_t
+ * structs.
+ * 
+ * \sa lpxpak_index_init() lpxpak_index_destroy()
+ */
+static void
+lpxpak_index_init(lpxpak_index_t **index);
 
 /**
  * \brief resize a \c NULL terminated array of pointers to lpxpak_index_t
@@ -251,13 +265,13 @@ static lpxpak_t **
 lpxpak_data_parse(const void *data, lpxpak_index_t **index);
 
 /**
- * \brief Allocates and initialises a new \c NULL terminated array of pointers
- * to lpxpak_t structures with the length \c size.
+ * \brief Allocates a new \c NULL terminated array of pointers to lpxpak_t
+ * structures with the length \c size.
  *
- * This function sets all values of the returned structures to \c 0 and all
- * pointers to \c NULL. If an error occurs, \c NULL is returned and errno is
- * set.
+ * If an error occurs, \c NULL is returned and errno is set.
  *
+ * The returned data structure can be initialized by lpxpak_init().
+ * 
  * The Memory for the returned array including all its members can be freed
  * with lpxpak_destroy().
  *
@@ -266,15 +280,34 @@ lpxpak_data_parse(const void *data, lpxpak_index_t **index);
  * \return a \c NULL terminated array of lpxpak_t structures or \c NULL if an
  * error occured.
  *
- * \sa lpxpak_destroy()
+ * \sa lpxpak_init() lpxpak_destroy()
  * 
  * \b Errors:
  *
  * - This function may fail and set errno for any of the errors specified for
  * the routine malloc(3).
  */
-static lpxpak_t **
-lpxpak_init(size_t size);
+ static lpxpak_t **
+ lpxpak_create(size_t size);
+
+/**
+ * \brief Initialises a \c NULL terminated array of pointers to lpxpak_t
+ * structures.
+ *
+ * This function sets all values of the structures to \c 0 and all pointers to
+ * \c NULL.
+ *
+ * \param xpak a \c NULL terminated array of lpxpak_t structures.
+ *
+ * \sa lpxpak_create() lpxpak_destroy()
+ * 
+ * \b Errors:
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ * the routine malloc(3).
+ */
+static void
+lpxpak_init(lpxpak_t **);
 
 /**
  * \brief compiles the index data of a \c NULL terminated array of lpxpak_t
@@ -478,11 +511,12 @@ lpxpak_blob_get_fd(int fd)
           return NULL;
      }
      /* initialize data structure for xpakblob */
-     if ( (xpakblob = lpxpak_blob_init()) == NULL ) {
+     if ( (xpakblob = lpxpak_blob_create()) == NULL ) {
           free(tmp);
           free(xpakdata);
           return NULL;
      }
+     lpxpak_blob_init(xpakblob);
      xpakblob->data = xpakdata;
      xpakblob->len = *xpakoffset;
      
@@ -518,8 +552,9 @@ lpxpak_index_parse(const void *data, size_t len)
      int i;
 
      /* initialize a array of lpxpak_index_t structs with len entries */
-     if ( (index = lpxpak_index_init(intlen)) == NULL )
+     if ( (index = lpxpak_index_create(intlen)) == NULL )
           return NULL;
+     lpxpak_index_init(index);
      
      /* iterate over the index block  */
      for ( i=0; count < len; ++i ) {
@@ -571,26 +606,39 @@ lpxpak_index_parse(const void *data, size_t len)
 }
 
 static lpxpak_index_t **
-lpxpak_index_init(size_t size)
+lpxpak_index_create(size_t size)
 {
-     lpxpak_index_t **index;
-     lpxpak_index_t *mem;
+     lpxpak_index_t **index, *mem;
      int i;
 
+     /* allocate memory */
      if ( (index = malloc(sizeof(lpxpak_index_t *)*(size+1))) == NULL )
           return NULL;
      if ( (mem = malloc(sizeof(lpxpak_index_t)*size)) == NULL ) {
           free(index);
           return NULL;
      }
-     /* zero out the memory region pointed to by mem - this is far more
-      * effective compared to manually setting each element of each struct to
-      * zero / NULL. */
-     memset(mem, '\0', sizeof(lpxpak_index_t)*size);
+
+     /* assign memory */
      for ( i=0; i < size; ++i )
           index[i] = mem+i;
+     /* NULL terminate the array */
      index[size] = NULL;
+     
      return index;
+}
+
+static void
+lpxpak_index_init(lpxpak_index_t **index)
+{
+     int i;
+
+     for ( i=0; index[i] != NULL; ++i ) {
+          index[i]->name = NULL;
+          index[i]->offset = 0;
+          index[i]->len = 0;
+     }
+     return;
 }
 
 static lpxpak_index_t **
@@ -621,13 +669,9 @@ lpxpak_index_resize(lpxpak_index_t **index, size_t size)
           return NULL;
      for ( i=0; i < size; ++i )
           index[i] = t+i;
-     /* set values and pointers of newly added entries to \c 0 or \c NULL if
-      * the new size is greater than the old */
+     /* initialize new memory */
      if ( len < size )
-          /* zero out the memory region pointed to by index[0]+len - this is
-           * far more effective compared to manually setting each element of
-           * each struct to zero / NULL. */
-          memset(index[0]+len, '\0', (size-len-1)*sizeof(lpxpak_index_t));
+          lpxpak_index_init(index+len);
      index[size] = NULL;
      return index;
 }
@@ -663,8 +707,9 @@ lpxpak_data_parse(const void *data, lpxpak_index_t **index)
 
      /* initialize a new empty NULL terminated array of lpxpak_t structures
       * with the size len */
-     if ( (xpak = lpxpak_init(isize)) == NULL )
+     if ( (xpak = lpxpak_create(isize)) == NULL )
           return NULL;
+     lpxpak_init(xpak);
 
      /* copy the data block */
      if ( (tdata = lputil_memdup(data, dlen)) == NULL ) {
@@ -686,27 +731,38 @@ lpxpak_data_parse(const void *data, lpxpak_index_t **index)
 }
 
 static lpxpak_t **
-lpxpak_init(size_t size)
+lpxpak_create(size_t size)
 {
-     lpxpak_t **xpak;
-     lpxpak_t *mem;
+     lpxpak_t **xpak, *mem;
      int i;
-     
+
+     /* allocate memory */
      if ( (xpak = malloc(sizeof(lpxpak_t *)*(size+1))) == NULL )
           return NULL;
      if ( (mem = malloc(sizeof(lpxpak_t)*size)) == NULL ) {
           free(xpak);
           return NULL;
      }
-     /* zero out the memory region pointed to by mem - this is far more
-      * effective compared to manually setting each element of each struct to
-      * zero / NULL. */
-     memset(mem, '\0', sizeof(lpxpak_t)*size);
+     /* assign memory */
      for ( i=0; i<size; ++i )
           xpak[i] = mem+i;
-
+     /* NULL terminate the array */
      xpak[size] = NULL;
      return xpak;
+}
+
+static void
+lpxpak_init(lpxpak_t ** xpak)
+{
+     int i;
+
+     /* set all pointers to NULL and all values to 0 */
+     for ( i=0; xpak[i] != NULL; ++i ) {
+          xpak[i]->name = NULL;
+          xpak[i]->value = NULL;
+          xpak[i]->value_len = 0;
+     }
+     return;
 }
 
 extern void
@@ -730,17 +786,18 @@ lpxpak_destroy(lpxpak_t **xpak)
 }
 
 extern lpxpak_blob_t *
-lpxpak_blob_init(void)
+lpxpak_blob_create(void)
 {
-     lpxpak_blob_t *blob;
+     return malloc(sizeof(lpxpak_blob_t));
+}
 
-     if ( (blob = malloc(sizeof(lpxpak_blob_t))) == NULL ) {
-          return NULL;
-     }
+extern void
+lpxpak_blob_init(lpxpak_blob_t *blob)
+{
+     /* initialize data */
      blob->data = NULL;
      blob->len = 0;
-
-     return blob;
+     return;
 }
 
 extern void
@@ -806,10 +863,11 @@ lpxpak_blob_compile(lpxpak_t **xpak)
      bloblen = LPXPAK_INTRO_LEN + (intlen*2) + data->len +
           index->len + LPXPAK_OUTRO_LEN;
 
-     if ( (blob = lpxpak_blob_init()) == NULL ) {
+     if ( (blob = lpxpak_blob_create()) == NULL ) {
           lpxpak_blob_destroy(index);
           return NULL;
      }
+     lpxpak_blob_init(blob);
      if ( (blob->data = malloc(bloblen)) == NULL ) {
           lpxpak_blob_destroy(index);
           lpxpak_blob_destroy(blob);
@@ -846,8 +904,9 @@ lpxpak_datablob_compile(lpxpak_t **xpak)
      size_t datalen = 0;
 
      /* initialise the datablob data structure */
-     if ( (datablob = lpxpak_blob_init()) == NULL )
+     if ( (datablob = lpxpak_blob_create()) == NULL )
           return NULL;
+     lpxpak_blob_init(datablob);
      
      /* get len of the data blob */
      for ( i=0; xpak[i] != NULL; ++i )
@@ -889,8 +948,9 @@ lpxpak_indexblob_compile(lpxpak_t **xpak)
           index_len += intlen*3;
      }
 
-     if ( (index = lpxpak_blob_init()) == NULL )
+     if ( (index = lpxpak_blob_create()) == NULL )
           return NULL;
+     lpxpak_blob_init(index);
      if ( (index->data = malloc(index_len)) == NULL ) {
           lpxpak_blob_destroy(index);
           return NULL;

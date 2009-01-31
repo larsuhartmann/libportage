@@ -88,10 +88,11 @@ static lpatom_sufe_t
 lpatom_suffix_parse(const char *s);
 
 /**
- * allocates and initializes a new lpatom_t memory structure.
+ * allocates a new lpatom_t memory structure.
  *
- * Allocates enough space for a lpatom_t memory structure on the heap and sets
- * all of its pointers or integers to \c NULL or \c 0.
+ * Allocates enough space for a lpatom_t memory structure on the heap.
+ *
+ * The returned data structure can be initialized by lpatom_init().
  *
  * The memory for the returned struct is allocated by malloc and is not used
  * elsewhere in this lib, if you want to destroy it, use lpatom_destroy().
@@ -107,10 +108,22 @@ lpatom_suffix_parse(const char *s);
  * - This function may fail and set errno for any of the errors specified for
  *   the routine malloc(3).
  *
- * \sa lpatom_destroy().
+ * \sa lpatom_init() lpatom_destroy().
  */
 static lpatom_t *
-lpatom_init(void);
+lpatom_create(void);
+
+/**
+ * Initializes a lpatom_t memory structure.
+ *
+ * Setsall of pointers and values to \c NULL or \c 0.
+ * 
+ * \param atom a pointer to a lpatom_t memory structure.
+ *
+ * \sa lpatom_create() lpatom_destroy().
+ */
+static void
+lpatom_init(lpatom_t *atom);
 
 /**
  * \brief parses a atom_suffe_t enum into a string.
@@ -219,8 +232,9 @@ lpatom_parse(const char *pname)
      bool has_cat = false;
 
      /* initialize atom struct */
-     if ( (atom = lpatom_init()) == NULL )
+     if ( (atom = lpatom_create()) == NULL )
           return NULL;
+     lpatom_init(atom);
 
      /* compile regexp */
      regcomp(regexp, LPATOM_RE, REG_EXTENDED);
@@ -401,14 +415,17 @@ lpatom_suffix_parse(const char *s)
      return suf;
 }
 
-
 static lpatom_t *
-lpatom_init(void)
+lpatom_create(void)
 {
-     lpatom_t *atom;
-     
-     if ( (atom = malloc(sizeof(lpatom_t))) == NULL )
-          return NULL;
+     /* return newly allocated memory */
+     return malloc(sizeof(lpatom_t));
+}
+
+static void
+lpatom_init(lpatom_t *atom)
+{
+     /* initialize struct */
      atom->name = NULL;
      atom->cat = NULL;
      atom->ver = NULL;
@@ -418,7 +435,7 @@ lpatom_init(void)
      atom->sufv = 0;
      atom->rel = 0;
 
-     return atom;
+     return;
 }
 
 extern void

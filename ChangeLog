@@ -5,11 +5,22 @@
 	* doxygen/dev-doc: added path to include files.
 	* Makefile: added variable paths.
 
-	Code Cleanup according to Hayati Ayguens code review:
+	Code Cleanup according to Hayati Ayguen's code review:
+	* lib/liblpxpak.c (lpxpak_index_init): split up into
+	lpxpak_index_create() and lpxpak_index_init().
+	(lpxpak_index_create): added.
+	(lpxpak_index_resize): changed to use lpxpak_init.
+	(lpxpak_init): split up into lpxpak_create() and lpxpak_init().
+	(lpxpak_create): added.
+	(lpxpak_blob_init): split up into lpxpak_blob_create() and
+	lpxpak_blob_init().
+	(lpxpak_blob_create): added.
 	* lib/liblpatom.c (lpatom_cmp): rewritten from scratch.
 	(lpatom_get_fullname): cleaned up
 	(lpatom_get_version): rewritten from scratch.
-	(lpatom_get_suffix): rewritten from scratch
+	(lpatom_get_suffix): rewritten from scratch.
+	(lpatom_init): split up into lpatom_create() and lpatom_init().
+	(lpatom_create): added.
 	* include/liblpatom.h (lpatom_sufe_t): extended documentation.
 
 2009-01-30  Lars Hartmann  <lars (at) chaotika (dot) org>
@@ -146,7 +157,7 @@
 	(lpatom_init): does now also do the allocation.
 	(lpatom_suffix_init): does now also do the allocation.
 	(__lpatom_parse_suffix): fixed segv
-	
+
 	* lib/liblpxpak.h: added lpxpak_get
 
 	* lib/liblpxpak.c (lpxpak_get): added

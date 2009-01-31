@@ -267,11 +267,11 @@ extern lpxpak_blob_t *
 lpxpak_blob_get_fd(int fd);
 
 /**
- * \brief Allocates and initialises a new lpxpak_blob_t structure.
+ * \brief Allocates a new lpxpak_blob_t structure.
  *
- * This function allocates a new lpxpak_blob_t data structure, sets all its
- * pointers to \c NULL and all its integers to \c 0 and returns a pointer to
- * that function.
+ * This function allocates a new lpxpak_blob_t data structure.
+ * 
+ * The returned data structure can be initialized by lpxpak_blob_init().
  *
  * If an error occurs, \c NULL is returned and errno is set.
  *
@@ -281,7 +281,7 @@ lpxpak_blob_get_fd(int fd);
  * \return a pointer to an lpxpak_blob_t data structure or \c NULL if an error
  * occured.
  *
- * \sa lpxpak_blob_destroy()
+ * \sa lpxpak_blob_init() lpxpak_blob_destroy()
  * 
  * \b Errors:
  *
@@ -289,7 +289,21 @@ lpxpak_blob_get_fd(int fd);
  * the routine malloc(3).
  */
 extern lpxpak_blob_t *
-lpxpak_blob_init(void);
+lpxpak_blob_create(void);
+
+/**
+ * \brief Initialises a new lpxpak_blob_t structure.
+ *
+ * This function sets all values of the structure to \c 0 and all pointers to
+ * \¢ NULL.
+ *
+ * 
+ * \param blob a pointer to an lpxpak_blob_t data structure.
+ *
+ * \sa lpxpak_blob_create() lpxpak_blob_destroy()
+ */
+extern void
+lpxpak_blob_init(lpxpak_blob_t *blob);
 
 /**
  * \brief Destroys an lpxpak_blob_t data structure using free(3). If a \c NULL
