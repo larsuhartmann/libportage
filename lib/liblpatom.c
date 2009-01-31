@@ -640,6 +640,11 @@ lpatom_get_version(const lpatom_t *atom)
      }
      /* r = vers + sufs + rels */
      snprintf(r, len, "%s%s%s", vers, sufs, rels);
+     
+     /* clean up memory */
+     free(vers);
+     free(sufs);
+     free(rels);
      return r;
 }
 

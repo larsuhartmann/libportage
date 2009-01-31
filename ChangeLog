@@ -1,5 +1,9 @@
 2009-01-31  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Fixed memleaks:
+	* lib/liblpatom.c (lpatom_get_version): fixed memleak.
+	* lib/liblpxpak.c (lpxpak_parse_fd): fixed memleak.
+
 	Made Doxygen work again:
 	* doxygen/api-doc: added path to include files.
 	* doxygen/dev-doc: added path to include files.

@@ -432,10 +432,11 @@ lpxpak_parse_fd(int fd)
           return NULL;
 
      /* parse the xpakblob */
-     if ( (xpak = lpxpak_parse_data(xpakblob)) == NULL ) {
-          lpxpak_blob_destroy(xpakblob);
-          return NULL;
-     }
+     xpak = lpxpak_parse_data(xpakblob);
+     /* free up xpakblob */
+     lpxpak_blob_destroy(xpakblob);
+     /* return whatever lpxpak_parse has returned (could be NULL or a pointer,
+      * does not matter to us here */
      return xpak;
 }
 
