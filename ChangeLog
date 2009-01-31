@@ -1,3 +1,10 @@
+2009-01-31  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Code Cleanup according to Hayati Ayguens code review:
+	* lib/liblpatom.c (lpatom_cmp): rewritten from scratch.
+	(lpatom_get_fullname): cleaned up
+	(lpatom_get_version): rewritten from scratch.
+
 2009-01-30  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* t/xpak_test.c: cleaned up includes
