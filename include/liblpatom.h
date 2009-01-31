@@ -47,27 +47,27 @@
  */
 typedef enum {
      /**
-      * _alpha
+      * \brief alpha release
       */
      alpha,
      /**
-      * _beta
+      * \brief beta release
       */
      beta,
      /**
-      * _pre
+      * \brief pre release.
       */
      pre,
      /**
-      * _rc
+      * \brief release candidate.
       */
      rc,
      /**
-      * no suffix
+      * \brief standard release
       */
      no,
      /**
-      * _p
+      * \brief production release
       */
      p
 } lpatom_sufe_t;

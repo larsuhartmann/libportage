@@ -437,34 +437,33 @@ lpatom_destroy(lpatom_t *atom)
 static char *
 lpatom_get_suffix(const lpatom_t *atom)
 {
-     char *suf;
-     char *r;
-     char *sufv = NULL;
-     size_t sufvl;
+     char *suf, *r;
      size_t len;
-     if ( (suf = lpatom_suffe_to_string(atom->sufenum)) == NULL )
-          return NULL;
-     len = strlen(suf);
-     if ( atom->sufv > 0 ) {
-          sufvl = lputil_intlen(atom->sufv)+1;;
-          len += sufvl;
-          if ( (sufv = malloc(sufvl)) == NULL ) {
-               free(suf);
+     /* check if we have a suffix */
+     if ( atom->sufenum != no ) {
+          /* get suffix string */
+          if ( (suf = lpatom_suffe_to_string(atom->sufenum)) == NULL )
                return NULL;
+          /* check if we got a suffix version number */
+          if ( atom->sufv != 0 ) {
+               len = strlen(suf) + lputil_intlen(atom->sufv) + 1;
+               /* allocate memory */
+               if ( (r = malloc(len)) == NULL ) {
+                    free(suf);
+                    return NULL;
+               }
+               /* r = suf + 'atom->sufv' */
+               snprintf(r, len, "%s%d", suf, atom->sufv);
+               free(suf);
+          } else {
+               /* r = suf */
+               r = suf;
+               suf = NULL;
           }
-          snprintf(sufv, sufvl, "%d", atom->sufv);
-     }
-     ++len;
-     if ( (r = malloc(len)) == NULL ) {
-          free(suf);
-          return NULL;
-     }
-     strcpy(r, suf);
-     if ( sufv != NULL ) {
-          strncat(r, sufv, len);
-          free(sufv);
-     }
-     free(suf);
+     } else
+          /* r = "" */
+          if ( (r = strdup("")) == NULL)
+               return NULL;
      return r;
 }
 
@@ -472,50 +471,40 @@ static char *
 lpatom_get_release(const lpatom_t *atom)
 {
      char *r;
-     char *t;
      size_t rellen;
+     /* check if we have a release number */
      if (atom->rel > 0) {
           rellen = lputil_intlen(atom->rel)+2;
-          if ( (t = malloc(rellen)) == NULL )
+          /* allocate memory */
+          if ( (r = malloc(rellen)) == NULL )
                return NULL;
-          snprintf(t, rellen, "r%d", atom->rel);
+          /* r = 'atom->rel' */
+          snprintf(r, rellen, "r%d", atom->rel);
      } else
-          if ( (t = strdup("")) == NULL )
+          /* r = "" */
+          if ( (r = strdup("")) == NULL )
                return NULL;
-     r = strdup(t);
-     free(t);
      return r;
 }
 
 extern char *
 lpatom_get_qname(const lpatom_t *atom)
 {
-     char *cat, *name, *r;
-     size_t len = 0;
+     char *r;
+     size_t len;
+
+     /* check if we have a category */
      if ( atom->cat != NULL ) {
-          len = strlen(atom->cat);
-          if ( (cat = malloc(len+2)) == NULL )
+          len = strlen(atom->cat) + strlen(atom->name) + 2;
+          /* allocate memory */
+          if ( (r = malloc(len)) == NULL )
                return NULL;
-          memcpy(cat, atom->cat, len);
-          cat[len] = '/';
-          cat[len+1] = '\0';
-          len += 2;
+          /* r = atom->cat + '/' + atom->name */
+          snprintf(r, len, "%s/%s", atom->cat, atom->name);
      } else
-          if ( (cat = strdup("")) == NULL )
+          /* r = atom->name */
+          if ( (r = strdup(atom->name)) == NULL )
                return NULL;
-     if ( (name = strdup(atom->name)) == NULL ) {
-          free(cat);
-          return NULL;
-     }
-     len += strlen(name);
-     if ( (r = malloc(len+1)) == NULL ) {
-          free(cat);
-          return NULL;
-     }
-     strcpy(r, cat);
-     strcat(r, name);
-     free(cat);
-     free(name);
      return r;
 }
 
@@ -557,12 +546,7 @@ extern char *
 lpatom_get_version(const lpatom_t *atom)
 {
      size_t suflen, rellen, verlen, len;
-     char *r;
-     char *suf;
-     char *sufs;
-     char *rel;
-     char *rels;
-     char *vers;
+     char *r, *suf, *sufs, *rel, *rels, *vers;
 
      /* get suffix string */
      if ( (suf = lpatom_get_suffix(atom)) == NULL )
@@ -624,7 +608,9 @@ lpatom_get_version(const lpatom_t *atom)
           snprintf(vers, verlen + 1, "%s%c", atom->ver, atom->verc);
      } else {
           /* vers = atom->ver */
-          vers = strdup(atom->ver);
+          if ( (vers = strdup(atom->ver)) == NULL )
+               return NULL;
+          verlen = strlen(vers);
      }
 
      len = suflen + rellen + verlen + 1;
@@ -633,6 +619,7 @@ lpatom_get_version(const lpatom_t *atom)
           free(sufs);
           free(rels);
           free(vers);
+          return NULL;
      }
      /* r = vers + sufs + rels */
      snprintf(r, len, "%s%s%s", vers, sufs, rels);
@@ -675,8 +662,7 @@ lpatom_version_explode(const char *ver) {
 extern int
 lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
 {
-     int *ia1, *ia2;
-     int i;
+     int *ia1, *ia2, i;
 
      ia1 = atom1->ver_ex;
      ia2 = atom2->ver_ex;
@@ -708,21 +694,23 @@ lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
 {
      int ret;
 
+     /* check if both atoms have a category string */
      if ( atom1->cat != NULL && atom2->cat != NULL )
+          /* check if the category string differs */
           if ( (ret = strcmp(atom1->cat, atom2->cat)) != 0 )
                return ret;
+     /* check if the atom names differ */
      if ( (ret = strcmp(atom1->name, atom2->name)) != 0 )
           return ret;
+     /* compare versions */
      return lpatom_version_cmp(atom1, atom2);
 }
 
 extern char *
 lpatom_get_fullname(const lpatom_t *atom)
 {
-     char *qname;
-     char *ver;
+     char *qname, *ver, *r;
      size_t len = 0;
-     char *r;
 
      /* get qname and version string */
      if ( (qname = lpatom_get_qname(atom)) == NULL )

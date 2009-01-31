@@ -4,6 +4,8 @@
 	* lib/liblpatom.c (lpatom_cmp): rewritten from scratch.
 	(lpatom_get_fullname): cleaned up
 	(lpatom_get_version): rewritten from scratch.
+	(lpatom_get_suffix): rewritten from scratch
+	* include/liblpatom.h (lpatom_sufe_t): extended documentation.
 
 2009-01-30  Lars Hartmann  <lars (at) chaotika (dot) org>
 
