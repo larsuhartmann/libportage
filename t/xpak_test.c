@@ -13,50 +13,53 @@ main(void)
      char *path1 = "blob1.xpak";
      char *path2 = "blob2.xpak";
      
-     lpxpak_t **xpak;
      lpxpak_t **xpak1;
+     lpxpak_t **xpak2;
      lpxpak_blob_t *blob1;
      lpxpak_blob_t *blob2;
      bool dump = false;
      int fd;
 
+     printf("%-70s", "lpxpak_parse()");
      /* open the file read-only*/
      if ( (fd = open(path, O_RDONLY)) == -1 )
           return EXIT_FAILURE;
      
-     if ( (xpak = lpxpak_parse_fd(fd)) == NULL ) {
+     if ( (xpak1 = lpxpak_parse_fd(fd)) == NULL ) {
           close(fd);
-          puts("fehler!");
+          puts("\x1b[1m*fail*\x1b[0m");
           return EXIT_FAILURE;
      }
-     if ( strcmp(xpak[0]->name, "USE") != 0 ) {
-          lpxpak_destroy(xpak);
-          puts("fehler!");
+     if ( strcmp(xpak1[0]->name, "USE" ) != 0 ||
+         strcmp(xpak1[22]->name, "CFLAGS") != 0 ) {
+          lpxpak_destroy(xpak1);
+          puts("\x1b[1m*fail*\x1b[0m");
           return EXIT_FAILURE;
      }
+     puts("\x1b[1m*pass*\x1b[0m");
+     printf("%-70s", "lpxpak_compile()");
      if ( (blob2 = lpxpak_blob_get_fd(fd)) == NULL ) {
-          lpxpak_destroy(xpak);
-          puts("fehler!");
+          lpxpak_destroy(xpak1);
+          puts("\x1b[1m*fail*\x1b[0m");
           return EXIT_FAILURE;
      }
      close(fd);
-     if ( (blob1 = lpxpak_blob_compile(xpak)) == NULL ) {
-          lpxpak_destroy(xpak);
+     if ( (blob1 = lpxpak_blob_compile(xpak1)) == NULL ) {
+          lpxpak_destroy(xpak1);
           lpxpak_blob_destroy(blob2);
-          puts("fehler!");
+          puts("\x1b[1m*fail*\x1b[0m");
           return EXIT_FAILURE;
      }
-     xpak1 = lpxpak_parse_data(blob1);
+     xpak2 = lpxpak_parse_data(blob1);
      if ( blob1->len == blob2->len) {
-          puts("größe identisch!");
           if ( memcmp(blob1->data, blob2->data, blob1->len) == 0 )
-               puts("identisch!");
+               puts("\x1b[1m*pass*\x1b[0m");
           else {
-               puts("blobs nicht identisch!");
+               puts("\x1b[1m*fail*\x1b[0m");
                dump = true;
           }
      } else {
-          puts("größpe nicht identisch!");
+          puts("\x1b[1m*fail*\x1b[0m");
           dump = true;
      }
 
@@ -72,6 +75,9 @@ main(void)
           close(fd);
      }
      
-     lpxpak_destroy(xpak);
+     lpxpak_destroy(xpak1);
+     lpxpak_destroy(xpak2);
+     lpxpak_blob_destroy(blob1);
+     lpxpak_blob_destroy(blob2);
      return EXIT_SUCCESS;
 }
