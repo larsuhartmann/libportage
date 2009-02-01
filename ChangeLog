@@ -1,3 +1,9 @@
+2009-02-01  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Updated Copyright statements:
+	* COPYING: added.
+	* doc/xpak.txt: added 2009.
+
 2009-01-31  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* lib/liblputil.c (lputil_intlen): integer overflow
