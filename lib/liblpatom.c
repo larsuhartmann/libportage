@@ -183,11 +183,10 @@ static char *
 lpatom_get_release(const lpatom_t *atom);
 
 extern lpatom_t *
-lpatom_parse(const char *pname)
+lpatom_parse(lpatom_t *atom, const char *pname)
 {
      regex_t regexp[1];
      regmatch_t regmatch[512];
-     lpatom_t *atom = NULL;
      char *relv, *suf, *sufv, *ver, *vers, *vert;
      size_t len = 0;
      bool has_cat = false;
@@ -197,44 +196,29 @@ lpatom_parse(const char *pname)
           return NULL;
      lpatom_init(atom);
 
-     /* compile regexp */
-     regcomp(regexp, LPATOM_RE, REG_EXTENDED);
      /* check if this is a valid atom */
-     if ( regexec(regexp, pname, 0, regmatch, 0) != 0) {
-          regfree(regexp);
+     if ( regexec(&atom->regex.name, pname, 0, regmatch, 0) != 0) {
           lpatom_destroy(atom);
           errno = EINVAL;
           return NULL;
      }
-     /* free up the compiled regexp */
-     regfree(regexp);
 
-     /* compile the category regexp */
-     regcomp(regexp, LPATOM_RE_CAT, REG_EXTENDED);
      /* check if this atom has a category */
-     if ( regexec(regexp, pname, 2, regmatch, 0) == 0) {
+     if ( regexec(&atom->regex.category, pname, 2, regmatch, 0) == 0) {
           /* assign the category string to atom->cat */
           if ( (atom->cat = lputil_get_re_match(regmatch, 1, pname)) == NULL ) {
-               regfree(regexp);
                lpatom_destroy(atom);
                return NULL;
           }
           has_cat = true;
      }
-     /* free up the compiled regexp */
-     regfree(regexp);
 
-     /* compile the package name regexp */
-     regcomp(regexp, LPATOM_RE_NAME, REG_EXTENDED);
-     regexec(regexp, pname, 3, regmatch, 0);
+     regexec(&atom->regex.name, pname, 3, regmatch, 0);
      /* assign the package name to atom->name */
      if ( (atom->name = lputil_get_re_match(regmatch, 2, pname)) == NULL ) {
-          regfree(regexp);
           lpatom_destroy(atom);
           return NULL;
      }
-     /* free up the compiled regexp */
-     regfree(regexp);
 
      /* count the length of the part before the version */
      if ( has_cat )
@@ -248,19 +232,14 @@ lpatom_parse(const char *pname)
           return NULL;
      }
 
-     /* compile the version regexp */
-     regcomp(regexp, LPATOM_RE_VER, REG_EXTENDED);
-     regexec(regexp, vers, 1, regmatch, 0);
+     regexec(&atom->regex.version, vers, 1, regmatch, 0);
 
      /* get the version as string */
      if ( (ver = lputil_get_re_match(regmatch, 0, vers)) == NULL ) {
           free(vers);
-          regfree(regexp);
           lpatom_destroy(atom);
           return NULL;
      }
-     /* free up the regexp object */
-     regfree(regexp);
      
      /* get the length of ver */
      len = strlen(ver);
@@ -274,7 +253,6 @@ lpatom_parse(const char *pname)
           if ( (vert = realloc(ver, len)) == NULL ) {
                free(vers);
                free(ver);
-               regfree(regexp);
                lpatom_destroy(atom);
                return NULL;
           }
@@ -291,14 +269,11 @@ lpatom_parse(const char *pname)
           return NULL;
      }
 
-     /* compile the suffix regexp */
-     regcomp(regexp, LPATOM_RE_SUF, REG_EXTENDED);
      /* check if it matches */
-     if ( regexec(regexp, vers, 3, regmatch, 0) == 0) {
+     if ( regexec(&atom->regex.suffix, vers, 3, regmatch, 0) == 0) {
           /* assign the first match (the suffix string) to suf  */
           if ( (suf = lputil_get_re_match(regmatch, 1, vers)) == NULL ) {
                free(vers);
-               regfree(regexp);
                lpatom_destroy(atom);
                return NULL;
           }
@@ -306,7 +281,6 @@ lpatom_parse(const char *pname)
           if ( (sufv = lputil_get_re_match(regmatch, 2, vers)) == NULL ) {
                free(suf);
                free(vers);
-               regfree(regexp);
                lpatom_destroy(atom);
                return NULL;
           }
@@ -319,18 +293,13 @@ lpatom_parse(const char *pname)
           free(suf);
           free(sufv);
      }
-     regfree(regexp);
 
      
-     /* compile the release version regexp */
-     regcomp(regexp, LPATOM_RE_REL, REG_EXTENDED);
-
      /* check if the regex matches */
-     if ( regexec(regexp, vers, 2, regmatch, 0) == 0 ) {
+     if ( regexec(&atom->regex.release, vers, 2, regmatch, 0) == 0 ) {
           /* assign the matched substring to relv */
           if ( (relv = lputil_get_re_match(regmatch, 1, vers)) == NULL ) {
                free(vers);
-               regfree(regexp);
                lpatom_destroy(atom);
                return NULL;
           }
@@ -339,7 +308,6 @@ lpatom_parse(const char *pname)
           free(relv);
      }
      /* free up the regexp object */
-     regfree(regexp);
      free(vers);
      return atom;
 }
@@ -400,7 +368,7 @@ lpatom_init(lpatom_t *atom)
      regcomp(&atom->regex.atom, LPATOM_RE, REG_EXTENDED);
      regcomp(&atom->regex.category, LPATOM_RE_CAT, REG_EXTENDED);
      regcomp(&atom->regex.name, LPATOM_RE_NAME, REG_EXTENDED);
-     regcomp(&atom->regex.suffix, LPATOM_RE_NAME, REG_EXTENDED);
+     regcomp(&atom->regex.suffix, LPATOM_RE_SUF, REG_EXTENDED);
      regcomp(&atom->regex.release, LPATOM_RE_REL, REG_EXTENDED);
      regcomp(&atom->regex.version, LPATOM_RE_VER, REG_EXTENDED);
 

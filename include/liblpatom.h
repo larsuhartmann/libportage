@@ -173,7 +173,7 @@ typedef struct {
  *   for the routine strdup(3). 
  */
 extern lpatom_t *
-lpatom_parse(const char *pname);
+lpatom_parse(lpatom_t *atom, const char *pname);
 
 /**
  * \brief destroys an lpatom_t object.

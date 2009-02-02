@@ -4,6 +4,7 @@
 	* include/liblpatom.h (lpatom_t): added regex member which is a
 	struct of several regex_t objects.
 	* lib/liblpatom.c (lpatom_reinit): added.
+	(lpatom_parse): introduced object based model.
 
 	Updated Error Codes:
 	* lib/liblpxpak.c (lpxpak_parse_fd): returns EBADFD instead of
