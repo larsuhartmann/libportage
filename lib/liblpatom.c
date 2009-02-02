@@ -77,14 +77,14 @@ rc|p)[0-9]*)?(-r[0-9]+)?)?$"
 /**
  * Reads the suffix out of an suffix string
  * 
- * gets an suffix string (eg alpha) and returns an lpatom_suffe_t enum.
+ * gets an suffix string (eg alpha), parses it and stores the value in the provided lpatom_t structure.
  *
- * \param s a \c nul terminated c string with the suffix
+ * \param atom a pointer to an lpatom_t structure. 
+ * \param s a \c nul terminated c string with the suffix.
  *
- * \return an lpatom_suffe_t enum.
  */
-static lpatom_sufe_t
-lpatom_suffix_parse(const char *s);
+void
+lpatom_suffix_parse(lpatom_t *atom, const char *s);
 
 /**
  * \brief parses a atom_suffe_t enum into a string.
@@ -185,7 +185,6 @@ lpatom_get_release(const lpatom_t *atom);
 extern lpatom_t *
 lpatom_parse(lpatom_t *atom, const char *pname)
 {
-     regex_t regexp[1];
      regmatch_t regmatch[512];
      char *relv, *suf, *sufv, *ver, *vers, *vert;
      size_t len = 0;
@@ -198,7 +197,6 @@ lpatom_parse(lpatom_t *atom, const char *pname)
 
      /* check if this is a valid atom */
      if ( regexec(&atom->regex.name, pname, 0, regmatch, 0) != 0) {
-          lpatom_destroy(atom);
           errno = EINVAL;
           return NULL;
      }
@@ -206,19 +204,15 @@ lpatom_parse(lpatom_t *atom, const char *pname)
      /* check if this atom has a category */
      if ( regexec(&atom->regex.category, pname, 2, regmatch, 0) == 0) {
           /* assign the category string to atom->cat */
-          if ( (atom->cat = lputil_get_re_match(regmatch, 1, pname)) == NULL ) {
-               lpatom_destroy(atom);
+          if ( (atom->cat = lputil_get_re_match(regmatch, 1, pname)) == NULL )
                return NULL;
-          }
           has_cat = true;
      }
 
      regexec(&atom->regex.name, pname, 3, regmatch, 0);
      /* assign the package name to atom->name */
-     if ( (atom->name = lputil_get_re_match(regmatch, 2, pname)) == NULL ) {
-          lpatom_destroy(atom);
+     if ( (atom->name = lputil_get_re_match(regmatch, 2, pname)) == NULL )
           return NULL;
-     }
 
      /* count the length of the part before the version */
      if ( has_cat )
@@ -227,17 +221,14 @@ lpatom_parse(lpatom_t *atom, const char *pname)
 
      /* snip off the rest of the string (shoud include the version plus the
       * suffix and release version */
-     if ( (vers = strdup(pname+len+1)) == NULL ) {
-          lpatom_destroy(atom);
+     if ( (vers = strdup(pname+len+1)) == NULL )
           return NULL;
-     }
 
      regexec(&atom->regex.version, vers, 1, regmatch, 0);
 
      /* get the version as string */
      if ( (ver = lputil_get_re_match(regmatch, 0, vers)) == NULL ) {
           free(vers);
-          lpatom_destroy(atom);
           return NULL;
      }
      
@@ -253,7 +244,6 @@ lpatom_parse(lpatom_t *atom, const char *pname)
           if ( (vert = realloc(ver, len)) == NULL ) {
                free(vers);
                free(ver);
-               lpatom_destroy(atom);
                return NULL;
           }
           ver = vert;
@@ -265,7 +255,6 @@ lpatom_parse(lpatom_t *atom, const char *pname)
      /* parse the version into a string array */
      if ( (atom->ver_ex = lpatom_version_explode(atom->ver)) == NULL ) {
           free(vers);
-          lpatom_destroy(atom);
           return NULL;
      }
 
@@ -274,18 +263,16 @@ lpatom_parse(lpatom_t *atom, const char *pname)
           /* assign the first match (the suffix string) to suf  */
           if ( (suf = lputil_get_re_match(regmatch, 1, vers)) == NULL ) {
                free(vers);
-               lpatom_destroy(atom);
                return NULL;
           }
           /* assign the second match (the suffix version) to sufv */
           if ( (sufv = lputil_get_re_match(regmatch, 2, vers)) == NULL ) {
                free(suf);
                free(vers);
-               lpatom_destroy(atom);
                return NULL;
           }
           /* assign the parsed suffix string to atom->sufenum */
-          atom->sufenum = lpatom_suffix_parse(suf);
+          lpatom_suffix_parse(atom, suf);
           /* assign the converted sufv string to atom->sufv */
           atom->sufv = atoi(sufv);
 
@@ -300,7 +287,6 @@ lpatom_parse(lpatom_t *atom, const char *pname)
           /* assign the matched substring to relv */
           if ( (relv = lputil_get_re_match(regmatch, 1, vers)) == NULL ) {
                free(vers);
-               lpatom_destroy(atom);
                return NULL;
           }
           /* convert the substring to int and assign it to atom->rel */
@@ -312,36 +298,34 @@ lpatom_parse(lpatom_t *atom, const char *pname)
      return atom;
 }
 
-static lpatom_sufe_t
-lpatom_suffix_parse(const char *s)
+void
+lpatom_suffix_parse(lpatom_t *atom, const char *s)
 {
-     lpatom_sufe_t suf;
-     
      switch(s[0]) {
      case 'a':
-          suf = alpha;
+          atom->sufenum = alpha;
           break;
      case 'b':
-          suf = beta;
+          atom->sufenum = beta;
           break;
      case 'p':
           switch(s[1]) {
           case 'r':
-               suf = pre;
+               atom->sufenum = pre;
                break;
           default:
-               suf = p;
+               atom->sufenum = p;
                break;
           }
           break;
      case 'r':
-          suf = rc;
+          atom->sufenum = rc;
           break;
      default:
-          suf = no;
+          atom->sufenum = no;
           break;
      }
-     return suf;
+     return;
 }
 
 extern lpatom_t *
