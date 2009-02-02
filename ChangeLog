@@ -3,7 +3,9 @@
 	* lib/liblpxpak.c (lpxpak_parse_fd): returns EBADFD instead of
 	EINVAL if the fd is not opened for reading.
 
+	Test updates:
 	* t/Makefile (atom_test, xpak_test, test): simple test target added.
+	* t/atom_test.c : does now also check if lpatom_cmp works as expected.
 
 2009-02-01  Lars Hartmann  <lars (at) chaotika (dot) org>
 

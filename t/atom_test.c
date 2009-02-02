@@ -10,7 +10,8 @@
 
 int main(void)
 {
-     lpatom_t *atom = NULL;
+     lpatom_t *atom1 = NULL;
+     lpatom_t *atom2 = NULL;
      char *s, *fname;
      bool has_failed = false;
      FILE *file;
@@ -20,20 +21,30 @@ int main(void)
      while ( fgets(s, MAXLEN, file) != NULL) {
           s[strlen(s)-1] = '\0';
           printf("%-60s", s);
-          if ( (atom = lpatom_parse(s)) == NULL) {
+          if ( (atom1 = lpatom_parse(s)) == NULL) {
                puts("\x1b[1m*fail*\x1b[0m");
                has_failed = true;
           }
           else {
-               fname = lpatom_get_fullname(atom);
+               fname = lpatom_get_fullname(atom1);
                if (strcmp(fname, s) != 0) {
                     puts("\x1b[1m*fail*\x1b[0m");
                     has_failed = true;
-               }
-               puts("\x1b[1m*pass*\x1b[0m");
+               } else
+                    puts("\x1b[1m*pass*\x1b[0m");
                free(fname);
-               lpatom_destroy(atom);
           }
+          printf("%-60s", "lpatom_cmp()");
+          if ( (atom2 = lpatom_parse(s)) == NULL ) {
+               puts("\x1b[1m*fail*\x1b[0m");
+               has_failed = true;
+          }
+          if ( lpatom_cmp(atom1, atom2) != 0 ) {
+               puts("\x1b[1m*fail*\x1b[0m");
+               has_dfailed = true;
+          } else
+               puts("\x1b[1m*pass*\x1b[0m");
+          lpatom_destroy(atom1);
      }
      free(s);
      fclose(file);
