@@ -41,7 +41,7 @@ int main(void)
           }
           if ( lpatom_cmp(atom1, atom2) != 0 ) {
                puts("\x1b[1m*fail*\x1b[0m");
-               has_dfailed = true;
+               has_failed = true;
           } else
                puts("\x1b[1m*pass*\x1b[0m");
           lpatom_destroy(atom1);
