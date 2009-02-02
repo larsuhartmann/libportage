@@ -1,5 +1,11 @@
 2009-02-02  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Updated liblpatom to a Object based model:
+	* include/liblpatom.h (lpatom_t): added regex member which is a
+	struct of several regex_t objects.
+	* lib/liblpatom.c (lpatom_reinit): added.
+
+	Updated Error Codes:
 	* lib/liblpxpak.c (lpxpak_parse_fd): returns EBADFD instead of
 	EINVAL if the fd is not opened for reading.
 

@@ -38,6 +38,7 @@
 #define __LPATOM
 
 #include <stdio.h>
+#include <regex.h>
 
 /**
  * suffix enum
@@ -110,6 +111,35 @@ typedef struct {
       * \brief the release version.
       */
      int rel;
+     /**
+      * \regexp structs.
+      */
+     struct {
+          /**
+           * \brief regexp to match valid package names
+           * */
+          regex_t atom;
+          /**
+           * \brief regexp to match valid category names
+           */
+          regex_t category;
+          /**
+           * \brief regexp to match valid package names
+           */
+          regex_t name;
+          /**
+           * \brief regexp to match valid suffixes
+           */
+          regex_t suffix;
+          /**
+           * \brief regexp to match valid release versions
+           */
+          regex_t release;
+          /**
+           * \brief regexp to match valid versions
+           */
+          regex_t version;
+     } regex;
 } lpatom_t;
 
 /**
@@ -284,5 +314,51 @@ lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2);
  */
 extern int
 lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2);
+
+/**
+ * \brief allocates a new lpatom_t memory structure.
+ *
+ * Allocates enough space for a lpatom_t memory structure on the heap.
+ *
+ * The returned data structure can be initialized by lpatom_init().
+ *
+ * The memory for the returned struct is allocated by malloc and is not used
+ * elsewhere in this lib, if you want to destroy it, use lpatom_destroy().
+ * 
+ * If an error occured, \c Null is returned and \c errno is set to indicate the
+ * error.
+ *
+ * \return a pointer to an newly initialized lpatom_t memory structure or \c
+ * NULL if an error has occured.
+ *
+ * \b Errors:
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ *   the routine malloc(3).
+ *
+ * \sa lpatom_init() lpatom_destroy().
+ */
+extern lpatom_t *
+lpatom_create(void);
+
+/**
+ * \brief Initializes a lpatom_t memory structure.
+ *
+ * Sets all of pointers and values to \c NULL or \c 0.
+ * 
+ * \param atom a pointer to a lpatom_t memory structure.
+ *
+ * \sa lpatom_create() lpatom_destroy().
+ */
+extern void
+lpatom_init(lpatom_t *atom);
+
+/**
+ * \brief Cleans up a lpatom_t handle.
+ *
+ * Cleans up an lpatom object
+ */
+extern void
+lpatom_reinit(lpatom_t *atom);
 
 #endif

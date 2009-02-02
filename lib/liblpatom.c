@@ -41,7 +41,6 @@
 
 #include <stdlib.h>
 #include <sys/types.h>
-#include <regex.h>
 #include <errno.h>
 #include <string.h>
 #include <stdbool.h>
@@ -86,44 +85,6 @@ rc|p)[0-9]*)?(-r[0-9]+)?)?$"
  */
 static lpatom_sufe_t
 lpatom_suffix_parse(const char *s);
-
-/**
- * allocates a new lpatom_t memory structure.
- *
- * Allocates enough space for a lpatom_t memory structure on the heap.
- *
- * The returned data structure can be initialized by lpatom_init().
- *
- * The memory for the returned struct is allocated by malloc and is not used
- * elsewhere in this lib, if you want to destroy it, use lpatom_destroy().
- * 
- * If an error occured, \c Null is returned and \c errno is set to indicate the
- * error.
- *
- * \return a pointer to an newly initialized lpatom_t memory structure or \c
- * NULL if an error has occured.
- *
- * \b Errors:
- *
- * - This function may fail and set errno for any of the errors specified for
- *   the routine malloc(3).
- *
- * \sa lpatom_init() lpatom_destroy().
- */
-static lpatom_t *
-lpatom_create(void);
-
-/**
- * Initializes a lpatom_t memory structure.
- *
- * Setsall of pointers and values to \c NULL or \c 0.
- * 
- * \param atom a pointer to a lpatom_t memory structure.
- *
- * \sa lpatom_create() lpatom_destroy().
- */
-static void
-lpatom_init(lpatom_t *atom);
 
 /**
  * \brief parses a atom_suffe_t enum into a string.
@@ -415,16 +376,45 @@ lpatom_suffix_parse(const char *s)
      return suf;
 }
 
-static lpatom_t *
+extern lpatom_t *
 lpatom_create(void)
 {
      /* return newly allocated memory */
      return malloc(sizeof(lpatom_t));
 }
 
-static void
+extern void
 lpatom_init(lpatom_t *atom)
 {
+     /* initialize struct */
+     atom->name = NULL;
+     atom->cat = NULL;
+     atom->ver = NULL;
+     atom->ver_ex = NULL;
+     atom->verc = 0;
+     atom->sufenum = no;
+     atom->sufv = 0;
+     atom->rel = 0;
+
+     /* compile regexp's */
+     regcomp(&atom->regex.atom, LPATOM_RE, REG_EXTENDED);
+     regcomp(&atom->regex.category, LPATOM_RE_CAT, REG_EXTENDED);
+     regcomp(&atom->regex.name, LPATOM_RE_NAME, REG_EXTENDED);
+     regcomp(&atom->regex.suffix, LPATOM_RE_NAME, REG_EXTENDED);
+     regcomp(&atom->regex.release, LPATOM_RE_REL, REG_EXTENDED);
+     regcomp(&atom->regex.version, LPATOM_RE_VER, REG_EXTENDED);
+
+     return;
+}
+
+extern void
+lpatom_reinit(lpatom_t *atom) {
+     /* free up pointers */
+     free(atom->name);
+     free(atom->cat);
+     free(atom->ver);
+     free(atom->ver_ex);
+
      /* initialize struct */
      atom->name = NULL;
      atom->cat = NULL;
