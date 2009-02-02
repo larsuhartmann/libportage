@@ -1,6 +1,9 @@
 2009-02-02  Lars Hartmann  <lars (at) chaotika (dot) org>
 
-	* t/Makefile (atom_test, xpak_test, test): simple test target added
+	* lib/liblpxpak.c (lpxpak_parse_fd): returns EBADFD instead of
+	EINVAL if the fd is not opened for reading.
+
+	* t/Makefile (atom_test, xpak_test, test): simple test target added.
 
 2009-02-01  Lars Hartmann  <lars (at) chaotika (dot) org>
 

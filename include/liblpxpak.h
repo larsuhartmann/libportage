@@ -149,6 +149,7 @@ lpxpak_parse_data(const lpxpak_blob_t *blob);
  * - \c EINVAL The file either is no valid gentoo binary package or has an
  *   invalid xpak.
  * - \c EBUSY The xpak could not be fully read in.
+ * - \c EBADFD The file descriptor is not opened in read-mode.
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine malloc(3).
  * - This function may also fail and set errno for any of the errors specified
