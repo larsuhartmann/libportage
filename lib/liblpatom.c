@@ -182,7 +182,7 @@ lpatom_get_suffix(const lpatom_t *atom);
 static char *
 lpatom_get_release(const lpatom_t *atom);
 
-extern lpatom_t *
+extern int
 lpatom_parse(lpatom_t *atom, const char *pname)
 {
      regmatch_t regmatch[512];
@@ -190,29 +190,24 @@ lpatom_parse(lpatom_t *atom, const char *pname)
      size_t len = 0;
      bool has_cat = false;
 
-     /* initialize atom struct */
-     if ( (atom = lpatom_create()) == NULL )
-          return NULL;
-     lpatom_init(atom);
-
      /* check if this is a valid atom */
      if ( regexec(&atom->regex.name, pname, 0, regmatch, 0) != 0) {
           errno = EINVAL;
-          return NULL;
+          return -1;
      }
 
      /* check if this atom has a category */
      if ( regexec(&atom->regex.category, pname, 2, regmatch, 0) == 0) {
           /* assign the category string to atom->cat */
           if ( (atom->cat = lputil_get_re_match(regmatch, 1, pname)) == NULL )
-               return NULL;
+               return -1;
           has_cat = true;
      }
 
      regexec(&atom->regex.name, pname, 3, regmatch, 0);
      /* assign the package name to atom->name */
      if ( (atom->name = lputil_get_re_match(regmatch, 2, pname)) == NULL )
-          return NULL;
+          return -1;
 
      /* count the length of the part before the version */
      if ( has_cat )
@@ -222,14 +217,14 @@ lpatom_parse(lpatom_t *atom, const char *pname)
      /* snip off the rest of the string (shoud include the version plus the
       * suffix and release version */
      if ( (vers = strdup(pname+len+1)) == NULL )
-          return NULL;
+          return -1;
 
      regexec(&atom->regex.version, vers, 1, regmatch, 0);
 
      /* get the version as string */
      if ( (ver = lputil_get_re_match(regmatch, 0, vers)) == NULL ) {
           free(vers);
-          return NULL;
+          return -1;
      }
      
      /* get the length of ver */
@@ -244,7 +239,7 @@ lpatom_parse(lpatom_t *atom, const char *pname)
           if ( (vert = realloc(ver, len)) == NULL ) {
                free(vers);
                free(ver);
-               return NULL;
+               return -1;
           }
           ver = vert;
      }
@@ -255,7 +250,7 @@ lpatom_parse(lpatom_t *atom, const char *pname)
      /* parse the version into a string array */
      if ( (atom->ver_ex = lpatom_version_explode(atom->ver)) == NULL ) {
           free(vers);
-          return NULL;
+          return -1;
      }
 
      /* check if it matches */
@@ -263,13 +258,13 @@ lpatom_parse(lpatom_t *atom, const char *pname)
           /* assign the first match (the suffix string) to suf  */
           if ( (suf = lputil_get_re_match(regmatch, 1, vers)) == NULL ) {
                free(vers);
-               return NULL;
+               return -1;
           }
           /* assign the second match (the suffix version) to sufv */
           if ( (sufv = lputil_get_re_match(regmatch, 2, vers)) == NULL ) {
                free(suf);
                free(vers);
-               return NULL;
+               return -1;
           }
           /* assign the parsed suffix string to atom->sufenum */
           lpatom_suffix_parse(atom, suf);
@@ -287,7 +282,7 @@ lpatom_parse(lpatom_t *atom, const char *pname)
           /* assign the matched substring to relv */
           if ( (relv = lputil_get_re_match(regmatch, 1, vers)) == NULL ) {
                free(vers);
-               return NULL;
+               return -1;
           }
           /* convert the substring to int and assign it to atom->rel */
           atom->rel = atoi(relv);
@@ -295,7 +290,7 @@ lpatom_parse(lpatom_t *atom, const char *pname)
      }
      /* free up the regexp object */
      free(vers);
-     return atom;
+     return 0;
 }
 
 void
@@ -384,6 +379,15 @@ extern void
 lpatom_destroy(lpatom_t *atom)
 {
      if (atom != NULL) {
+          /* free up compiled regexps */
+          regfree(&atom->regex.atom);
+          regfree(&atom->regex.category);
+          regfree(&atom->regex.name);
+          regfree(&atom->regex.suffix);
+          regfree(&atom->regex.release);
+          regfree(&atom->regex.version);
+
+          /* free up the rest */
           free(atom->name);
           free(atom->cat);
           free(atom->ver);

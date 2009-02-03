@@ -145,24 +145,22 @@ typedef struct {
 /**
  * \brief Reads the atom data out of an packetname string.
  *
- * Gets the full name of a packet as a c string and returns an pointer to an
- * lpatom_t struct which holds the parsed data.
+ * Gets a atom struct and the full name of a packet as a c string and parses
+ * the string into the atom object.
  *
  * The given string must be a valid gentoo package name (see documentation for
  * more information)
  *
- * The memory for the returned struct is allocated by malloc and is not used
- * elsewhere in this lib, if you want to destroy it, use lpatom_destroy().
- *
- * If an error occured, \c Null is returned and \c errno is set to indicate the
+ * If an error occured, \c -1 is returned and \c errno is set to indicate the
  * error.
  *
+ * \param atom the atom object used to parse the string. 
  * \param pname a string with the full package version.
  *
- * \return a pointer to an lpatom_t struct or \c NULL if an error has occured.
+ * \return \c 0 if sucessful or \c -1 if an error occured
  *
- * \sa lpatom_t, lpatom_destroy(), lpatom_get_version(),
- * lpatom_get_fullname(), lpatom_get_qname()
+ * \sa lpatom_t, lpatom_create(), lpatom_init(), lpatom_destroy(),
+ * lpatom_get_version(), lpatom_get_fullname(), lpatom_get_qname()
  *
  * \b Errors:
  * 
@@ -172,7 +170,7 @@ typedef struct {
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine strdup(3). 
  */
-extern lpatom_t *
+extern int
 lpatom_parse(lpatom_t *atom, const char *pname);
 
 /**
