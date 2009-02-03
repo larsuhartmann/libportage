@@ -16,12 +16,19 @@ int main(void)
      bool has_failed = false;
      FILE *file;
 
+     if ( (atom1 = lpatom_create()) == NULL )
+          return EXIT_FAILURE;
+     lpatom_init(atom1);
+     if ( (atom2 = lpatom_create()) == NULL )
+          return EXIT_FAILURE;
+     lpatom_init(atom2);
+
      file = fopen("atom_positive.txt", "r");
      s = malloc(MAXLEN);
      while ( fgets(s, MAXLEN, file) != NULL) {
           s[strlen(s)-1] = '\0';
           printf("%-60s", s);
-          if ( (atom1 = lpatom_parse(s)) == NULL) {
+          if ( lpatom_parse(atom1, s) == -1) {
                puts("\x1b[1m*fail*\x1b[0m");
                has_failed = true;
           }
@@ -33,19 +40,23 @@ int main(void)
                } else
                     puts("\x1b[1m*pass*\x1b[0m");
                free(fname);
+               printf("%-60s", "lpatom_cmp()");
+               if ( lpatom_parse(atom2, s) == -1 ) {
+                    puts("\x1b[1m*fail*\x1b[0m");
+                    has_failed = true;
+               } else {
+                    if ( lpatom_cmp(atom1, atom2) != 0 ) {
+                         puts("\x1b[1m*fail*\x1b[0m");
+                         has_failed = true;
+                    } else
+                         puts("\x1b[1m*pass*\x1b[0m");
+               }
+               lpatom_reinit(atom1);
+               lpatom_reinit(atom2);
           }
-          printf("%-60s", "lpatom_cmp()");
-          if ( (atom2 = lpatom_parse(s)) == NULL ) {
-               puts("\x1b[1m*fail*\x1b[0m");
-               has_failed = true;
-          }
-          if ( lpatom_cmp(atom1, atom2) != 0 ) {
-               puts("\x1b[1m*fail*\x1b[0m");
-               has_failed = true;
-          } else
-               puts("\x1b[1m*pass*\x1b[0m");
-          lpatom_destroy(atom1);
      }
+     lpatom_destroy(atom1);
+     lpatom_destroy(atom2);
      free(s);
      fclose(file);
      if ( has_failed )

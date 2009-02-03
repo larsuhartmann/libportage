@@ -4,6 +4,7 @@
 	* lib/liblpatom.c (lpatom_parse): fixed memleak.
 	(lpatom_parse): does now return an int.
 	(lpatom_destroy): introduced object based model.
+	* t/atom_test.c: modified to work with new, object based lpatom.
 
 2009-02-02  Lars Hartmann  <lars (at) chaotika (dot) org>
 
