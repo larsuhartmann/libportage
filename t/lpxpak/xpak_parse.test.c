@@ -9,7 +9,7 @@
 int
 main(void)
 {
-     char *path = "xpak_test.tbz2";
+     char *path = "xpak_parse.test.tbz2";
      char *path1 = "blob1.xpak";
      char *path2 = "blob2.xpak";
      
