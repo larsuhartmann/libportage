@@ -1,22 +1,19 @@
-                                    TODO:
+                TODO (listed from highest to lowest priority)
+                =============================================
 
-libs
-====
+- write testframework
 
-  *lpversionatom.h
-  
-doc
-===
+- build framework using the GNU autotools
 
-  *package-naming.txt
+- build metadata cache parser
 
-                                    DONE:
-libs
-====
+- dependency library including dependency-resolver dependency-merge ..
 
-  *lpxpak.h
+- parser for binary-package index-files:
+  http://tinderbox.dev.gentoo.org/embedded/linwizard/All/Packages
+  http://tinderbox.dev.gentoo.org/embedded/armv6j-softfloat-linux-gnueabi/Packages
 
-doc
-===
+- optimize the regexpen used in liblpatom.c (right now they match non-legal
+  atoms)
 
-  *xpak.txt
+- extend t/atom_positive.txt
