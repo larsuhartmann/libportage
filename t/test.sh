@@ -4,7 +4,6 @@ do_tests()
     cd "$i"
     # get no. of testfiles
     testno=`find -perm /u+x,g+x,o+x -iname '*.test'|wc -l`
-
     count=0
     printf "%s %d..%d" "$1" "$count" "$testno"
     # iterate over every file that ends with ".test"
@@ -22,18 +21,28 @@ do_tests()
             if ! ./"$j">"$j.out" 2>"$j.out"
             then
                 # if a test fails
-                echo " not ok"
+                tput bold
+                echo "\tnot ok"
+                tput sgr0
                 echo "output of $j:"
                 # print out the stdout/stderr of the failing test
                 cat "$j.out"
-                rm "$j.out"
+                if [ -f "$j.out" ]
+                then
+                    rm "$j.out"
+                fi
                 cd ..
                 exit 1
             fi
         fi
         # remove tempfile we used for storing stdout/stderr of the test
-        rm "$j.out"
-        echo " ok"
+        if [ -f "$j.out" ]
+        then
+            rm "$j.out"
+        fi
+        tput bold
+        echo "\tok"
+        tput sgr0
     done
     cd ..
 }
