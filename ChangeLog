@@ -18,6 +18,8 @@
 	* configure.ac: added.
 	* include/Makefile.am: added.
 	* src/Makefile.am: added.
+	* Makefile: removed.
+	* src/Makefile: removed.
 
 2009-02-05  Lars Hartmann  <lars (at) chaotika (dot) org>
 
