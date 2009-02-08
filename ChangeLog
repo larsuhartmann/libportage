@@ -2,6 +2,11 @@
 
 	Migrating tests to Autotools:
 	* t/: cleaned up.
+	* Makefile.am (SUBDIRS): added t/.
+	* configure.ac (AC_CONFIG_FILES): added t/Makefile.
+	* t/01_lpatom_parse.c: modified to fit new filenames and to be silent.
+	* t/02_lpxpak_parse.c: modified to fit new filenames and to be silent.
+	* t/Makefile.am: added.
 
 	Migration to Autotools:
 	* include/liblpcommon.h: added header for (BEGIN|END)_C_DECLS

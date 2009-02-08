@@ -1,4 +1,4 @@
-AC_INIT([libportage], [0.1alpha], [lars@chaotika.org])
+AC_INIT([libportage], [HEAD], [lars@chaotika.org])
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 
 # checks for programs
@@ -16,5 +16,5 @@ AC_TYPE_UINT32_T
 
 # other stuff
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile include/Makefile t/Makefile])
 AC_OUTPUT
