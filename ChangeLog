@@ -12,6 +12,7 @@
 	added tests for autoconf Defines.
 	* lib/liblpxpak.c: added (BEGIN|END)_C_DECLS macros.
 	added tests for autoconf Defines.
+	* lib: renamed to src.
 
 2009-02-05  Lars Hartmann  <lars (at) chaotika (dot) org>
 

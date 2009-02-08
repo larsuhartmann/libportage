@@ -9,10 +9,12 @@ LD = ld
 RANLIB = ranlib
 RM = rm
 
-INCS = -I../include
+INCS = -I../include -I../
 LIBS = -L.
 
-CFLAGS = -O0 ${INCS} -DVERSION=\"${VERSION}\" -fPIC -pipe
+DEFINES = -DSTDC_HEADERS -DHAVE_ERRNO_H
+
+CFLAGS = -O0 ${INCS} -DVERSION=\"${VERSION}\" -fPIC -pipe ${DEFINES} -Wall -Werror
 #CFLAGS = -g -Wall -O0 ${INCS} -DVERSION=\"${VERSION}\" -pipe
 
 LDFLAGS = -z,defs ${LIBS}
