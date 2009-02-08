@@ -1,3 +1,18 @@
+2009-02-08  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Migration to Autotools:
+	* include/liblpcommon.h: added header for (BEGIN|END)_C_DECLS
+	definitions.
+	* include/liblpatom.h: added (BEGIN|END)_C_DECLS macros.
+	* include/liblputil.h: added (BEGIN|END)_C_DECLS macros.
+	* include/liblpxpak.h: added (BEGIN|END)_C_DECLS macros.
+	* lib/liblpatom.c: added (BEGIN|END)_C_DECLS macros.
+	added tests for autoconf Defines.
+	* lib/liblputil.c: added (BEGIN|END)_C_DECLS macros.
+	added tests for autoconf Defines.
+	* lib/liblpxpak.c: added (BEGIN|END)_C_DECLS macros.
+	added tests for autoconf Defines.
+
 2009-02-05  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Added new test-framework:
