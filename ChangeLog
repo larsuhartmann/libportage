@@ -1,5 +1,8 @@
 2009-02-08  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Migrating tests to Autotools:
+	* t/: cleaned up.
+
 	Migration to Autotools:
 	* include/liblpcommon.h: added header for (BEGIN|END)_C_DECLS
 	definitions.
