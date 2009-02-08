@@ -1,10 +1,6 @@
                 TODO (listed from highest to lowest priority)
                 =============================================
 
-- write testframework
-
-- build framework using the GNU autotools
-
 - build metadata cache parser
 
 - dependency library including dependency-resolver dependency-merge ..
@@ -12,8 +8,14 @@
 - parser for binary-package index-files:
   http://tinderbox.dev.gentoo.org/embedded/linwizard/All/Packages
   http://tinderbox.dev.gentoo.org/embedded/armv6j-softfloat-linux-gnueabi/Packages
-
 - optimize the regexpen used in liblpatom.c (right now they match non-legal
   atoms)
 
 - extend t/atom_positive.txt
+
+                                     DONE
+                                     ====
+
+- write testframework: Lars Hartmann 08.02.2009
+
+- build framework using the GNU Autotools: Lars Hartmann 08.02.2009
