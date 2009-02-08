@@ -37,8 +37,12 @@
 #ifndef __LPATOM
 #define __LPATOM
 
+#include <liblpcommon.h>
+
 #include <stdio.h>
 #include <regex.h>
+
+BEGIN_C_DECLS
 
 /**
  * suffix enum
@@ -358,5 +362,7 @@ lpatom_init(lpatom_t *atom);
  */
 extern void
 lpatom_reinit(lpatom_t *atom);
+
+END_C_DECLS
 
 #endif

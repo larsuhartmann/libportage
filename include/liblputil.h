@@ -36,7 +36,11 @@
 #ifndef __LPUTIL
 #define __LPUTIL
 
+#include <liblpcommon.h>
+
 #include <regex.h>
+
+BEGIN_C_DECLS
 
 /**
  * \brief Get regexp match
@@ -199,5 +203,7 @@ lputil_splitstr_destroy(char **splitstr);
  */
 extern char *
 lputil_strndup(char *s, size_t n);
+
+END_C_DECLS
 
 #endif

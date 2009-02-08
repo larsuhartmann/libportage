@@ -36,13 +36,30 @@
  */
 #define _XOPEN_SOURCE   600
 
+#if HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <liblpatom.h>
 #include <liblputil.h>
 
-#include <stdlib.h>
 #include <sys/types.h>
-#include <errno.h>
-#include <string.h>
+
+#if HAVE_ERRNO_H
+#  include <errno.h>
+#endif /* HAVE_ERRNO_H */
+#ifndef errno
+/* Some Systems #define this! */
+extern int errno
+#endif
+
+#if STDC_HEADERS
+#  include <stdlib.h>
+#  include <string.h>
+#elif HAVE_STRINGS_H
+#  include <string.h>
+#endif /* STDC_HEADERS */
+
 #include <stdbool.h>
 #include <ctype.h>
 
@@ -74,10 +91,13 @@ rc|p)[0-9]*)?(-r[0-9]+)?)?$"
  */
 #define LPATOM_RE_VER     "^([0-9]+([.][0-9]+)*)([a-z]?)"
 
+BEGIN_C_DECLS
+
 /**
- * Reads the suffix out of an suffix string
+ * \brief Reads the suffix out of an suffix string
  * 
- * gets an suffix string (eg alpha), parses it and stores the value in the provided lpatom_t structure.
+ * gets an suffix string (eg alpha), parses it and stores the value in the
+ * provided lpatom_t structure.
  *
  * \param atom a pointer to an lpatom_t structure. 
  * \param s a \c nul terminated c string with the suffix.
@@ -710,3 +730,5 @@ lpatom_get_fullname(const lpatom_t *atom)
 
      return r;
 }
+
+END_C_DECLS

@@ -36,6 +36,10 @@
  */
 #define _XOPEN_SOURCE   600
 
+#if HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <liblpxpak.h>
 #include <liblputil.h>
 
@@ -43,10 +47,25 @@
 #include <arpa/inet.h>
 
 #include <fcntl.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <errno.h>
-#include <string.h>
+
+#if HAVE_UNISTD_H
+#  include <unistd.h>
+#endif
+
+#if HAVE_ERRNO_H
+#  include <errno.h>
+#endif /* HAVE_ERRNO_H */
+#ifndef errno
+/* Some Systems #define this! */
+extern int errno
+#endif
+
+#if STDC_HEADERS
+#  include <stdlib.h>
+#  include <string.h>
+#elif HAVE_STRINGS_H
+#  include <string.h>
+#endif /* STDC_HEADERS */
 
 /**
  * \brief The Offset for the STOP String - calculated from SEEK_END.
@@ -80,6 +99,8 @@
  * \brief The Value the STOP String should have.
  */
 #define LPXPAK_STOP             "STOP"
+
+BEGIN_C_DECLS
 
 /**
  * \brief The Datatype for the offset/length values XPAK uses.
@@ -976,3 +997,5 @@ lpxpak_indexblob_compile(lpxpak_t **xpak)
      index->len = count;
      return index;
 }
+
+END_C_DECLS

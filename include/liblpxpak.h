@@ -42,8 +42,12 @@
 #ifndef __LPXPAK
 #define __LPXPAK
 
+#include <liblpcommon.h>
+
 #include <sys/types.h>
 #include <stdint.h>
+
+BEGIN_C_DECLS
 
 /**
  * \brief A xpak element
@@ -373,4 +377,7 @@ lpxpak_blob_get_path(const char *path);
  */
 extern lpxpak_blob_t *
 lpxpak_blob_compile(lpxpak_t **xpak);
+
+END_C_DECLS
+
 #endif

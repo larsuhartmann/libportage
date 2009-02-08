@@ -28,14 +28,32 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
-
 #define _XOPEN_SOURCE   600
 
+#if HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <liblputil.h>
-#include <string.h>
-#include <errno.h>
-#include <stdlib.h>
+
 #include <limits.h>
+
+#if HAVE_ERRNO_H
+#  include <errno.h>
+#endif /* HAVE_ERRNO_H */
+#ifndef errno
+/* Some Systems #define this! */
+extern int errno
+#endif
+
+#if STDC_HEADERS
+#  include <stdlib.h>
+#  include <string.h>
+#elif HAVE_STRINGS_H
+#  include <string.h>
+#endif /* STDC_HEADERS */
+
+BEGIN_C_DECLS
 
 extern char *
 lputil_get_re_match(const regmatch_t *match, int n, const char *s)
@@ -201,3 +219,5 @@ lputil_strndup(char *s, size_t n)
      d = dt;
      return d;
 }
+
+END_C_DECLS
