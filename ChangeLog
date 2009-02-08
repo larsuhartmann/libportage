@@ -15,7 +15,9 @@
 	* lib/: renamed to src/.
  	* COPYING: added.
 	* Makefile.am: added.
-	* 
+	* configure.ac: added.
+	* include/Makefile.am: added.
+	* src/Makefile.am: added.
 
 2009-02-05  Lars Hartmann  <lars (at) chaotika (dot) org>
 
