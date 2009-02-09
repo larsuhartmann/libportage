@@ -3,6 +3,15 @@
 	* .gitignore: added all the autotools generated stuff plus the
 	stuff that gets produced during compile-time.
 
+
+2009-02-09  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* include/liblpatom.h: renamed to atom.h
+	* include/liblpcommon.h: renamed to common.h
+	* include/liblputil.h: renamed to util.h
+	* include/liblpxpak.h: renamed to xpak.h
+
+
 2009-02-08  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* TODO: updated.

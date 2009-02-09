@@ -40,8 +40,8 @@
 # include <config.h>
 #endif
 
-#include <liblpatom.h>
-#include <liblputil.h>
+#include <atom.h>
+#include <util.h>
 
 #include <sys/types.h>
 

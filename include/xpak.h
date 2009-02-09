@@ -42,7 +42,7 @@
 #ifndef __LPXPAK
 #define __LPXPAK
 
-#include <liblpcommon.h>
+#include <common.h>
 
 #include <sys/types.h>
 #include <stdint.h>

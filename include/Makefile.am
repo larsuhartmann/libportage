@@ -1,2 +1,2 @@
 foobardir = $(includedir)/libportage
-foobar_HEADERS = liblpatom.h liblpcommon.h liblputil.h liblpxpak.h
+foobar_HEADERS = atom.h common.h util.h xpak.h

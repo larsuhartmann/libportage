@@ -40,8 +40,8 @@
 # include <config.h>
 #endif
 
-#include <liblpxpak.h>
-#include <liblputil.h>
+#include <xpak.h>
+#include <util.h>
 
 #include <sys/stat.h>
 #include <arpa/inet.h>

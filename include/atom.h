@@ -37,7 +37,7 @@
 #ifndef __LPATOM
 #define __LPATOM
 
-#include <liblpcommon.h>
+#include <common.h>
 
 #include <stdio.h>
 #include <regex.h>

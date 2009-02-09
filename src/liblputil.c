@@ -34,7 +34,7 @@
 # include <config.h>
 #endif
 
-#include <liblputil.h>
+#include <util.h>
 
 #include <limits.h>
 

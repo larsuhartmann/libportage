@@ -1,4 +1,5 @@
-#include <liblpxpak.h>
+#include <xpak.h>
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
