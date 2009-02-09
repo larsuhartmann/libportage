@@ -8,13 +8,14 @@
 - parser for binary-package index-files:
   http://tinderbox.dev.gentoo.org/embedded/linwizard/All/Packages
   http://tinderbox.dev.gentoo.org/embedded/armv6j-softfloat-linux-gnueabi/Packages
+
 - optimize the regexpen used in liblpatom.c (right now they match non-legal
   atoms)
 
 - extend t/atom_positive.txt
 
-                                     DONE
-                                     ====
+                            DONE (sorted by date)
+                            =====================
 
 - write testframework: Lars Hartmann 08.02.2009
 
