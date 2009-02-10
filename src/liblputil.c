@@ -53,6 +53,10 @@ extern int errno
 #  include <string.h>
 #endif /* STDC_HEADERS */
 
+#if HAVE_MEMORY_H
+#  include <memory.h>
+#endif /* HAVE_MEMORY_H */
+
 BEGIN_C_DECLS
 
 extern char *

@@ -67,6 +67,10 @@ extern int errno
 #  include <string.h>
 #endif /* STDC_HEADERS */
 
+#if HAVE_MEMORY_H
+#  include <memory.h>
+#endif /* HAVE_MEMORY_H
+
 /**
  * \brief The Offset for the STOP String - calculated from SEEK_END.
  */
@@ -992,7 +996,7 @@ lpxpak_indexblob_compile(lpxpak_t **xpak)
           bol = htonl(xpak[i]->value_len);
           memcpy((uint8_t *)index->data+count, &bol, intlen);
           offset += xpak[i]->value_len;
-          count += intlen;
+          coundt += intlen;
      }
      index->len = count;
      return index;

@@ -1,8 +1,14 @@
+<<<<<<< HEAD:ChangeLog
 2009-02-12  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* .gitignore: added all the autotools generated stuff plus the
 	stuff that gets produced during compile-time.
 
+2009-02-10  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* configure.ac: added check for some headers and functions.
+	* src/liblpxpak.c: #include memory.h if existant
+	* src/liblputil.c: #include memory.h if existant.
 
 2009-02-09  Lars Hartmann  <lars (at) chaotika (dot) org>
 
@@ -15,8 +21,9 @@
 2009-02-08  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* TODO: updated.
-
+n
 	Migrating tests to Autotools:
+
 	* t/: cleaned up.
 	* Makefile.am (SUBDIRS): added t/.
 	* configure.ac (AC_CONFIG_FILES): added t/Makefile.
