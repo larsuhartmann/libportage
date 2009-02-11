@@ -50,8 +50,6 @@
 2009-02-10  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* configure.ac: added check for some headers and functions.
-	* src/liblpxpak.c: #include memory.h if existant.
-	* configure.ac: added check for some headers and functions.
 	* src/liblpxpak.c: #include memory.h if existant
 	* src/liblputil.c: #include memory.h if existant.
 
@@ -62,13 +60,19 @@
 	* include/liblputil.h: renamed to util.h
 	* include/liblpxpak.h: renamed to xpak.h
 
+2009-02-09  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* include/liblpatom.h: renamed to atom.h
+	* include/liblpcommon.h: renamed to common.h
+	* include/liblputil.h: renamed to util.h
+	* include/liblpxpak.h: renamed to xpak.h
 2009-02-08  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* TODO: updated.
 
 	Migrating tests to Autotools:
-
 	* t/: cleaned up.
+	* src/liblputil.c: #include memory.h if existant.
 	* Makefile.am (SUBDIRS): added t/.
 	* configure.ac (AC_CONFIG_FILES): added t/Makefile.
 	* t/01_lpatom_parse.c: modified to fit new filenames and to be silent.
