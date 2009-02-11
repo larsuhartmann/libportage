@@ -996,7 +996,7 @@ lpxpak_indexblob_compile(lpxpak_t **xpak)
           bol = htonl(xpak[i]->value_len);
           memcpy((uint8_t *)index->data+count, &bol, intlen);
           offset += xpak[i]->value_len;
-          coundt += intlen;
+          count += intlen;
      }
      index->len = count;
      return index;
