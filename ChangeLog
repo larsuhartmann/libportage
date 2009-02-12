@@ -1,3 +1,8 @@
+2009-02-12  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* .gitignore: added all the autotools generated stuff plus the
+	stuff that gets produced during compile-time.
+
 2009-02-08  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* TODO: updated.
