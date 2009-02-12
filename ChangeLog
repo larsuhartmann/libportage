@@ -1,5 +1,7 @@
 2009-02-12  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* src/liblpxpak.c (_XOPEN_SOURCE): updated documentation.
+
 	* .gitignore: added all the autotools generated stuff plus the
 	stuff that gets produced during compile-time.
 

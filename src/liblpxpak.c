@@ -76,11 +76,11 @@ extern int errno
  */
 #define LPXPAK_STOP_OFFSET      4
 /**
- * \brief The Length of the XPAK_OFFSET field in Bytes.
+ * \brief The Length of the XPAK_OFFSET field.
  */
 #define LPXPAK_OFFSET_LEN       8
 /**
- * \brief The Length of the INTRO String in Bytes.
+ * \brief The Length of the INTRO String.
  */
 #define LPXPAK_INTRO_LEN        8
 /**
@@ -88,7 +88,7 @@ extern int errno
  */
 #define LPXPAK_INTRO            "XPAKPACK"
 /**
- * \brief The Length of the OUTRO String in Bytes.
+ * \brief The Length of the OUTRO String.
  */
 #define LPXPAK_OUTRO_LEN        8
 /**
