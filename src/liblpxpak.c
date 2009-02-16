@@ -50,7 +50,7 @@
 
 #if HAVE_UNISTD_H
 #  include <unistd.h>
-#endif
+#endif /* HAVE_UNISTD_H */
 
 #if HAVE_ERRNO_H
 #  include <errno.h>
@@ -58,7 +58,7 @@
 #ifndef errno
 /* Some Systems #define this! */
 extern int errno
-#endif
+#endif /* errno */
 
 #if STDC_HEADERS
 #  include <stdlib.h>
@@ -103,6 +103,11 @@ extern int errno
  * \brief The Value the STOP String should have.
  */
 #define LPXPAK_STOP             "STOP"
+
+/**
+ * \brief size of lpxpak_int_t in bytes.
+ */
+#define LPXPAK_INT_SIZE       4
 
 BEGIN_C_DECLS
 
@@ -399,11 +404,11 @@ lpxpak_parse_data(const lpxpak_blob_t *blob)
      }
      count += LPXPAK_INTRO_LEN;
      
-     memcpy(&index_len, (uint8_t *)blob->data+count, sizeof(lpxpak_int_t));
-     count+=sizeof(lpxpak_int_t);
+     memcpy(&index_len, (uint8_t *)blob->data+count, LPXPAK_INT_SIZE);
+     count+=LPXPAK_INT_SIZE;
      index_len = ntohl(index_len);
-     memcpy(&data_len, (uint8_t *)blob->data+count, sizeof(lpxpak_int_t));
-     count += sizeof(lpxpak_int_t);
+     memcpy(&data_len, (uint8_t *)blob->data+count, LPXPAK_INT_SIZE);
+     count += LPXPAK_INT_SIZE;
      data_len = ntohl(data_len);
 
      /* check if the sum of count, index_len, data_len and __LPXPAK_OUTRO_LEN
@@ -475,21 +480,21 @@ lpxpak_blob_get_fd(int fd)
      lpxpak_blob_t *xpakblob;
 
      /* seek to the start of the xpak offset */
-     if ( lseek(fd, (LPXPAK_STOP_OFFSET+sizeof(lpxpak_int_t))*-1, SEEK_END)
+     if ( lseek(fd, (LPXPAK_STOP_OFFSET+LPXPAK_INT_SIZE)*-1, SEEK_END)
          == -1 )
           return NULL;
 
-     /* allocate __LPXPAK_STOP_LEN+sizeof(lpxpak_int_t) bytes from the heap,
+     /* allocate __LPXPAK_STOP_LEN+LPXPAK_INT_T_SIZE bytes from the heap,
       * assign it to tmp, read in the xpak offset plus the__LPXPAK_STOP
       * string. */
-     if ( (tmp = malloc(LPXPAK_STOP_LEN+sizeof(lpxpak_int_t))) == NULL )
+     if ( (tmp = malloc(LPXPAK_STOP_LEN+LPXPAK_INT_SIZE)) == NULL )
           return NULL;
-     if ( (rs = read(fd, tmp, LPXPAK_STOP_LEN+sizeof(lpxpak_int_t)))
+     if ( (rs = read(fd, tmp, LPXPAK_STOP_LEN+LPXPAK_INT_SIZE))
          == -1 ) {
           free(tmp);
           return NULL;
      }
-     if ( rs != LPXPAK_STOP_LEN+sizeof(lpxpak_int_t) ) {
+     if ( rs != LPXPAK_STOP_LEN+LPXPAK_INT_SIZE ) {
           free(tmp);
           errno = EBUSY;
           return NULL;
@@ -498,7 +503,7 @@ lpxpak_blob_get_fd(int fd)
      /* check if the read in __LPXPAK_STOP string equals __LPXPAK_STOP.  If
       * not, free the allocated memory, set errno and return NULL as this is
       * an invalid xpak. */
-     if ( memcmp((uint8_t *)tmp+sizeof(lpxpak_int_t), LPXPAK_STOP,
+     if ( memcmp((uint8_t *)tmp+LPXPAK_INT_SIZE, LPXPAK_STOP,
          LPXPAK_STOP_LEN) != 0 ) {
           free(tmp);
           errno = EINVAL;
@@ -598,7 +603,7 @@ lpxpak_index_parse(const void *data, size_t len)
           /* read name_len from data and increase the counter */
           name_len = *((lpxpak_int_t *)((uint8_t *)data+count));
           name_len = ntohl(name_len);
-          count += sizeof(lpxpak_int_t);
+          count += LPXPAK_INT_SIZE;
 
           /* allocate name_len+1 bytes on the heap, assign it to t->name, read
            * name_len bytes from data into t->name, apply name_len+1 to
@@ -615,12 +620,12 @@ lpxpak_index_parse(const void *data, size_t len)
            * counter */
           index[i]->offset = *((lpxpak_int_t *)((uint8_t *)data+count));
           index[i]->offset = ntohl(index[i]->offset);
-          count += sizeof(lpxpak_int_t);
+          count += LPXPAK_INT_SIZE;
 
           /* read t->len from data in local byte order and increase counter */
           index[i]->len = *((lpxpak_int_t *)((uint8_t *)data+count));
           index[i]->len = htonl(index[i]->len);
-          count += sizeof(lpxpak_int_t);
+          count += LPXPAK_INT_SIZE;
      }
      /* now that we know the actual size, resize index to that size */
      if ( (t = lpxpak_index_resize(index, i)) == NULL ) {
@@ -869,13 +874,11 @@ lpxpak_blob_compile(lpxpak_t **xpak)
 {
      size_t bloblen;
      size_t count = 0;
-     size_t intlen;
      lpxpak_blob_t *index;
      lpxpak_blob_t *data;
      lpxpak_blob_t *blob;
      lpxpak_int_t bil, bdl;
-
-     intlen = sizeof(lpxpak_int_t);
+    
 
      /* build index blob */
      if ( (index = lpxpak_indexblob_compile(xpak)) == NULL )
@@ -886,7 +889,7 @@ lpxpak_blob_compile(lpxpak_t **xpak)
           return NULL;
      }
 
-     bloblen = LPXPAK_INTRO_LEN + (intlen*2) + data->len +
+     bloblen = LPXPAK_INTRO_LEN + (LPXPAK_INT_SIZE*2) + data->len +
           index->len + LPXPAK_OUTRO_LEN;
 
      if ( (blob = lpxpak_blob_create()) == NULL ) {
@@ -904,10 +907,10 @@ lpxpak_blob_compile(lpxpak_t **xpak)
      
      memcpy(blob->data, LPXPAK_INTRO, LPXPAK_INTRO_LEN);
      count += LPXPAK_INTRO_LEN;
-     memcpy((uint8_t *)blob->data+count, &bil, intlen);
-     count += intlen;
-     memcpy((uint8_t *)blob->data+count, &bdl, intlen);
-     count += intlen;
+     memcpy((uint8_t *)blob->data+count, &bil, LPXPAK_INT_SIZE);
+     count += LPXPAK_INT_SIZE;
+     memcpy((uint8_t *)blob->data+count, &bdl, LPXPAK_INT_SIZE);
+     count += LPXPAK_INT_SIZE;
      memcpy((uint8_t *)blob->data+count, index->data, index->len);
      count += index->len;
      lpxpak_blob_destroy(index);
@@ -962,16 +965,13 @@ lpxpak_indexblob_compile(lpxpak_t **xpak)
      size_t count = 0;
      lpxpak_int_t indexslen;
      lpxpak_int_t offset = 0;
-     size_t intlen;
      lpxpak_int_t bil, bol, bsl;
      size_t index_len = 0;
      lpxpak_blob_t *index;
 
-     intlen = sizeof(lpxpak_int_t);
-
      for ( i=0; xpak[i] != NULL; ++i ) {
           index_len += strlen(xpak[i]->name);
-          index_len += intlen*3;
+          index_len += LPXPAK_INT_SIZE*3;
      }
 
      if ( (index = lpxpak_blob_create()) == NULL )
@@ -986,17 +986,17 @@ lpxpak_indexblob_compile(lpxpak_t **xpak)
      for ( i=0; xpak[i] != NULL; ++i ) {
           indexslen = (lpxpak_int_t)strlen(xpak[i]->name);
           bil = htonl(indexslen);
-          memcpy((uint8_t *)index->data+count, &bil, intlen);
-          count += intlen;
+          memcpy((uint8_t *)index->data+count, &bil, LPXPAK_INT_SIZE);
+          count += LPXPAK_INT_SIZE;
           memcpy((uint8_t *)index->data+count, xpak[i]->name, indexslen);
           count += indexslen;
           bsl = htonl(offset);
-          memcpy((uint8_t *)index->data+count, &bsl, intlen);
-          count += intlen;
+          memcpy((uint8_t *)index->data+count, &bsl, LPXPAK_INT_SIZE);
+          count += LPXPAK_INT_SIZE;
           bol = htonl(xpak[i]->value_len);
-          memcpy((uint8_t *)index->data+count, &bol, intlen);
+          memcpy((uint8_t *)index->data+count, &bol, LPXPAK_INT_SIZE);
           offset += xpak[i]->value_len;
-          count += intlen;
+          count += LPXPAK_INT_SIZE;
      }
      index->len = count;
      return index;
