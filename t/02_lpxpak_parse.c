@@ -11,6 +11,7 @@ int
 main(void)
 {
      char *path = "02_lpxpak_parse.tbz2";
+     char *srcpath;
      
      lpxpak_t **xpak1;
      lpxpak_t **xpak2;
@@ -18,6 +19,10 @@ main(void)
      lpxpak_blob_t *blob2;
      int fd;
 
+     if ( (srcpath = getenv("srcdir")) != NULL )
+          if ( chdir(srcpath) == -1 )
+               return EXIT_FAILURE;
+     
      /* open the file read-only*/
      if ( (fd = open(path, O_RDONLY)) == -1 )
           return EXIT_FAILURE;

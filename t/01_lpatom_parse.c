@@ -13,10 +13,17 @@ int main(void)
 {
      lpatom_t *atom1 = NULL;
      lpatom_t *atom2 = NULL;
-     char *s, *fname;
+     char *s, *fname, *srcpath;
      bool has_failed = false;
      FILE *file;
 
+     if ( (srcpath = getenv("srcdir")) != NULL )
+          if ( chdir(srcpath) == -1 )
+               return EXIT_FAILURE;
+     
+     if ( (file = fopen("01_lpatom_parse.txt", "r")) == NULL )
+          return EXIT_FAILURE;
+          
      if ( (atom1 = lpatom_create()) == NULL )
           return EXIT_FAILURE;
      lpatom_init(atom1);
@@ -24,26 +31,24 @@ int main(void)
           return EXIT_FAILURE;
      lpatom_init(atom2);
 
-     file = fopen("01_lpatom_parse.txt", "r");
-     s = malloc(MAXLEN);
+     if ( (s = malloc(MAXLEN)) == NULL )
+          return EXIT_FAILURE;
+
      while ( fgets(s, MAXLEN, file) != NULL) {
           s[strlen(s)-1] = '\0';
-          if ( lpatom_parse(atom1, s) == -1) {
+          if ( lpatom_parse(atom1, s) == -1)
                has_failed = true;
-          }
           else {
                fname = lpatom_get_fullname(atom1);
-               if (strcmp(fname, s) != 0) {
+               if (strcmp(fname, s) != 0)
                     has_failed = true;
-               }
                free(fname);
-               if ( lpatom_parse(atom2, s) == -1 ) {
+               if ( lpatom_parse(atom2, s) == -1 )
                     has_failed = true;
-               } else {
-                    if ( lpatom_cmp(atom1, atom2) != 0 ) {
+               else
+                    if ( lpatom_cmp(atom1, atom2) != 0 )
                          has_failed = true;
-                    }
-               }
+               
                lpatom_reinit(atom1);
                lpatom_reinit(atom2);
           }
