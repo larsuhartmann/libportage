@@ -11,4 +11,4 @@ TESTS = 01_lpatom_parse 02_lpxpak_parse
 02_lpxpak_parse_LDFLAGS = $(all_libraries)
 02_lpxpak_parse_LDADD = ../src/libportage.la
 
-AM_CPPFLAGS = -I$(top_srcdir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/include -g

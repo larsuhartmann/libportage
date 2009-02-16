@@ -5,6 +5,12 @@
 	LPXPAK_INT_SIZE.
 	comments++.
 
+	Updated Tests:
+	* t/02_lpxpak_parse.c: does now work with distcheck
+	* t/01_lpatom_parse.c: does now work with distcheck
+	added error handling.
+	* t/Makefile.am (AM_CPPFLAGS): added -g to CFLAGS
+
 2009-02-12  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* src/liblpxpak.c: updated documentation.
@@ -28,7 +34,6 @@
 	* include/liblpcommon.h: renamed to common.h
 	* include/liblputil.h: renamed to util.h
 	* include/liblpxpak.h: renamed to xpak.h
-
 
 2009-02-08  Lars Hartmann  <lars (at) chaotika (dot) org>
 
