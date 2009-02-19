@@ -1,3 +1,7 @@
+2009-02-19  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* doc/xpak.txt: grammar and typo fixes (thanks to Leonie Herzberg)
+
 2009-02-16  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* src/liblpxpak.c (LPXPAK_INT_SIZE): added.

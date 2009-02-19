@@ -42,8 +42,8 @@ Notes
            unsigned 32bit integer in big endian byte order(32bit unsigned big
            int or uint32(big) ).
 
-  String:  All Strings, Mentioned in this Documentation are ASCII encoded, and
-           not Null terminated
+  String:  All strings, mentioned in this documentation are ASCII encoded, and
+           not nullterminated
 
   Values:  The actual values of the individual xpak entries are stored as
            Strings.
@@ -82,10 +82,9 @@ Detailed
  lets have a look at this XPAK:
 
  If you look at a gentoo binary package (binpkg) with a hex-editor you'll
- notice the that after the data, which belongs to the tarball you find a
- binary blob - the <xpak>, an offset which holds the bytes from the start of
- the <xpak> to the end of the file - <xpak_offset> and finally the String
- "STOP":
+ notice the behinf the data, which belongs to the tarball you find a binary
+ blob - the <xpak>, an offset which holds the bytes from the start of the
+ <xpak> to the end of the file - <xpak_offset> and finally the String "STOP":
 
                             |<-xpak_offset->|
                       <tbz2>|<     xpak    >|<xpak_offset>"STOP"|
@@ -93,25 +92,26 @@ Detailed
  Here you see the tbz2 archive, and the attached xpak-blob, the xpak-offset
  and the string "STOP" at the end.
 
- If we read the offset and count <offset> bytes backwards from the start of
- xpak_offset, we have found the start of the XPAK Block which starts with the
- String "XPAKPACK". this xpak block consists of the string "XPAKPACK", the
+ If we read the offset value and count <offset> bytes backwards from the start
+ of xpak_offset, we have found the start of the XPAK Block which starts with
+ the String "XPAKPACK". This xpak block consists of the string "XPAKPACK", the
  length of the index block - <index-len>, the length of the data block -
- <data-len>, a <index-len> bytes long binary blob which holds the index, a
- <data-len> bytes long binary blob which holds the data and the String
- "XPAKSTOP" at the end:
+ <data-len>, an <index-len> bytes long binary blob with the index, a
+ <data-len> bytes long binary blob with the data and the string "XPAKSTOP" at
+ the end:
 
                                    |<-index_len->|<-data_len->|
     "XPAKPACK"<index_len><data_len>|<   index   >|<   data   >|"XPAKSTOP"
 
- To actually get the index and the data, we cut out <index_len> bytes, after
- the end of <data_len> and for the index block and cut out the next <data_len>
- bytes for the data block. If we have done everything right up to this point,
- the following bytes would be the ASCII formatted string "XPAKSTOP".
+ To actually get the index and the data, we cut out <index_len> bytes after
+ the end of <data_len> for the index block and then cut out the next
+ <data_len> bytes for the data block. If we have done everything right up to
+ this point, the following bytes would be the ASCII formatted string
+ "XPAKSTOP".
 
- The actual data is truncated to one big block - so if we want to read it we
+ The actual data is truncated into one big block - so if we want to read it we
  need the actual positions of each information in this big data block, this
- information can be obtained from the indices which are stored in the index
+ information can be obtained using the indices which are stored in the index
  block.
 
  Now we take a closer look at the index block:
@@ -123,10 +123,10 @@ Detailed
  The index block holds all information we need to find the data we want in the
  <data> block. It consists of truncated index elements with a length
  <index_len>. Each of those index elements stands for one information in the
- data block and consists of the length of its name - <name_len>, a <name_len>
- bytes long String - the Name of the data block, this index belongs to, the
- offset of the data block (counted from the beginning of <data>) -
- <data_offset>, and the length of that data block - <data_len>:
+ data block and consists of the length of its name (<name_len>), a <name_len>
+ bytes long string (the Name of the data block), this index belongs to, the
+ offset of the data block (data_offset) and the length of that data block
+ (<data_len>):
 
                          |<-name_len->|
                <name_len>|<   name   >|<dataN_offset><dataN_len>
@@ -137,13 +137,12 @@ Detailed
          |<------------------------data_len------------------------>|
          |<data1><data2><data3><data4><data5><data6><data7><data...>|
 
- This binary block with a length of <data_len> bytes, consists of truncated
- data.
+ This binary block is <data_len> bytes long and consists of truncated data.
 
  To select one data element, we need the <data_offset> and the <data_len> from
  the index, if we have those we can count <data_offset> bytes from the start
  of the data block, and then cut out the next <data_len> bytes. there we got
- our data Block:
+ our data block:
 
                   |<-----dataN_offset----->|<--dataN_len->|
                   |<data1data2data3data...>|<data-we-want>|
