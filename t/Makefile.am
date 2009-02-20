@@ -12,3 +12,7 @@ TESTS = 01_lpatom_parse 02_lpxpak_parse
 02_lpxpak_parse_LDADD = $(top_srcdir)/src/libportage.la
 
 AM_CPPFLAGS = -I$(top_srcdir)/include -g
+
+# dev-targets
+check-syntax:
+	$(COMPILE) -o nul -Wall -c -S ${CHK_SOURCES}
