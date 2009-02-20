@@ -1,3 +1,7 @@
+2009-02-20  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* t/Makefile.am: replaced relative with absolute paths.
+
 2009-02-19  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* doc/xpak.txt: grammar and typo fixes (thanks to Leonie Herzberg)
