@@ -1,6 +1,5 @@
 /*
- * Copyright (c) 2008-2009 Lars Hartmann
- * All rights reserved.
+ * Copyright (c) 2008-2009 Lars Hartmann All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -50,14 +49,12 @@
 BEGIN_C_DECLS
 
 /**
- * \brief A xpak element
+ * \brief A xpak entry
  *
  * This is the data structure that holds one element of the xpak.
  *
  * None of the Pointers in this struct will point to memory regions which are
  * used elsewhere by the lpxpak library.
- *
- * \sa lpxpak_destroy()
  */
 typedef struct {
      /**
@@ -77,6 +74,25 @@ typedef struct {
       * \brief A pointer to the value - a value_len bytes long memory block.
       */
      void *value;
+} lpxpak_entry_t;
+
+/**
+ * \brief The xpak data structure.
+ *
+ * None of the Pointers in this struct will point to memory regions which are
+ * used elsewhere by the lpxpak library.
+ *
+ *  \sa lpxpak_create(), lpxpak_init(), lpxpak_reinit(), lpxpak_destroy().
+ */
+typedef struct {
+     /**
+      * The length of the array entries.
+      */
+     size_t size;
+     /**
+      * A pointer to an array of holding <len> lpxpak_entry_t data structures.
+      */
+     lpxpak_entry_t *entries;
 } lpxpak_t;
 
 /**
@@ -113,8 +129,7 @@ typedef struct {
  * \param blob a pointer to an lpxpak_blob_t data structure which holds the
  * xpak blob.
  * 
- * \return a \c NULL terminated array of pointers to lpxpak_t structures which
- * holds the parsed xpak data or \c NULL, if an error has occured.
+ * \return 0 if successfull or -1 if an error occured.
  * 
  * \sa lpxpak_t lpxpak_destroy()
  *
@@ -127,8 +142,8 @@ typedef struct {
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine strdup(3).
  */
-extern lpxpak_t **
-lpxpak_parse_data(const lpxpak_blob_t *blob);
+extern int
+lpxpak_parse_data(lpxpak_t *handle, const lpxpak_blob_t *blob);
 
 /**
  * \brief Reads the xpak data out of a file-descriptor.
@@ -163,8 +178,8 @@ lpxpak_parse_data(const lpxpak_blob_t *blob);
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine read(2).
  */
-extern lpxpak_t **
-lpxpak_parse_fd(int fd);
+extern int
+lpxpak_parse_fd(lpxpak_t *handle, int fd);
 
 /**
  * \brief Reads the xpak data out of a Gentoo binary package.
@@ -200,8 +215,53 @@ lpxpak_parse_fd(int fd);
  * - This function may also fail and set errno for any of
  *   the errors specified for the routine open(2).
  */
-extern lpxpak_t **
-lpxpak_parse_path(const char *path);
+extern int
+lpxpak_parse_path(lpxpak_t *handle, const char *path);
+
+/**
+ * \brief Allocates a new \c NULL terminated array of pointers to lpxpak_t
+ * structures with the length \c size.
+ *
+ * If an error occurs, \c NULL is returned and errno is set.
+ *
+ * The returned data structure can be initialized by lpxpak_init().
+ * 
+ * The Memory for the returned array including all its members can be freed
+ * with lpxpak_destroy().
+ *
+ * \param size the size of the requested array.
+ *
+ * \return a \c NULL terminated array of lpxpak_t structures or \c NULL if an
+ * error occured.
+ *
+ * \sa lpxpak_init() lpxpak_destroy()
+ * 
+ * \b Errors:
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ * the routine malloc(3).
+ */
+extern lpxpak_t *
+lpxpak_create(void);
+
+/**
+ * \brief Initialises a \c NULL terminated array of pointers to lpxpak_t
+ * structures.
+ *
+ * This function sets all values of the structures to \c 0 and all pointers to
+ * \c NULL.
+ *
+ * \param xpak a \c NULL terminated array of lpxpak_t structures.
+ *
+ * \sa lpxpak_create() lpxpak_destroy()
+ * 
+ * \b Errors:
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ * the routine malloc(3).
+ */
+extern void
+lpxpak_init(lpxpak_t *xpak);
 
 /**
  * \brief Destroys an \c NULL terminated array of pointers to lpxpak_t
@@ -217,7 +277,7 @@ lpxpak_parse_path(const char *path);
  * anything can happen.
  */
 extern void
-lpxpak_destroy(lpxpak_t **xpak);
+lpxpak_destroy(lpxpak_t *xpak);
 
 /**
  * \brief Returns the value for a given key.
@@ -230,12 +290,12 @@ lpxpak_destroy(lpxpak_t **xpak);
  * \param key a \c null terminated C string with the key to search for.
  *
  * \return a pointer to a lpxpak_t object or NULL if no corresponding element
- * could be found
+ * could be found.
  *
  * \sa lpxpak_parse_fd()
  */
-extern lpxpak_t *
-lpxpak_get(lpxpak_t **xpak, char *key);
+extern lpxpak_entry_t *
+lpxpak_get(lpxpak_t *handle, char *key);
 
 /**
  * \brief Reads the xpak data out of a Gentoo binary package.
@@ -250,7 +310,7 @@ lpxpak_get(lpxpak_t **xpak, char *key);
  * 
  * \param fd a file descriptor with the gentoo binary package which needs to
  *        be opened in O_RDONLY mode.
- *        
+ *
  * \return a pointer to an lpxpak_blob_t data structure which holds the parsed
  * xpak data or \c NULL, if an error has occured.
  *
@@ -301,7 +361,6 @@ lpxpak_blob_create(void);
  *
  * This function sets all values of the structure to \c 0 and all pointers to
  * \¢ NULL.
- *
  * 
  * \param blob a pointer to an lpxpak_blob_t data structure.
  *
@@ -322,7 +381,6 @@ lpxpak_blob_init(lpxpak_blob_t *blob);
 extern void
 lpxpak_blob_destroy(lpxpak_blob_t *blob);
 
-
 /**
  * \brief Reads the xpak data out of a Gentoo binary package.
  *
@@ -335,8 +393,8 @@ lpxpak_blob_destroy(lpxpak_blob_t *blob);
  * The returned data structure can be freed with lpxpak_blob_destroy().
  * 
  * \param path Path to a gentoo binary package which needs to be readable by
- *        the current process.
- *        
+ * the current process.
+ *
  * \return a pointer to an lpxpak_blob_t data structure which holds the parsed
  * xpak data or \c NULL, if an error has occured.
  *
@@ -376,7 +434,7 @@ lpxpak_blob_get_path(const char *path);
  *   the routine malloc(3).
  */
 extern lpxpak_blob_t *
-lpxpak_blob_compile(lpxpak_t **xpak);
+lpxpak_blob_compile(lpxpak_t *handle);
 
 END_C_DECLS
 

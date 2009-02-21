@@ -1,5 +1,9 @@
 2009-02-21  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* include/xpak.h: Migrated the xpak code to an object based model.
+
+	* src/liblpxpak.c: Migrated the xpak code to an object based model.
+
 	* t/Makefile.am (check-syntax): added target for emacs flyspell.
 
 2009-02-20  Lars Hartmann  <lars (at) chaotika (dot) org>
