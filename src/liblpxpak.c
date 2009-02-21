@@ -422,7 +422,7 @@ lpxpak_parse_fd(lpxpak_t *handle, int fd)
      if ( fstat(fd, &xpakstat) == -1 )
           return -1;
      if (! S_ISREG(xpakstat.st_mode) ) {
-          errno = EBADFD;
+          errno = EBADF;
           return -1;
      }
 

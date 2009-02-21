@@ -1,5 +1,8 @@
 2009-02-21  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* src/liblpxpak.c (lpxpak_parse_fd): replaced EBADFD with the
+	posix equivalent EBADF.
+
 	* t/Makefile.am (02_lpxpak_parse_LDADD): replaced absolute with
 	relative path to fix distcheck target.
 
