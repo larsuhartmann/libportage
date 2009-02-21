@@ -1,5 +1,11 @@
 2009-02-21  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* t/Makefile.am (02_lpxpak_parse_LDADD): replaced absolute with
+	relative path to fix distcheck target.
+
+	* t/02_lpxpak_parse.c: updated to work with the new object based
+	xpak api.
+
 	* include/xpak.h: Migrated the xpak code to an object based model.
 
 	* src/liblpxpak.c: Migrated the xpak code to an object based model.
