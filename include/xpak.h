@@ -79,6 +79,13 @@ typedef struct {
 /**
  * \brief The xpak data structure.
  *
+ * This is the datastructure used as a handle in the xpak related functions of
+ * libportage. To Create an Handle you can either malloc it yourself or use
+ * lpxpak_create() instead.
+ *
+ * Beware that you need to initialize an handle using lpxpak_init() first
+ * before you use it with any functions provided by libportage.
+ *
  * None of the Pointers in this struct will point to memory regions which are
  * used elsewhere by the lpxpak library.
  *
@@ -100,6 +107,11 @@ typedef struct {
  *
  * This is the data structure that holds binary data just as a compiled
  * xpak-blob as attached to gentoo binary packages.
+ *
+ * To savely Remove an lpxpak_blob_t datastructure and all the data it points
+ * to from memory, use lpxpak_blob_destroy().
+ *
+ * \sa lpxpak_blob_create(), lpxpak_blob_init(), lpxpak_blob_destroy().
  */
 typedef struct {
      /**
@@ -119,19 +131,19 @@ typedef struct {
 /**
  * \brief Reads the xpak data out of a xpak binary blob.
  *
- * Gets the actual xpak-blob (see doc/xpak.txt) and returns a \c NULL
- * terminated array of pointers to lpxpak structures which holds the parsed
- * data. If an error occurs, NULL is returned and errno is set to indicate the
- * error.
+ * Gets the actual xpak-blob (see doc/xpak.txt) and parses its content into a
+ * provided lpxpak_t handle. If an error occurs, -1 is returned and errno is
+ * set to indicate the error.
  *
- * The returned array can be freed with lpxpak_destroy().
- *
+ * \param handle a pointer to an lpxpak_t data structure used for this
+ * operation.
+ * 
  * \param blob a pointer to an lpxpak_blob_t data structure which holds the
  * xpak blob.
  * 
  * \return 0 if successfull or -1 if an error occured.
  * 
- * \sa lpxpak_t lpxpak_destroy()
+ * \sa lpxpak_t lpxpak_create(), lpxpak_init(), lpxpak_destroy().
  *
  * \b Errors:
  * 
@@ -148,17 +160,17 @@ lpxpak_parse_data(lpxpak_t *handle, const lpxpak_blob_t *blob);
 /**
  * \brief Reads the xpak data out of a file-descriptor.
  *
- * Gets an file-descriptor (fd) for a Gentoo binary package and returns a \c
- * NULL terminated array of pointers to lpxpak structures which holds the
- * parsed data. If an error occurs, NULL is returned and errno is set to
- * indicate the error.
+ * Gets an file-descriptor (fd) for a Gentoo binary package and parses it into
+ * a provided lpxpak_t handle. If an error occurs, -1 is returned and errno
+ * is set to indicate the error.
  *
- * The returned array can be freed with lpxpak_destroy().
+ * \param handle a pointer to an lpxpak_t data structure used for this
+ * operation.
  * 
  * \param fd a file descriptor with the gentoo binary package which needs to
- *        be opened in O_RDONLY mode.
- * \return a \c NULL terminated array of pointers to lpxpak_t structures which
- * holds the parsed xpak data or \c NULL, if an error has occured.
+ * be opened in O_RDONLY mode.
+ *
+ * \return 0 if successfull or -1 if an error occured.
  *
  * \sa lpxpak_t
  * \sa lpxpak_destroy()
@@ -184,17 +196,17 @@ lpxpak_parse_fd(lpxpak_t *handle, int fd);
 /**
  * \brief Reads the xpak data out of a Gentoo binary package.
  *
- * Gets an path to a Gentoo binary package and returns a \c NULL terminated
- * array of pointers to lpxpak structures which holds the parsed data. If an
- * error occurs, NULL is returned and errno is set to indicate the error.
+ * Gets an path to a Gentoo binary package and parses it into the provided
+ * lpxpak_t handle. If an error occurs, -1 is returned and errno is set to
+ * indicate the error.
  *
- * The returned array can be freed with lpxpak_destroy().
+ * \param handle a pointer to an lpxpak_t data structure used for this
+ * operation.
  * 
  * \param path Path to a gentoo binary package which needs to be readable by
- *        the current process.
+ * the current process.
  *
- * \return a \c NULL terminated array of pointers to lpxpak_t structures which
- * holds the parsed xpak data or \c NULL, if an error has occured.
+ * \return 0 if successfull or -1 if an error occured.
  *
  * \sa lpxpak_t
  * \sa lpxpak_destroy()
@@ -219,13 +231,15 @@ extern int
 lpxpak_parse_path(lpxpak_t *handle, const char *path);
 
 /**
- * \brief Allocates a new \c NULL terminated array of pointers to lpxpak_t
- * structures with the length \c size.
+ * \brief Allocates a new lpxpak_t handle.
  *
  * If an error occurs, \c NULL is returned and errno is set.
  *
  * The returned data structure can be initialized by lpxpak_init().
- * 
+ *
+ * The returned handle can be reinitialised for further use using
+ * lpxpak_reinit().
+ *
  * The Memory for the returned array including all its members can be freed
  * with lpxpak_destroy().
  *
@@ -234,7 +248,7 @@ lpxpak_parse_path(lpxpak_t *handle, const char *path);
  * \return a \c NULL terminated array of lpxpak_t structures or \c NULL if an
  * error occured.
  *
- * \sa lpxpak_init() lpxpak_destroy()
+ * \sa lpxpak_init(), lpxpak_reinit(), lpxpak_destroy().
  * 
  * \b Errors:
  *
@@ -245,33 +259,26 @@ extern lpxpak_t *
 lpxpak_create(void);
 
 /**
- * \brief Initialises a \c NULL terminated array of pointers to lpxpak_t
- * structures.
+ * \brief Initialises a lpxpak_t handle.
  *
- * This function sets all values of the structures to \c 0 and all pointers to
+ * This function sets all values of the structure to \c 0 and all pointers to
  * \c NULL.
  *
- * \param xpak a \c NULL terminated array of lpxpak_t structures.
+ * \param xpak a lpxpak_t handle.
  *
- * \sa lpxpak_create() lpxpak_destroy()
- * 
- * \b Errors:
- *
- * - This function may fail and set errno for any of the errors specified for
- * the routine malloc(3).
+ * \sa lpxpak_create(), lpxpak_reinit(),  lpxpak_destroy().
  */
 extern void
 lpxpak_init(lpxpak_t *xpak);
 
 /**
- * \brief Destroys an \c NULL terminated array of pointers to lpxpak_t
- * structures.
+ * \brief Destroys an lpxpak_t handle.
  *
- * frees up the array and all of the underlying structures plus the pointers
+ * frees up the handle and all of the underlying structures plus the pointers
  * they have using free(3). If a \c NULL pointer was given, lpxpak_destroy()
  * will just return.
  *
- * \param xpak a \c NULL terminated array of pointers to lpxpak_t structures.
+ * \param xpak a lpxpak_t handle.
  *
  * \b Attention: Do not try to access the array after destroying it or
  * anything can happen.
@@ -280,17 +287,16 @@ extern void
 lpxpak_destroy(lpxpak_t *xpak);
 
 /**
- * \brief Returns the value for a given key.
+ * \brief Returns the xpak entry for a given key.
  *
  * Searches the provided array for an entry with the given key and returns it,
  * if no corresponding element could be found, \c NULL is returned.
  *
- * \param xpak a \c NULL terminated array of pointers to lpxpak_t objects
- * which as returned by lpxpak_parse_fd().
+ * \param handle a lpxpak_t handle with parsed data.
+ * 
  * \param key a \c null terminated C string with the key to search for.
  *
- * \return a pointer to a lpxpak_t object or NULL if no corresponding element
- * could be found.
+ * \return a pointer to a lpxpak_entry_t object with the corresponding value.
  *
  * \sa lpxpak_parse_fd()
  */
@@ -309,7 +315,7 @@ lpxpak_get(lpxpak_t *handle, char *key);
  * The returned data structure can be freed with lpxpak_blob_destroy().
  * 
  * \param fd a file descriptor with the gentoo binary package which needs to
- *        be opened in O_RDONLY mode.
+ * be opened in O_RDONLY mode.
  *
  * \return a pointer to an lpxpak_blob_t data structure which holds the parsed
  * xpak data or \c NULL, if an error has occured.
@@ -416,13 +422,12 @@ extern lpxpak_blob_t *
 lpxpak_blob_get_path(const char *path);
 
 /**
- * \brief compiles an \c NULL terminated array of lpxpak_t structs to a xpak
- * binary-blob.
+ * \brief compiles an lpxpak_t object with parsed data into an xpak blob.
  *
  * If an error occurs, \c NULL is returned and \c errno is set to indicate the
  * error.
  *
- * \param xpak a \c NULL terminated array of lpxpak_t structs.
+ * \param handle a lpxpak_t handle with parsed data.
  *
  * \return a pointer to a lpxpak_blob_t data structure with the compiled xpak.
  *
