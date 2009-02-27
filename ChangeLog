@@ -1,3 +1,7 @@
+2009-02-27  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* configure.ac: removed unneeded tests.
+
 2009-02-21  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* src/liblpxpak.c (lpxpak_parse_fd): replaced EBADFD with the
