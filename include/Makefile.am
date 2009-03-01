@@ -1,2 +1,2 @@
-foobardir = $(includedir)/libportage
-foobar_HEADERS = atom.h common.h util.h xpak.h
+headerdir = $(includedir)/libportage
+header_HEADERS = atom.h common.h util.h xpak.h

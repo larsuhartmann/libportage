@@ -1,3 +1,7 @@
+2009-03-01  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* include/Makefile.am: renamed entries.
+
 2009-02-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* configure.ac: removed unneeded tests.
