@@ -9,6 +9,10 @@
   - Detect no more needed Dependencies
   - Dependencies
   - Blocks
+  - Detect Packages which need to be recompiled due to changed USEflags
+  - search packages in local repositorys that match a given pattern/regex
+  - Installation of .tbz2 gentoo binary packages (cportage -ib package.tbz2)
+  - Generating of gentoo binary packages.
 
 * without graphical Interface
 
@@ -46,3 +50,9 @@
 * EAPI-2 Conformant
 
 * Preview-Mode (like --pretend --deptree on portage)
+
+* Strict Separation of Library and Program (libportage/Cportage)
+
+* Automatic Block Resolver
+
+* < 1MB statically linked

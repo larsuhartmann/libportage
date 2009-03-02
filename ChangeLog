@@ -1,8 +1,11 @@
+2009-03-03  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* doc/Requirements.txt: added user-requested requirements.
+
 2009-03-02  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Started to add Design Documents.
 	* doc/Requirements.txt: added.
-	added user-requested requirements.
 
 2009-03-01  Lars Hartmann  <lars (at) chaotika (dot) org>
 
