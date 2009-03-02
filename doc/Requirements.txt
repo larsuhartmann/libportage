@@ -42,3 +42,7 @@
 * Portable to every UNIX (POSIX)
 
 * Runs on 16-64bit Architectures.
+
+* EAPI-2 Conformant
+
+* Preview-Mode (like --pretend --deptree on portage)
