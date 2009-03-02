@@ -1,0 +1,44 @@
+                                 Requirements
+                                 ============
+
+* Parallel Installing of Packages
+
+* Packet-Mangling
+  - Installation
+  - Deinstallation
+  - Detect no more needed Dependencies
+  - Dependencies
+  - Blocks
+
+* without graphical Interface
+
+* Mode that doesnt require user input (for scripting)
+
+* Mode that doesnt do automatic decisions (for full control)
+
+* Global Settings:
+  - Keywords
+  - USE-Flags
+  - CFLAGS
+  - CXXFLAGS
+  - FEATURES
+  - MAKEOPTS
+
+* Per Packet Settings
+  - Blocks
+  - Keywords
+  - USE Flags
+  - CFLAGS
+  - CXXFLAGS
+  - FEATURES
+  - Masks
+  - Unmasks
+  - MAKEOPTS
+
+* Per Repository Settings
+  - Masks
+  - Unmasks
+
+* Portable to every UNIX (POSIX)
+
+* Runs on 16-64bit Architectures.
