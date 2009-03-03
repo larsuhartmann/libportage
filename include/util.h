@@ -33,12 +33,12 @@
  * \file liblputil.h
  * \brief Small helper Functions.
  */
-#ifndef __LPUTIL
-#define __LPUTIL
+#ifndef LPUTIL
+#define LPUTIL 1
 
-#include <common.h>
+#  include <common.h>
 
-#include <regex.h>
+#  include <regex.h>
 
 BEGIN_C_DECLS
 
@@ -206,4 +206,4 @@ lputil_strndup(char *s, size_t n);
 
 END_C_DECLS
 
-#endif
+#endif /* LPUTIL */

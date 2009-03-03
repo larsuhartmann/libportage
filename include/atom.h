@@ -34,13 +34,13 @@
  * \brief Functions to encode/decode/parse version atoms.
  */
 
-#ifndef __LPATOM
-#define __LPATOM
+#ifndef LPATOM
+#  define LPATOM 1
 
-#include <common.h>
+#  include <common.h>
 
-#include <stdio.h>
-#include <regex.h>
+#  include <stdio.h>
+#  include <regex.h>
 
 BEGIN_C_DECLS
 
@@ -365,4 +365,4 @@ lpatom_reinit(lpatom_t *atom);
 
 END_C_DECLS
 
-#endif
+#endif /* LPATOM */

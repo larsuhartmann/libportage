@@ -38,13 +38,13 @@
  * for more information regarding the xpak data format, look at doc/xpak.txt
  */
 
-#ifndef __LPXPAK
-#define __LPXPAK
+#ifndef LPXPAK
+#define LPXPAK 1
 
-#include <common.h>
+#  include <common.h>
 
-#include <sys/types.h>
-#include <stdint.h>
+#  include <sys/types.h>
+#  include <stdint.h>
 
 BEGIN_C_DECLS
 
@@ -443,4 +443,4 @@ lpxpak_blob_compile(lpxpak_t *handle);
 
 END_C_DECLS
 
-#endif
+#endif /* LPXPAK */
