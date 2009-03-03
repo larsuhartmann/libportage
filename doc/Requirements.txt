@@ -12,7 +12,8 @@
   - Detect Packages which need to be recompiled due to changed USEflags
   - search packages in local repositorys that match a given pattern/regex
   - Installation of .tbz2 gentoo binary packages (cportage -ib package.tbz2)
-  - Generating of gentoo binary packages.
+  - Generating of gentoo binary packages
+  - List all reverse Dependencies for a given Packet
 
 * without graphical Interface
 
@@ -59,5 +60,5 @@
 
 * capability to manually call the various stages of packet mangling.
   - check if all dependencys for the given packet are fullfilled, if not,
-    return -1 and print out the missing dependencies on stderr.
-  - Just merge the given packet and assume all dependencies are fulfilled.
+    return -1 and print out the missing dependencies on stderr
+  - Just merge the given packet and assume all dependencies are fulfilled
