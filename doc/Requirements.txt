@@ -56,3 +56,8 @@
 * Automatic Block Resolver
 
 * < 1MB statically linked
+
+* capability to manually call the various stages of packet mangling.
+  - check if all dependencys for the given packet are fullfilled, if not,
+    return -1 and print out the missing dependencies on stderr.
+  - Just merge the given packet and assume all dependencies are fulfilled.
