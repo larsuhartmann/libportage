@@ -1,3 +1,18 @@
+2009-03-04  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Renamed Structs to match their typedefs:
+	* src/liblpxpak.c (lpxpak_index_entry_t): renamed anonym struct to
+	lpxpak_index_entry.
+	(lpxpak_index_t): renamed anonym struct to lpxpak_index
+	* include/dependency.h (lpdependency_t): renamed anonym struct to
+	lpdependency.
+	* include/xpak.h (lpxpak_entry_t): renamed anonym struct to
+	lpxpak_entry.
+	(lpxpak_t): renamed anonym struct to lpxpak
+	(lpxpak_blob_t): renamed anonym struct to lpxpak_blob
+	* include/atom.h (lpatom_t): renamed anonym struct to lpatom.
+	(lpatom_regex): renamed anonym struct to lpatom_regex.
+
 2009-03-03  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Renamed defines:

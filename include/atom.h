@@ -82,7 +82,7 @@ typedef enum {
  *
  * This is the data structure that holds the parsed data of a version atom.
  */
-typedef struct {
+typedef struct lpatom {
      /**
       * \brief the name.
       */
@@ -118,7 +118,7 @@ typedef struct {
      /**
       * \regexp structs.
       */
-     struct {
+     struct lpatom_regex{
           /**
            * \brief regexp to match valid package names
            * */

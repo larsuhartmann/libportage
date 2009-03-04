@@ -125,7 +125,7 @@ typedef uint32_t lpxpak_int_t;
  * None of the Pointers in this struct will point to memory regions which are
  * used elsewhere by the lpxpak library.
  */
-typedef struct {
+typedef struct lpxpak_index_entry {
      /**
       * \brief The Name of the Element.
       *
@@ -155,7 +155,7 @@ typedef struct {
  *
  *  \sa lpxpak_create(), lpxpak_init(), lpxpak_reinit(), lpxpak_destroy().
  */
-typedef struct {
+typedef struct lpxpak_index {
      /**
       * The length of the array entries.
       */

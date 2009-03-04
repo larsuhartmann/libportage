@@ -56,7 +56,7 @@ BEGIN_C_DECLS
  * None of the Pointers in this struct will point to memory regions which are
  * used elsewhere by the lpxpak library.
  */
-typedef struct {
+typedef struct lpxpak_entry {
      /**
       * \brief The Name of the element.
       *
@@ -91,7 +91,7 @@ typedef struct {
  *
  *  \sa lpxpak_create(), lpxpak_init(), lpxpak_reinit(), lpxpak_destroy().
  */
-typedef struct {
+typedef struct lpxpak {
      /**
       * The length of the array entries.
       */
@@ -113,7 +113,7 @@ typedef struct {
  *
  * \sa lpxpak_blob_create(), lpxpak_blob_init(), lpxpak_blob_destroy().
  */
-typedef struct {
+typedef struct lpxpak_blob {
      /**
       * \brief The data.
       *

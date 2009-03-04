@@ -75,7 +75,7 @@ typedef enum {
      ge
 } lpdependency_type_t;
 
-typedef struct {
+typedef struct lpdependency {
      lpdependency_type_t dt;
      lpatom_t *da;
 } lpdependency_t;
