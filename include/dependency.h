@@ -42,37 +42,37 @@ BEGIN_C_DECLS
 /**
  * \brief describes the dependency type
  */
-typedef enum {
+typedef enum lpdependency_type {
      /**
       * \brief equal
       * The Dependency must be equal to the dependency-atom.
       * \bExample: =foo-bar/2.8.19
       */
-     eq,
+     LP_EQ,
      /**
       * \brief lower than
       * The Dependency must be lower than the dependency-atom.
       * \bExample: <foo-bar/2.8.19
       */
-     lt,
+     LP_LT,
      /**
       * \brief greater than
       * The Dependency must be greater than the dependency-atom.
       * \bExample: >foo-bar/2.8.19
       */
-     gt,
+     LP_GT,
      /**
       * \brief lower or equal to
       * The Dependency must be lower or equal to the dependency-atom.
       * \bExample: <=foo-bar/2.8.19
       */
-     le,
+     LP_LE,
      /**
       * \brief greater or equal to
       * The Dependency must be greater or equal to the dependency-atom.
       * \bExample: >=foo-bar/2.8.19
       */
-     ge
+     LP_GE
 } lpdependency_type_t;
 
 typedef struct lpdependency {

@@ -50,31 +50,31 @@ BEGIN_C_DECLS
  * all valid suffixes for package atoms in the right order, so they can be
  * compared directly to find out which one of two is the larger one.
  */
-typedef enum {
+typedef enum lpatom_sufe {
      /**
       * \brief alpha release
       */
-     alpha,
+     LP_ALPHA,
      /**
       * \brief beta release
       */
-     beta,
+     LP_BETA,
      /**
       * \brief pre release.
       */
-     pre,
+     LP_PRE,
      /**
       * \brief release candidate.
       */
-     rc,
+     LP_RC,
      /**
       * \brief standard release
       */
-     no,
+     LP_NO,
      /**
       * \brief production release
       */
-     p
+     LP_P
 } lpatom_sufe_t;
 
 /**

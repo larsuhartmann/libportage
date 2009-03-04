@@ -1,5 +1,14 @@
 2009-03-04  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Renamed enums to match their typedefs:
+	* include/atom.h (lpatom_sufe_t): renamed anonym enum to
+	lpatom_sufe.
+	(lpatom_sufe): made enum elements uppercase and added LP_ prefix.
+	* include/dependency.h (lpdependency_type_t): renamed anonym enum
+	to lpdependency_type.
+	(lpdependency_type): made enum elements uppercase and added LP_
+	prefix.
+
 	Renamed Structs to match their typedefs:
 	* src/liblpxpak.c (lpxpak_index_entry_t): renamed anonym struct to
 	lpxpak_index_entry.
@@ -26,7 +35,7 @@
 
 2009-03-02  Lars Hartmann  <lars (at) chaotika (dot) org>
 
-	Started to add Design Documents.
+	Started to add Design Documents:
 	* doc/Requirements.txt: added.
 
 2009-03-01  Lars Hartmann  <lars (at) chaotika (dot) org>
