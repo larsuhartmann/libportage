@@ -1,5 +1,14 @@
 2009-03-06  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Optimized Allignment of structs:
+	* include/xpak.h (lpxpak_entry): optimized allignment.
+	(lpxpak): optimized allignment.
+	(lpxpak_blob): optimized allignment.
+	* include/atom.h (lpatom): optimized allignment.
+	* src/liblpxpak.c (lpxpak_index_entry): optimized allignment.
+	(lpxpak_index): optimized allignment.
+
+	Fixed compile Error:
 	* src/liblpatom.c: fixed incorrect enum member names.
 
 2009-03-04  Lars Hartmann  <lars (at) chaotika (dot) org>

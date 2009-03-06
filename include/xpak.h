@@ -58,18 +58,18 @@ BEGIN_C_DECLS
  */
 typedef struct lpxpak_entry {
      /**
-      * \brief The Name of the element.
-      *
-      * This element is implemented as a null terminated C-String.
-      */
-     char *name;
-     /**
       * \brief The length of the value.
       *
       * This element holds the length of the data, the value pointer points
       * to.
       */
      size_t value_len;
+     /**
+      * \brief The Name of the element.
+      *
+      * This element is implemented as a null terminated C-String.
+      */
+     char *name;
      /**
       * \brief A pointer to the value - a value_len bytes long memory block.
       */
@@ -115,17 +115,17 @@ typedef struct lpxpak {
  */
 typedef struct lpxpak_blob {
      /**
-      * \brief The data.
-      *
-      * a Pointer to the start of a memory segment that holds the data.
-      */
-     void *data;
-     /**
       * \brief the length of the data.
       *
       * the length of the memory block pointed to by data.
       */
      size_t len;
+     /**
+      * \brief The data.
+      *
+      * a Pointer to the start of a memory segment that holds the data.
+      */
+     void *data;
 } lpxpak_blob_t;
 
 /**

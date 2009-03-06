@@ -84,38 +84,6 @@ typedef enum lpatom_sufe {
  */
 typedef struct lpatom {
      /**
-      * \brief the name.
-      */
-     char *name;
-     /**
-      * \brief the category.
-      */
-     char *cat;
-     /**
-      * \brief the version character.
-      */
-     char verc;
-     /**
-      * \brief the version.
-      */
-     char *ver;
-     /**
-      * \brief the exploded version.
-      */
-     int *ver_ex;
-     /**
-      * \brief the suffix.
-      */
-     lpatom_sufe_t sufenum;
-     /**
-      * \brief the suffix version.
-      */
-     int sufv;
-     /**
-      * \brief the release version.
-      */
-     int rel;
-     /**
       * \regexp structs.
       */
      struct lpatom_regex{
@@ -144,6 +112,38 @@ typedef struct lpatom {
            */
           regex_t version;
      } regex;
+     /**
+      * \brief the exploded version.
+      */
+     lpatom_sufe_t sufenum;
+     /**
+      * \brief the suffix version.
+      */
+     int sufv;
+     /**
+      * \brief the release version.
+      */
+     int rel;
+     /**
+      * \brief the name.
+      */
+     int *ver_ex;
+     /**
+      * \brief the suffix.
+      */
+     char *name;
+     /**
+      * \brief the category.
+      */
+     char *cat;
+     /**
+      * \brief the version character.
+      */
+     char verc;
+     /**
+      * \brief the version.
+      */
+     char *ver;
 } lpatom_t;
 
 /**

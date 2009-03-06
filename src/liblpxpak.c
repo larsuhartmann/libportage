@@ -127,12 +127,6 @@ typedef uint32_t lpxpak_int_t;
  */
 typedef struct lpxpak_index_entry {
      /**
-      * \brief The Name of the Element.
-      *
-      * This Element is implemented as a null terminated C String.
-      */
-     char *name;
-     /**
       * \brief The Offset of the Data.
       *
       * The Offset needed to find the corresponding data block, calculated
@@ -145,6 +139,12 @@ typedef struct lpxpak_index_entry {
       * The Length needed to copy out the corresponding data block.
       */
      size_t len;
+     /**
+      * \brief The Name of the Element.
+      *
+      * This Element is implemented as a null terminated C String.
+      */
+     char *name;
 } lpxpak_index_entry_t;
 
 /**
