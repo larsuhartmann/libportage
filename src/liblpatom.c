@@ -318,26 +318,26 @@ lpatom_suffix_parse(lpatom_t *atom, const char *s)
 {
      switch(s[0]) {
      case 'a':
-          atom->sufenum = alpha;
+          atom->sufenum = LP_ALPHA;
           break;
      case 'b':
-          atom->sufenum = beta;
+          atom->sufenum = LP_BETA;
           break;
      case 'p':
           switch(s[1]) {
           case 'r':
-               atom->sufenum = pre;
+               atom->sufenum = LP_PRE;
                break;
           default:
-               atom->sufenum = p;
+               atom->sufenum = LP_P;
                break;
           }
           break;
      case 'r':
-          atom->sufenum = rc;
+          atom->sufenum = LP_RC;
           break;
      default:
-          atom->sufenum = no;
+          atom->sufenum = LP_NO;
           break;
      }
      return;
@@ -359,7 +359,7 @@ lpatom_init(lpatom_t *atom)
      atom->ver = NULL;
      atom->ver_ex = NULL;
      atom->verc = 0;
-     atom->sufenum = no;
+     atom->sufenum = LP_NO;
      atom->sufv = 0;
      atom->rel = 0;
 
@@ -388,7 +388,7 @@ lpatom_reinit(lpatom_t *atom) {
      atom->ver = NULL;
      atom->ver_ex = NULL;
      atom->verc = 0;
-     atom->sufenum = no;
+     atom->sufenum = LP_NO;
      atom->sufv = 0;
      atom->rel = 0;
 
@@ -423,7 +423,7 @@ lpatom_get_suffix(const lpatom_t *atom)
      char *suf, *r;
      size_t len;
      /* check if we have a suffix */
-     if ( atom->sufenum != no ) {
+     if ( atom->sufenum != LP_NO ) {
           /* get suffix string */
           if ( (suf = lpatom_suffe_to_string(atom->sufenum)) == NULL )
                return NULL;
@@ -497,23 +497,23 @@ lpatom_suffe_to_string(lpatom_sufe_t suffix)
      char *suf;
      
      switch(suffix){
-     case alpha:
+     case LP_ALPHA:
           if ( (suf = strdup("alpha")) == NULL )
                return NULL;
           break;
-     case beta:
+     case LP_BETA:
           if ( (suf = strdup("beta")) == NULL )
                return NULL;
           break;
-     case pre:
+     case LP_PRE:
           if ( (suf = strdup("pre")) == NULL )
                return NULL;
           break;
-     case rc:
+     case LP_RC:
           if ( (suf = strdup("rc")) == NULL )
                return NULL;
           break;
-     case p:
+     case LP_P:
           if ( (suf = strdup("p")) == NULL )
                return NULL;
           break;

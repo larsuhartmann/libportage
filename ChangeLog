@@ -1,3 +1,7 @@
+2009-03-06  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* src/liblpatom.c: fixed incorrect enum member names.
+
 2009-03-04  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Renamed enums to match their typedefs:
