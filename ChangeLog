@@ -1,3 +1,10 @@
+2009-03-12  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	added Makefile for Documentation folder.
+	* configure.ac (AC_CONFIG_FILES): added doc/Makefile.
+	* Makefile.am (SUBDIRS): added doc.
+	* doc/Makefile.am: added.
+
 2009-03-11  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* doc/xpak.5: added roff version of xpak.txt.
