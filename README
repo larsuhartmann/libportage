@@ -1,1 +1,11 @@
-This will become a collection of helpfull librarys for portage related things
+                                    README
+                                    ======
+
+LibPortage is a fast and portable library offering functionality for doing
+package management in a Gentoo system. This includes ebuilds, binpkgs and
+managing a portage-compatible configuration. The library will provide all the
+functions one may need to write a drop-in replacement for Portage in C.
+
+As a side effect of our effort to implement all portage features, there are
+also a few documents we (the developers) wrote for ourselves to cover some of
+Gentoo's internals which might be useful for external devs as well.

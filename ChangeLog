@@ -1,5 +1,7 @@
 2009-03-13  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* README: replaced stub with content.
+
 	Switched Project to 2clause BSD License:
 	* t/02_lpxpak_parse.c: added license header.
 	* t/01_lpatom_parse.c: added license header.
