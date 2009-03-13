@@ -1,3 +1,20 @@
+2009-03-13  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Switched Project to 2clause BSD License:
+	* t/02_lpxpak_parse.c: added license header.
+	* t/01_lpatom_parse.c: added license header.
+	* src/liblpxpak.c: deleted 3rd clause.
+	* src/liblputil.c: deleted 3rd clause.
+	* src/liblpatom.c: deleted 3rd clause.
+	* include/util.h: deleted 3rd clause.
+	* include/xpak.h: deleted 3rd clause.
+	* include/dependency.h: deleted 3rd clause.
+	* include/common.h: added license header.
+	* include/atom.h: deleted 3rd clause.
+	* doc/xpak.txt: deleted 3rd clause.
+	* doc/xpak.5: deleted 3rd clause.
+	* COPYING: deleted 3rd clause.
+
 2009-03-12  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	added Makefile for Documentation folder.
