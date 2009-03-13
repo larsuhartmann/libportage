@@ -4,7 +4,7 @@
 DOXYFILE_ENCODING      = UTF-8
 PROJECT_NAME           = LibPortage
 #PROJECT_NUMBER         = alpha
-OUTPUT_DIRECTORY       = doc/dev-doc/
+OUTPUT_DIRECTORY       = dev-doc/
 CREATE_SUBDIRS         = YES
 OUTPUT_LANGUAGE        = English
 BRIEF_MEMBER_DESC      = YES
@@ -75,8 +75,8 @@ WARN_LOGFILE           =
 #---------------------------------------------------------------------------
 # configuration options related to the input files
 #---------------------------------------------------------------------------
-INPUT                  = lib/ \
-                         include/
+INPUT                  = ../src/ \
+                         ../include/
 INPUT_ENCODING         = UTF-8
 FILE_PATTERNS          = *.c \
                          *.h

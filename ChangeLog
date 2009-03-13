@@ -1,5 +1,10 @@
 2009-03-13  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Moved doxygen dir and modified doxyfile for api-doc:
+	* doxygen/: moved to doc/doxygen.
+	* doc/doxygen/api-doc (INPUT): removed src/ dir from api-doc.
+	(FILE_PATTERNS): let api-doc only document header files.
+
 	* configure.ac: added AC_C_CONST and AC_C_INLINE.
 
 	* TODO: updated TODO.
