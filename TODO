@@ -1,5 +1,6 @@
-                TODO (listed from highest to lowest priority)
-                =============================================
+                                     TODO
+                                     ====
+- Finnish doc/Requirements.txt
 
 - build metadata cache parser
 
@@ -8,7 +9,6 @@
 - parser for binary-package index-files:
   http://tinderbox.dev.gentoo.org/embedded/linwizard/All/Packages
   http://tinderbox.dev.gentoo.org/embedded/armv6j-softfloat-linux-gnueabi/Packages
-
 - optimize the regexpen used in liblpatom.c (right now they match non-legal
   atoms)
 
