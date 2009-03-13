@@ -1,5 +1,7 @@
 2009-03-13  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* configure.ac: added AC_C_CONST and AC_C_INLINE.
+
 	* TODO: updated TODO.
 
 	* README: replaced stub with content.

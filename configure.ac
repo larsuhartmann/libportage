@@ -5,6 +5,10 @@ AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_PROG_CC
 AC_PROG_LIBTOOL
 
+# checks for compiler features
+AC_C_CONST
+AC_C_INLINE
+
 # checks for headers
 AC_HEADER_STDC
 AC_CHECK_HEADERS([errno.h stdlib.h string.h memory.h unistd.h])
