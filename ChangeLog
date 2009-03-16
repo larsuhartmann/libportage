@@ -1,3 +1,9 @@
+2009-03-16  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Updated preprocessor macros:
+	* src/liblpatom.c: updated formatting of preprocessor macros.
+	* include/common.h: updated formatting of preprocessor macros.
+
 2009-03-13  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Moved doxygen dir and modified doxyfile for api-doc:

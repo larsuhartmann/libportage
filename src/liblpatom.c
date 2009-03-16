@@ -47,7 +47,7 @@
 #ifndef errno
 /* Some Systems #define this! */
 extern int errno
-#endif
+#endif /*! errno */
 
 #if STDC_HEADERS
 #  include <stdlib.h>
