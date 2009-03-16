@@ -1,5 +1,7 @@
 2009-03-16  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* doc/.gitignore: added.
+
 	* doc/Requirements.txt: updated Requirements.
 
 	Updated preprocessor macros:
