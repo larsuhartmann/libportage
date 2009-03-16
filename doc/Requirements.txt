@@ -21,6 +21,8 @@
 
 * Mode that doesnt do automatic decisions (for full control)
 
+* track packages that will need a recompile due to library bump (ABI change)
+
 * Global Settings:
   - Keywords
   - USE-Flags

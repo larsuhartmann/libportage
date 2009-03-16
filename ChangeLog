@@ -1,5 +1,7 @@
 2009-03-16  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* doc/Requirements.txt: updated Requirements.
+
 	Updated preprocessor macros:
 	* src/liblpatom.c: updated formatting of preprocessor macros.
 	* include/common.h: updated formatting of preprocessor macros.
