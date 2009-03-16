@@ -15,5 +15,6 @@ AC_CHECK_HEADERS([errno.h stdlib.h string.h memory.h unistd.h])
 
 # other stuff
 AC_CONFIG_HEADERS([config.h])
-AC_CONFIG_FILES([Makefile src/Makefile include/Makefile t/Makefile doc/Makefile])
+AC_CONFIG_FILES([Makefile src/Makefile include/Makefile t/Makefile
+                 doc/Makefile])
 AC_OUTPUT
