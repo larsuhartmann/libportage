@@ -1,5 +1,9 @@
 2009-03-16  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Added some files to the distribution:
+	* Makefile.am (EXTRA_DIST): added doxygen.cfg.
+	* doc/Makefile.am (EXTRA_DIST): added xpak.txt.
+
 	Added Doxygen support to build framework:
 	* Makefile.am: included aminclude.am.
 	* doc/doxygen/api-doc: moved to doxygen.cfg.
