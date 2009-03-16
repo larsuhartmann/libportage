@@ -1,5 +1,13 @@
 2009-03-16  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Added Doxygen support to build framework:
+	* Makefile.am: included aminclude.am.
+	* doc/doxygen/api-doc: moved to doxygen.cfg.
+	* doxygen.cfg: replaced constants with DX_ macros.
+	* configure.ac: added DX_ macros.
+	* acinclude.m4: added.
+	* aminclude.am: added.
+
 	* configure.ac: small format fix.
 
 	* doc/.gitignore: added.
