@@ -1,4 +1,4 @@
 include $(top_srcdir)/aminclude.am
 
-SUBDIRS = src include t doc
+SUBDIRS = src include test doc
 EXTRA_DIST = doxygen.cfg

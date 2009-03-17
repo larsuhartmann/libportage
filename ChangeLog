@@ -1,3 +1,14 @@
+2009-03-17  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Cleaned up Build Framework:
+	* Makefile.am (SUBDIRS): renamed t to test
+	* configure.ac (AC_CONFIG_AUX_DIR): changed to put most config
+	files into config/.
+	(AC_CONFIG_FILES): renamed t to test.
+	removed unnecessary header checks.
+	* t: renamed to test.
+	* acinclude.m4: set default DOXYGEN settings.
+
 2009-03-16  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Added some files to the distribution:
