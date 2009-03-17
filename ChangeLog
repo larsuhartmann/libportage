@@ -1,5 +1,12 @@
 2009-03-17  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Added replacement function for strndup:
+	* replace/strndup.c: added.
+	* replace/Makefile.am: added.
+	* configure.ac: added replacement-test for strndup
+	* Makefile.am (SUBDIRS): added path to replacement lib.
+	* src/Makefile.am (libportage_la_LIBADD): added replacement lib.
+
 	Cleaned up Build Framework:
 	* Makefile.am (SUBDIRS): renamed t to test
 	* configure.ac (AC_CONFIG_AUX_DIR): changed to put most config

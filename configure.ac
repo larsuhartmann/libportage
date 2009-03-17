@@ -14,10 +14,20 @@ AC_C_INLINE
 AC_HEADER_STDC
 AC_CHECK_HEADERS(errno.h)
 
+#check for functions
+AC_REPLACE_FUNCS(strndup)
+
 DX_INIT_DOXYGEN($PACKAGE_NAME, doxygen.cfg)
 
 # other stuff
 AC_CONFIG_HEADERS(config.h)
-AC_CONFIG_FILES(Makefile src/Makefile include/Makefile test/Makefile
-                 doc/Makefile)
+
+AC_CONFIG_FILES(Makefile replace/Makefile src/Makefile include/Makefile
+                test/Makefile doc/Makefile)
+
+# hack to transform replace lib list into libtool format.
+Xsed="sed -e s/^X//"
+LTLIBOBJS=`echo X"$LIBOBJS" | \$Xsed -e "s,\. [^.]* ,.lo,g;s,\.[^.]*$,.lo,"`
+AC_SUBST(LTLIBOBJS)
+
 AC_OUTPUT

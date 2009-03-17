@@ -1,6 +1,7 @@
 lib_LTLIBRARIES = libportage.la
 
 libportage_la_SOURCES = liblpatom.c liblputil.c liblpxpak.c
+libportage_la_LIBADD = ../replace/libreplace.la
 
 AM_CPPFLAGS = -I$(top_srcdir)/include
 METASOURCES = AUTO
