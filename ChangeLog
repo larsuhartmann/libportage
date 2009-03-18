@@ -1,3 +1,8 @@
+2009-03-18  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* include/util.h: removed lputil_strndup.
+	* src/liblputil.c: removed lputil_strndup.
+
 2009-03-17  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Added replacement function for strndup:

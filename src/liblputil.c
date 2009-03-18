@@ -201,23 +201,4 @@ lputil_splitstr_destroy(char **splitstr)
      free(splitstr);
 }
 
-extern char *
-lputil_strndup(char *s, size_t n)
-{
-     char *d, *dt;
-     size_t len;
-
-     if ( (d = malloc(n)) == NULL )
-          return NULL;
-
-     strncpy(d, s, n);
-     if ( ( len = strlen(d)) < n-1)
-          if ( (dt = realloc(d, len+1)) == NULL ) {
-               free(d);
-               return NULL;
-          }
-     d = dt;
-     return d;
-}
-
 END_C_DECLS

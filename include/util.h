@@ -175,31 +175,6 @@ lputil_intlen(int d);
 extern void
 lputil_splitstr_destroy(char **splitstr);
 
-/**
- * \brief another strndup() implementation.
- *
- * a strdup implementation that only copies at most \c n characters. If \c s
- * is longer than \c n, only \c n characters are copied, and a terminating \c
- * null byte ('\0') is added.
- *
- * If an Error occures, \c NULL is returned and \c errno is set to indicate
- * the error.
- *
- * \param s a \c nul terminated C string.
- * \param n the maximal count of characters to be duplicated.
- *
- * \return a \c nul terminated C string.
- *
- * \b Errors:
- *
- * - This routine may fail and set errno for any of the errors specified for
- *   the routine malloc(3).
- * - This routine may also fail and set errno for any of the errors specified
- *   for the routine realloc(3).
- */
-extern char *
-lputil_strndup(char *s, size_t n);
-
 END_C_DECLS
 
 #endif /* LPUTIL */
