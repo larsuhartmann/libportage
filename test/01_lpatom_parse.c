@@ -72,9 +72,8 @@ int main(void)
                free(fname);
                if ( lpatom_parse(atom2, s) == -1 )
                     has_failed = true;
-               else
-                    if ( lpatom_cmp(atom1, atom2) != 0 )
-                         has_failed = true;
+               else if ( lpatom_cmp(atom1, atom2) != 0 )
+                    has_failed = true;
                
                lpatom_reinit(atom1);
                lpatom_reinit(atom2);
