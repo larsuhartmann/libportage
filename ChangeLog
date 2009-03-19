@@ -1,5 +1,8 @@
 2009-03-19  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* src/liblputil.c (lputil_splitstr): rewritten with strstr instead
+	of strtok.
+
 	* test/01_lpatom_parse.c (main): fixed identing.
 
 2009-03-18  Lars Hartmann  <lars (at) chaotika (dot) org>

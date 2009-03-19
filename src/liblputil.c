@@ -109,64 +109,52 @@ lputil_memdup(const void *s, size_t len)
 }
 
 extern char **
-lputil_splitstr(const char *s, const char *delim) 
+lputil_splitstr(const char *s, const char *delim)
 {
-     char **r;
-     char **rt;
-     char *t;
-     size_t len = 128;
-     int i, j;
+     char **r, **rt, *st, *stt;
+     unsigned int i, size = 10;
+     size_t dlen = strlen(delim);
 
-     if ( s == NULL || delim == NULL ) {
-          errno = EINVAL;
+     /* allocate memory */
+     if ( (r = malloc(sizeof(char *)*size)) == NULL )
           return NULL;
-     }
-     
-     if ( (t = strdup(s)) == NULL )
-          return NULL;
-     
-     /* allocate len bytes on the heap and assign a pointer to that to that
-      * region r */
-     if ( (r = malloc(sizeof(char *)*len)) == NULL )
+     if ( (st = strdup(s)) == NULL )
           return NULL;
 
-     /* iterate over all strtok matches */
-     for ( i=0; (r[i] = strtok(t, delim)) != NULL; ++i ) {
-          if ( t != NULL )
-               t = NULL;
-          /* check if we still got enough space in r, if not reallocate it
-           * with space for 5 more strings */
-          if ( i == len-2 ) {
-               len += 128;
-               /* reallocate the region r points to and assign a pointer to
-                * that region to r, if not successfull, clean up everything we
-                * ve allocated so far and return */
-               if ( (rt = realloc(r, sizeof(char *)*len)) == NULL ) {
-                    /* iterate over r and free up every entry */
-                    for ( j=0; j <= i; ++j )
-                         free(r[j]);
-                    free(r);
-                    free(t);
+     /* iterate over chrchr matches */
+     for ( i=0; (stt = strstr(st, delim)) != NULL; ++i ) {
+          /* check if we got enough space left in r */
+          if ( i == (size-1) ) {
+               /* allocate some more space */
+               size += 5;
+               if ( (rt = realloc(r, size)) == NULL ) {
+                    lputil_splitstr_destroy(r);
                     return NULL;
                }
-               /* assign the pointer to the reallocated region(rt) to r */
                r = rt;
           }
+          /* set the start of the found delimiter to \0 */
+          stt[0] = '\0';
+          /* assign the first character after the previously found delimiter
+           * to r[i] */
+          r[i] = st;
+          /* assign the first character after the currently found delimiter to
+           * st */
+          st = stt+dlen;
      }
-     /* reallocate r to the optimal size */
-     if ( (rt = realloc(r, sizeof(char *)*(i+1))) == NULL ) {
-          /* iterate over r and free up every entry */
-          for ( j=0; j < i; ++j )
-               free(r[j]);
-          free(r);
-          free(t);
-          return NULL;
+     /* assign the first character after the last delimiter to r[i] */
+     r[i] = st;
+     /* shrink r to optimal size */
+     if ( i < (size-1) ) {
+          if ( (rt = realloc(r, sizeof(char *)*(i+2))) == NULL ) {
+               lputil_splitstr_destroy(r);
+               return NULL;
+          }
+          r = rt;
      }
-     r = rt;
-     r[i] = NULL;
-     /* we do not need to NULL terminate the r, as strtok's last result was
-      * already NULL */
-     free(t);
+     /* NULL terminate r */
+     r[i+1] = NULL;
+     
      return r;
 }
 
