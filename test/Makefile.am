@@ -1,15 +1,15 @@
 METASOURCES = AUTO
 
-check_PROGRAMS = 01_lpatom_parse 02_lpxpak_parse
-TESTS = 01_lpatom_parse 02_lpxpak_parse
+check_PROGRAMS = 02_lpatom_parse 03_lpxpak
+TESTS = 02_lpatom_parse 03_lpxpak
 
-01_lpatom_parse_SOURCES = 01_lpatom_parse.c 01_lpatom_parse.txt
-01_lpatom_parse_LDFLAGS = $(all_libraries)
-01_lpatom_parse_LDADD = ../src/libportage.la
+02_lpatom_parse_SOURCES = 02_lpatom_parse.c 02_lpatom_parse.txt
+02_lpatom_parse_LDFLAGS = $(all_libraries)
+02_lpatom_parse_LDADD = ../src/libportage.la
 
-02_lpxpak_parse_SOURCES = 02_lpxpak_parse.c 02_lpxpak_parse.tbz2
-02_lpxpak_parse_LDFLAGS = $(all_libraries)
-02_lpxpak_parse_LDADD = ../src/libportage.la
+03_lpxpak_SOURCES = 03_lpxpak.c 03_lpxpak.tbz2
+03_lpxpak_LDFLAGS = $(all_libraries)
+03_lpxpak_LDADD = ../src/libportage.la
 
 AM_CPPFLAGS = -I$(top_srcdir)/include
 

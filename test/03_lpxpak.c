@@ -37,7 +37,7 @@
 int
 main(void)
 {
-     char *path = "02_lpxpak_parse.tbz2";
+     char *path = "03_lpxpak.tbz2";
      char *srcpath;
      
      lpxpak_t *xpak1;

@@ -1,5 +1,11 @@
 2009-03-19  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Renamed tests:
+	* test/02_lpxpak_parse.c: renamed to test/03_lpxpak.c.
+	* test/02_lpxpak_parse.tbz2: renamed to test/03_lpxpak.tbz2.
+	* test/01_lpatom_parse.c: renamed to test/02_lpatom_parse.c.
+	* test/01_lpatom_parse.txt: renamed to test/02_lpatom_parse.txt.
+
 	* include/util.h (strndup): removed.
 
 	* src/liblputil.c (lputil_splitstr): rewritten with strstr instead
