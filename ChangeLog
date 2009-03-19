@@ -1,5 +1,7 @@
 2009-03-19  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* include/util.h (strndup): removed.
+
 	* src/liblputil.c (lputil_splitstr): rewritten with strstr instead
 	of strtok.
 
