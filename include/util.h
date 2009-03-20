@@ -125,6 +125,35 @@ extern char **
 lputil_splitstr(const char *s, const char *delim);
 
 /**
+ * \brief duplicates a memory region.
+ *
+ * returns a pointer to a new memory region which is a duplicate of the given
+ * memory region. Memory for the new region is obtained by malloc(3) and can
+ * be freed with free(3).
+ *
+ * lputil_memdup() does not check if the memory region pointed to by s is
+ * really \c len bytes long.
+ *
+ * If an error occurs, \c NULL is returned and errno is set to indicate the
+ * error.
+ *
+ * \param s a pointer to the memory region to be copied.
+ * \param len the length of the memory region to be copied in bytes.
+ *
+ * \return a pointer to a duplicate of the memory region.
+ *
+ * \sa strdup(3)
+ *
+ * \b Errors:
+ *
+ * - \c EINVAL s is \c NULL.
+ * - This routine may also fail and set errno for any of the errors specified
+ *   for the routine malloc(3)
+ */
+extern void *
+lputil_memdup(const void *s, size_t len);
+
+/**
  * \brief calculates the length in digits of a int.
  * 
  * \param d an integer which's length is to be calculated.
