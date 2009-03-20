@@ -1,7 +1,11 @@
 METASOURCES = AUTO
 
-check_PROGRAMS = 01_lputil_splitstr 02_lpatom_parse 03_lpxpak
-TESTS = 01_lputil_splitstr 02_lpatom_parse 03_lpxpak
+check_PROGRAMS = 01_lputil_intlen 01_lputil_splitstr 02_lpatom_parse 03_lpxpak
+TESTS = 01_lputil_intlen 01_lputil_splitstr 02_lpatom_parse 03_lpxpak
+
+01_lputil_intlen_SOURCES = 01_lputil_intlen.c
+01_lputil_intlen_LDFLAGS = $(all_libraries)
+01_lputil_intlen_LDADD = ../src/libportage.la
 
 01_lputil_splitstr_SOURCES = 01_lputil_splitstr.c 01_lputil_splitstr.txt
 01_lputil_splitstr_LDFLAGS = $(all_libraries)

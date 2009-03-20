@@ -1,5 +1,9 @@
 2009-03-20  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Added test for lputil_intlen():
+	* test/Makefile.am: added 01_lputil_intlen.
+	* test/01_lputil_intlen.c: added.
+
 	Added test for lputil_splitstr():
 	* test/Makefile.am: added 01_lputil_splitstr.
 	* test/01_lputil_splitstr.c: added.
