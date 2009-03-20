@@ -1,3 +1,9 @@
+2009-03-20  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Added test for lputil_splitstr():
+	* test/Makefile.am: added 01_lputil_splitstr.
+	* test/01_lputil_splitstr.c: added.
+
 2009-03-19  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Renamed tests:
