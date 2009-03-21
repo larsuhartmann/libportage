@@ -1,3 +1,7 @@
+2009-03-21  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* doc/Requirements.txt: updated.
+
 2009-03-20  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Added test for lputil_intlen():

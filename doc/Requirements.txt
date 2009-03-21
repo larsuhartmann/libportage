@@ -3,17 +3,19 @@
 
 * Parallel Installing of Packages
 
-* Packet-Mangling
-  - Installation
-  - Deinstallation
-  - Detect no more needed Dependencies
-  - Dependencies
-  - Blocks
-  - Detect Packages which need to be recompiled due to changed USEflags
-  - search packages in local repositorys that match a given pattern/regex
+* Packet-Managing
   - Installation of .tbz2 gentoo binary packages (cportage -ib package.tbz2)
-  - Generating of gentoo binary packages
+  - Deinstallation of .tbz2 gentoo binary packages (cportage -ib package.tbz2)
+  - Search and download of binary packages
+  - Generating gentoo binary packages
+  - Dependencies
+  - Installation of source packages.
+  - Deinstallation of source packages.
+  - search packages in local repositorys that match a given pattern/regex
   - List all reverse Dependencies for a given Packet
+  - Detect no more needed Dependencies
+  - Detect Packages which need to be recompiled due to changed USEflags
+  - Blocks
 
 * without graphical Interface
 
@@ -60,7 +62,15 @@
 
 * < 1MB statically linked
 
-* capability to manually call the various stages of packet mangling.
+* capability to manually call the various stages of packet managing.
   - check if all dependencys for the given packet are fullfilled, if not,
     return -1 and print out the missing dependencies on stderr
   - Just merge the given packet and assume all dependencies are fulfilled
+
+* robustness - a cold reset should not harm the integrity of the package
+  databse
+
+* simplicity - the package database needs to be simple and manually
+  maintainable via text editor.
+
+* very few external libraries/dependencies.
