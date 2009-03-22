@@ -1,5 +1,7 @@
 2009-03-22  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* doc/binary_packages.txt: added.
+
 	* replace/strndup.c: fixed compiler error.
 
 2009-03-21  Lars Hartmann  <lars (at) chaotika (dot) org>
