@@ -24,9 +24,11 @@
  * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
  * POSSIBILITY OF SUCH DAMAGE.
  */
+#include <stdlib.h>
 
 /* replacement function for strndup */
-char *strndup(const char *s, size_t n)
+extern char *
+strndup(const char *s, size_t n)
 {
      char *r;
      
