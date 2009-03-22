@@ -1,5 +1,12 @@
                                      TODO
                                      ====
+                                     
+- liblparchive - a abstraction around libarchive/tar(1⁾.
+
+- liblperror - a error framework.
+
+- liblppackage - a library for installing/removing packages.
+
 - Finnish doc/Requirements.txt
 
 - build metadata cache parser
