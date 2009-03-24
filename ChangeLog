@@ -1,3 +1,8 @@
+2009-03-24  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* test/02_lpatom_parse.c: fixed compiler warning due to missing
+	include.
+
 2009-03-22  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* TODO: updated.
