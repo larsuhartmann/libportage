@@ -105,7 +105,9 @@ extern int errno
  */
 #define LPXPAK_INT_SIZE       4
 
-BEGIN_C_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * \brief The Datatype for the offset/length values XPAK uses.
@@ -1028,4 +1030,6 @@ lpxpak_indexblob_compile(lpxpak_t *xpak)
      return index;
 }
 
-END_C_DECLS
+#ifdef __cplusplus
+}
+#endif

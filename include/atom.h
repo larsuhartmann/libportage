@@ -33,12 +33,12 @@
 #ifndef LPATOM
 #  define LPATOM 1
 
-#  include <common.h>
-
 #  include <stdio.h>
 #  include <regex.h>
 
-BEGIN_C_DECLS
+#  ifdef __cplusplus
+extern "C" {
+#  endif
 
 /**
  * suffix enum
@@ -359,6 +359,8 @@ lpatom_init(lpatom_t *atom);
 extern void
 lpatom_reinit(lpatom_t *atom);
 
-END_C_DECLS
+#  ifdef __cplusplus
+}
+#  endif
 
-#endif /* LPATOM */
+#endif /*! LPATOM */

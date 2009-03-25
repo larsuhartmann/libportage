@@ -87,7 +87,9 @@ rc|p)[0-9]*)?(-r[0-9]+)?)?$"
  */
 #define LPATOM_RE_VER     "^([0-9]+([.][0-9]+)*)([a-z]?)"
 
-BEGIN_C_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /**
  * \brief Reads the suffix out of an suffix string
@@ -727,4 +729,6 @@ lpatom_get_fullname(const lpatom_t *atom)
      return r;
 }
 
-END_C_DECLS
+#ifdef __cplusplus
+}
+#endif

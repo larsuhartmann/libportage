@@ -53,7 +53,9 @@ extern int errno
 #  include <memory.h>
 #endif /* HAVE_MEMORY_H */
 
-BEGIN_C_DECLS
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 extern char *
 lputil_get_re_match(const regmatch_t *match, int n, const char *s)
@@ -189,4 +191,6 @@ lputil_splitstr_destroy(char **splitstr)
      free(splitstr);
 }
 
-END_C_DECLS
+#ifdef __cplusplus
+}
+#endif

@@ -37,12 +37,12 @@
 #ifndef LPXPAK
 #define LPXPAK 1
 
-#  include <common.h>
-
 #  include <sys/types.h>
 #  include <stdint.h>
 
-BEGIN_C_DECLS
+#  ifdef __cplusplus
+extern "C" {
+#  endif
 
 /**
  * \brief A xpak entry
@@ -437,6 +437,8 @@ lpxpak_blob_get_path(const char *path);
 extern lpxpak_blob_t *
 lpxpak_blob_compile(lpxpak_t *handle);
 
-END_C_DECLS
+#  ifdef __cplusplus
+}
+#  endif
 
 #endif /* LPXPAK */

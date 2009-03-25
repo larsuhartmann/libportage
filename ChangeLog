@@ -1,3 +1,20 @@
+2009-03-26  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Moved compiler checks from common.h into the headers and removed
+	common.h:
+	* include/Makefile.am (header_HEADERS): removed common.h from the
+	list headers.
+	* src/liblpxpak.c: added c++ compiler checks.
+	* src/liblputil.c: added c++ compiler checks.
+	* src/liblpatom.c: added c++ compiler checks.
+	* include/xpak.h: added c++ compiler checks.  removed include of
+	common.h
+	* include/util.h: added c++ compiler checks.  removed include of
+	common.h
+	* include/atom.h: added c++ compiler checks.  removed include of
+	common.h
+	* include/common.h: removed.
+
 2009-03-25  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* include/dependency.h: removed obselete draft.

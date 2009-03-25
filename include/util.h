@@ -32,11 +32,11 @@
 #ifndef LPUTIL
 #define LPUTIL 1
 
-#  include <common.h>
-
 #  include <regex.h>
 
-BEGIN_C_DECLS
+#  ifdef __cplusplus
+extern "C" {
+#  endif
 
 /**
  * \brief Get regexp match
@@ -175,6 +175,8 @@ lputil_intlen(int d);
 extern void
 lputil_splitstr_destroy(char **splitstr);
 
-END_C_DECLS
+#  ifdef __cplusplus
+}
+#  endif
 
 #endif /* LPUTIL */
