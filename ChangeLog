@@ -1,3 +1,7 @@
+2009-03-25  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* include/dependency.h: removed obselete draft.
+
 2009-03-24  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* test/02_lpatom_parse.c: fixed compiler warning due to missing
