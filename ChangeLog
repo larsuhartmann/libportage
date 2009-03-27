@@ -1,3 +1,7 @@
+2009-03-27  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* replace/strndup.c: added compiler checks.
+
 2009-03-26  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Moved compiler checks from common.h into the headers and removed

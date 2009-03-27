@@ -26,6 +26,10 @@
  */
 #include <stdlib.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /* replacement function for strndup */
 extern char *
 strndup(const char *s, size_t n)
@@ -41,3 +45,7 @@ strndup(const char *s, size_t n)
           }
      return r;
 }
+
+#ifdef __cplusplus
+}
+#endif
