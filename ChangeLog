@@ -1,5 +1,7 @@
 2009-03-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* include/archives.h: added.
+
 	Rewrote the License for text documents:
 	* doc/binary_packages.txt: updated license.
 	* doc/xpak.txt: updated license.

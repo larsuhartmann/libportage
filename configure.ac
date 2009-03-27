@@ -17,6 +17,9 @@ AC_CHECK_HEADERS(errno.h)
 #check for functions
 AC_REPLACE_FUNCS(strndup)
 
+# check for libarchive and abort if not found
+AC_CHECK_HEADERS(archive.h,,AC_MSG_ERROR(archive.h not found!))
+
 DX_INIT_DOXYGEN($PACKAGE_NAME, doxygen.cfg)
 
 # other stuff
