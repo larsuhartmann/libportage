@@ -1,5 +1,9 @@
 2009-03-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Added support for archives:
+	* test/04_lparchives.tbz2: added.
+	* test/04_lparchives.txt: added.
+	* test/04_lparchives.c: added.
 	* src/liblparchives.c: added.
 	* include/archives.h: added.
 
