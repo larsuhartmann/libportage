@@ -19,6 +19,7 @@ AC_REPLACE_FUNCS(strndup)
 
 # check for libarchive and abort if not found
 AC_CHECK_HEADERS(archive.h,,AC_MSG_ERROR(archive.h not found!))
+AC_CHECK_LIB(archive,main,,AC_MSG_ERROR(libarchive not found!))
 
 DX_INIT_DOXYGEN($PACKAGE_NAME, doxygen.cfg)
 
