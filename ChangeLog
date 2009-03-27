@@ -1,5 +1,10 @@
 2009-03-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Rewrote the License for text documents:
+	* doc/binary_packages.txt: updated license.
+	* doc/xpak.txt: updated license.
+	* doc/xpak.5: updated license.
+
 	* replace/strndup.c: added compiler checks.
 
 2009-03-26  Lars Hartmann  <lars (at) chaotika (dot) org>
