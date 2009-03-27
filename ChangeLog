@@ -1,6 +1,7 @@
 2009-03-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Added support for archives:
+	* test/Makefile.am: added targets for test/04_lparchives.
 	* test/04_lparchives.tbz2: added.
 	* test/04_lparchives.txt: added.
 	* test/04_lparchives.c: added.
