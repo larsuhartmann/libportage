@@ -23,6 +23,20 @@ AC_CHECK_LIB(archive,main,,AC_MSG_ERROR(libarchive not found!))
 
 DX_INIT_DOXYGEN($PACKAGE_NAME, doxygen.cfg)
 
+# hack to get valgrind support via --enable-valgrind
+USE_VALGRIND=false
+AC_ARG_ENABLE(valgrind,
+    [  --enable-valgrind       use valgrind when running unit tests. ],
+    USE_VALGRIND=true
+)
+if [[ "$USE_VALGRIND" = "true" ]]; then
+    AC_CHECK_PROG(HAVE_VALGRIND, valgrind, yes, no)
+    if [[ "$HAVE_VALGRIND" = "no" ]]; then
+        AC_MSG_ERROR([Valgrind not found in PATH. ])
+    fi
+fi
+AM_CONDITIONAL(USE_VALGRIND, $USE_VALGRIND)
+
 # other stuff
 AC_CONFIG_HEADERS(config.h)
 

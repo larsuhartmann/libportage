@@ -1,5 +1,14 @@
 2009-03-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Added valgrind test-support:
+	* test/valgrind-wrapper: Added wrapper script for calling tests
+	with valgrind.
+	* configure.ac: Added --enable-valgrind switch and some checks.
+	* test/Makefile.am: Replaced libtool linking by static
+	linking(required for valgrind to work).
+	Check if --enable-valgrind was given to configure and start tests
+	through valgrind-wrapper if so.
+
 	Added support for archives:
 	* test/Makefile.am: added targets for test/04_lparchives.
 	* test/04_lparchives.tbz2: added.
