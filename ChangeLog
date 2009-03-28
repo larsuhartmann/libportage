@@ -1,3 +1,8 @@
+2009-03-28  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* test/Makefile.am: simplified some tests and added
+	valgrind-wrapper to EXTRA_DIST.
+
 2009-03-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Added valgrind test-support:
