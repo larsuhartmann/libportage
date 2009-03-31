@@ -1,3 +1,7 @@
+2009-03-31  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* include/archives.h: extended.
+
 2009-03-28  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* test/Makefile.am: simplified some tests and added
