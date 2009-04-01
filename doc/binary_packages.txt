@@ -34,12 +34,12 @@ Notes
   The Environment.bz environment dump
   ===================================
 
-   * the Environment.bz is just a dump of all avaible variables and functions,
+   * the Environment.bz is just a dump of all available variables and functions,
      produced by set that can be imported using source(). Some older Portage
      versions exported this list unfiltered so also funny things like
      FUNC_NAME or BASH_ARGC/ARGV got exported which made it impossible to just
-     source() the dumb, to work around that one might simply sort the funky
-     thigs out using sed or grep:
+     source() the dump, to work around that one might simply sort the funky
+     things out using sed or grep:
 
      grep -Ev "^(BASH_|EUID=|FUNCNAME=|GROUPS=|PPID=|SHELLOPTS=|UID=)"
      sed "/^(BASH_|EUID=|FUNCNAME=|GROUPS=|PPID=|SHELLOPTS=|UID=)/d"
@@ -71,7 +71,7 @@ Installing
     /var/db/pkg/[category]/[pkg]-[pkgver]/ one file per item, for example: USE
     goes into /var/db/pkg/[category]/[pkg]-[pkgver]/USE
 
-  * If the package was explicitely installed (not installed as a dependency),
+  * If the package was explicitly installed (not installed as a dependency),
     put it its full name ([category]/[pkg]-[pkgver]) as a new line into
     /var/lib/portage/world.
 
@@ -90,12 +90,12 @@ Uninstalling
 
   * completely remove the directory /var/db/pkg/[category]/[pkg]-[pkgver]/.
 
-  * remove the package from /var/lib/portage/world if it was implicitely
+  * remove the package from /var/lib/portage/world if it was implicitly
     installed.
 
 Updating
 ========
 
-  * Completely remove the Old version.
+  * Completely remove the old version.
   
   * Install new version.
