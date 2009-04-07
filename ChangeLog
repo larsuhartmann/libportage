@@ -1,3 +1,11 @@
+2009-04-26  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Added lpversion.
+	* src/Makefile.am (libportage_la_SOURCES): added liblpversion.c
+	* include/Makefile.am (header_HEADERS): added version.h.
+	* src/liblpversion.c: added.
+	* include/version.h: added.
+
 2009-04-25  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* test/valgrind-wrapper: simplified and cleaned up.

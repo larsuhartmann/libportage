@@ -1,6 +1,7 @@
 lib_LTLIBRARIES = libportage.la
 
-libportage_la_SOURCES = liblpatom.c liblputil.c liblpxpak.c liblparchives.c
+libportage_la_SOURCES = liblpatom.c liblputil.c liblpxpak.c liblparchives.c   \
+			liblpversion.c
 libportage_la_LIBADD = ../replace/libreplace.la
 libportage_la_LDFLAGS = -larchive
 
