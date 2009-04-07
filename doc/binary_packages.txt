@@ -72,7 +72,7 @@ Installing
     goes into /var/db/pkg/[category]/[pkg]-[pkgver]/USE
 
   * If the package was explicitly installed (not installed as a dependency),
-    put it its full name ([category]/[pkg]-[pkgver]) as a new line into
+    put it its full name ([category]/[pkg]) as a new line into
     /var/lib/portage/world.
 
 Uninstalling
