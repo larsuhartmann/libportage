@@ -644,6 +644,7 @@ lpatom_version_explode(const char *ver) {
      return ia;
 }
 
+
 extern int
 lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
 {
@@ -654,23 +655,23 @@ lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
      
      /* iterate over both int arrays until the end of one of em is reached */
      for ( i=0; ia1[i] != -1 || ia2[i] != -1; ++i )
+          /* check if both are different, if yes, return the difference */
           if ( ia1[i] != ia2[i] )
+               /* return the difference */
                return ia1[i] - ia2[i];
-
-     /* check if we reached the end of only one or both of the two splitted
-      * versions */
-     if ( ia1[i] == -1 || ia2[i] == -1 )
-          if ( ia1[i] == -1 )
-               return -1;
-          else
-               return 1;
-               
+     /* check if we reached the end of only one of the two versions */
+     if ( ia1[i] != ia2[i] )
+          /* return the difference */
+          return ia1[i] - ia2[i];
+     /* check if the two version characters differ */
      if ( atom1->verc != atom2->verc )
+          /* return the difference */
           return atom1->verc - atom2->verc;
-     
+     /* check if the two suffixes differ */
      if ( atom1->sufenum != atom2->sufenum )
+          /* return the difference */
           return atom1->sufenum - atom2->sufenum;
-     
+     /* return the difference between the release versions */
      return atom1->rel - atom2->rel;
 }
 
