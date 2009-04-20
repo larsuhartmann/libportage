@@ -62,22 +62,25 @@ extern void
 lparchive_init(lparchive_t *handle)
 {
      handle->archive = archive_read_new();
-     archive_read_support_compression_all(handle->archive);
-     archive_read_support_format_all(handle->archive);
+     /* FIXME: add error handling */
+     (void)archive_read_support_compression_all(handle->archive);
+     (void)archive_read_support_format_all(handle->archive);
      handle->fd = 0;
 }
 
 extern void
 lparchive_reset(lparchive_t *handle)
 {
-     archive_read_finish(handle->archive);
+     /* FIXME: add error handling */
+     (void)archive_read_finish(handle->archive);
      lparchive_init(handle);
 }
 
 extern void
 lparchive_destroy(lparchive_t *handle)
 {
-     archive_read_finish(handle->archive);
+     /* FIXME: add error handling */
+     (void)archive_read_finish(handle->archive);
      free(handle);
 }
 
@@ -85,7 +88,8 @@ extern int
 lparchive_open_fd(lparchive_t *handle, int fd)
 {
      handle->fd = fd;
-     archive_read_open_fd(handle->archive, fd, 1024);
+     /* FIXME: add error handling */
+     (void)archive_read_open_fd(handle->archive, fd, 1024);
      return 0;
 }
 
@@ -103,8 +107,7 @@ extern char **
 lparchive_get_entry_names(struct lparchive *handle)
 {
      char **r, **t;
-     size_t size=64;
-     unsigned int i;
+     size_t size=64, i, j;
      struct archive *archive = handle->archive;
      struct archive_entry *entry= NULL;
 
@@ -116,23 +119,34 @@ lparchive_get_entry_names(struct lparchive *handle)
                size <<=1;
                if ( (t = realloc(r, sizeof(char *)*size)) == NULL ) {
                     free(r);
-                    lparchive_reopen(handle);
+                    /* FIXME: add error handling */
+                    (void)lparchive_reopen(handle);
                     return NULL;
                }
           }
-          r[i] = strdup(archive_entry_pathname(entry));
-          archive_read_data_skip(archive);
+          if ( (r[i] = strdup(archive_entry_pathname(entry))) == NULL ) {
+               for (j=0; j<i; ++j)
+                    free(r[j]);
+               free(r);
+               /* FIXME: add error handling */
+               (void)lparchive_reopen(handle);
+               return NULL;
+          }
+          /* FIXME: add error handling */
+          (void)archive_read_data_skip(archive);
      }
      if ( size > i+1 ) {
           if ( (t = realloc(r, sizeof(char *)*(i+1))) == NULL ) {
                free(r);
-               lparchive_reopen(handle);
+               /* FIXME: add error handling */
+               (void)lparchive_reopen(handle);
                return NULL;
           }
           r = t;
      }
      r[i] = NULL;
-     lparchive_reopen(handle);
+     /* FIXME: add error handling */
+     (void)lparchive_reopen(handle);
 
      return r;
 }
@@ -164,10 +178,11 @@ lparchive_extract(lparchive_t *handle, char *path)
 static inline int
 lparchive_reopen(lparchive_t *handle)
 {
-     archive_read_finish(handle->archive);
+     /* FIXME: add error handling */
+     (void)archive_read_finish(handle->archive);
      handle->archive = archive_read_new();
-     archive_read_support_compression_all(handle->archive);
-     archive_read_support_format_all(handle->archive);
+     (void)archive_read_support_compression_all(handle->archive);
+     (void)archive_read_support_format_all(handle->archive);
 
      return lparchive_open_fd(handle, handle->fd);
 }

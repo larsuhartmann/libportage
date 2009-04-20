@@ -46,7 +46,7 @@
 #endif /* HAVE_ERRNO_H */
 #ifndef errno
 /* Some Systems #define this! */
-extern int errno
+extern int errno;
 #endif /*! errno */
 
 #if STDC_HEADERS
@@ -101,7 +101,7 @@ extern "C" {
  * \param s a \c nul terminated c string with the suffix.
  *
  */
-void
+static void
 lpatom_suffix_parse(lpatom_t *atom, const char *s);
 
 /**
@@ -222,7 +222,7 @@ lpatom_parse(lpatom_t *atom, const char *pname)
           has_cat = true;
      }
 
-     regexec(&atom->regex.name, pname, 3, regmatch, 0);
+     (void)regexec(&atom->regex.name, pname, 3, regmatch, 0);
      /* assign the package name to atom->name */
      if ( (atom->name = lputil_get_re_match(regmatch, 2, pname)) == NULL )
           return -1;
@@ -237,7 +237,7 @@ lpatom_parse(lpatom_t *atom, const char *pname)
      if ( (vers = strdup(pname+len+1)) == NULL )
           return -1;
 
-     regexec(&atom->regex.version, vers, 1, regmatch, 0);
+     (void)regexec(&atom->regex.version, vers, 1, regmatch, 0);
 
      /* get the version as string */
      if ( (ver = lputil_get_re_match(regmatch, 0, vers)) == NULL ) {
@@ -311,7 +311,7 @@ lpatom_parse(lpatom_t *atom, const char *pname)
      return 0;
 }
 
-void
+static void
 lpatom_suffix_parse(lpatom_t *atom, const char *s)
 {
      switch(s[0]) {
@@ -362,12 +362,12 @@ lpatom_init(lpatom_t *atom)
      atom->rel = 0;
 
      /* compile regexp's */
-     regcomp(&atom->regex.atom, LPATOM_RE, REG_EXTENDED);
-     regcomp(&atom->regex.category, LPATOM_RE_CAT, REG_EXTENDED);
-     regcomp(&atom->regex.name, LPATOM_RE_NAME, REG_EXTENDED);
-     regcomp(&atom->regex.suffix, LPATOM_RE_SUF, REG_EXTENDED);
-     regcomp(&atom->regex.release, LPATOM_RE_REL, REG_EXTENDED);
-     regcomp(&atom->regex.version, LPATOM_RE_VER, REG_EXTENDED);
+     (void)regcomp(&atom->regex.atom, LPATOM_RE, REG_EXTENDED);
+     (void)regcomp(&atom->regex.category, LPATOM_RE_CAT, REG_EXTENDED);
+     (void)regcomp(&atom->regex.name, LPATOM_RE_NAME, REG_EXTENDED);
+     (void)regcomp(&atom->regex.suffix, LPATOM_RE_SUF, REG_EXTENDED);
+     (void)regcomp(&atom->regex.release, LPATOM_RE_REL, REG_EXTENDED);
+     (void)regcomp(&atom->regex.version, LPATOM_RE_VER, REG_EXTENDED);
 
      return;
 }
@@ -434,7 +434,7 @@ lpatom_get_suffix(const lpatom_t *atom)
                     return NULL;
                }
                /* r = suf + 'atom->sufv' */
-               snprintf(r, len, "%s%d", suf, atom->sufv);
+               (void)snprintf(r, len, "%s%d", suf, atom->sufv);
                free(suf);
           } else {
                /* r = suf */
@@ -460,7 +460,7 @@ lpatom_get_release(const lpatom_t *atom)
           if ( (r = malloc(rellen)) == NULL )
                return NULL;
           /* r = 'atom->rel' */
-          snprintf(r, rellen, "r%d", atom->rel);
+          (void)snprintf(r, rellen, "r%d", atom->rel);
      } else
           /* r = "" */
           if ( (r = strdup("")) == NULL )
@@ -481,7 +481,7 @@ lpatom_get_qname(const lpatom_t *atom)
           if ( (r = malloc(len)) == NULL )
                return NULL;
           /* r = atom->cat + '/' + atom->name */
-          snprintf(r, len, "%s/%s", atom->cat, atom->name);
+          (void)snprintf(r, len, "%s/%s", atom->cat, atom->name);
      } else
           /* r = atom->name */
           if ( (r = strdup(atom->name)) == NULL )
@@ -548,7 +548,7 @@ lpatom_get_version(const lpatom_t *atom)
                return NULL;
           }
           /* sufs = '_' + suffix */
-          snprintf(sufs, suflen + 1, "_%s", suf);
+          (void)snprintf(sufs, suflen + 1, "_%s", suf);
           free(suf);
      } else {
           /* sufs = "" */
@@ -567,7 +567,7 @@ lpatom_get_version(const lpatom_t *atom)
                return NULL;
           }
           /* rels = '-' + rel */
-          snprintf(rels, rellen + 1, "-%s", rel);
+          (void)snprintf(rels, rellen + 1, "-%s", rel);
           free(rel);
      } else {
           /* rels = "" */
@@ -577,7 +577,7 @@ lpatom_get_version(const lpatom_t *atom)
      }
 
      /* check if we got a version character */
-     if ( atom->verc != 0 ) {
+     if ( atom->verc != (char)0 ) {
           verlen = strlen(atom->ver) + 1;
           /* allocate memory */
           if ( (vers = malloc(verlen + 1)) == NULL ) {
@@ -586,7 +586,7 @@ lpatom_get_version(const lpatom_t *atom)
                return NULL;
           }
           /* vers = atom->ver + 'atom->verc' */
-          snprintf(vers, verlen + 1, "%s%c", atom->ver, atom->verc);
+          (void)snprintf(vers, verlen + 1, "%s%c", atom->ver, atom->verc);
      } else {
           /* vers = atom->ver */
           if ( (vers = strdup(atom->ver)) == NULL )
@@ -666,7 +666,7 @@ lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
      /* check if the two version characters differ */
      if ( atom1->verc != atom2->verc )
           /* return the difference */
-          return atom1->verc - atom2->verc;
+          return (int)(atom1->verc - atom2->verc);
      /* check if the two suffixes differ */
      if ( atom1->sufenum != atom2->sufenum )
           /* return the difference */
@@ -720,7 +720,7 @@ lpatom_get_fullname(const lpatom_t *atom)
      }
 
      /* r = qname+'-'+ver */
-     snprintf(r, len, "%s-%s", qname, ver); 
+     (void)snprintf(r, len, "%s-%s", qname, ver); 
 
      /* free up the qname and ver strings */
      free(qname);
