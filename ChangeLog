@@ -1,3 +1,7 @@
+2009-04-25  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* test/valgrind-wrapper: simplified and cleaned up.
+
 2009-04-20  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Fixed several lint warnings:
