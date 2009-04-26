@@ -1,5 +1,10 @@
 2009-04-26  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Added tests for lpversion_parse.
+	* test/Makefile.am: added 05_lpversion_parse.
+	* test/05_lpversion_parse.txt: added.
+	* test/05_lpversion_parse.c (main): added.
+
 	Added lpversion.
 	* src/Makefile.am (libportage_la_SOURCES): added liblpversion.c
 	* include/Makefile.am (header_HEADERS): added version.h.
