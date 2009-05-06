@@ -1,5 +1,7 @@
 2009-05-06  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* test/03_lpatom_parse.txt: added some more tests.
+
 	Move tests for lpversion before lpatom:
 	* test/02_lpatom_parse.c: renamed to 03_lpatom_parse.c.
 	* test/02_lpatom_parse.txt: renamed to 03_lpatom_parse.txt.

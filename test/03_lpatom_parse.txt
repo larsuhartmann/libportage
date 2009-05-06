@@ -6,3 +6,11 @@ sys-foobar/foo_bar-sources
 sys-foobar
 sys/foo
 foobar
+media-fonts/font-adobe-utopia-100dpi
+media-fonts/font-adobe-utopia-100dpi-1.0
+media-fonts/font-adobe-utopia-75dpi
+media-fonts/font-adobe-utopia-75dpi-20090318
+font-adobe-utopia-100dpi
+font-adobe-utopia-100dpi-1.0
+font-adobe-utopia-75dpi
+font-adobe-utopia-75dpi-20090318
