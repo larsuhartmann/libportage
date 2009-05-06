@@ -1,3 +1,11 @@
+2009-05-06  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Replaced latex like formatting codes with jdoc like formatting codes.
+	* src/liblpxpak.c: updated.
+	* include/xpak.h: updated.
+	* include/util.h: updated.
+	* include/archives.h: updated.
+
 2009-04-26  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Added tests for lpversion_parse.

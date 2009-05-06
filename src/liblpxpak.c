@@ -26,7 +26,7 @@
  */
 
 /**
- * \brief Feature test macro for POSIX.1, POSIX.2, XPG4, SUSv2, SUSv3.
+ * @brief Feature test macro for POSIX.1, POSIX.2, XPG4, SUSv2, SUSv3.
  *
  * This makes sure, we have a Standard conformant environment.
  */
@@ -68,40 +68,40 @@ extern int errno;
 #endif /* HAVE_MEMORY_H */
 
 /**
- * \brief The Offset for the STOP String - calculated from SEEK_END.
+ * @brief The Offset for the STOP String - calculated from SEEK_END.
  */
 #define LPXPAK_STOP_OFFSET      4
 /**
- * \brief The Length of the XPAK_OFFSET field.
+ * @brief The Length of the XPAK_OFFSET field.
  */
 #define LPXPAK_OFFSET_LEN       8
 /**
- * \brief The Length of the INTRO String.
+ * @brief The Length of the INTRO String.
  */
 #define LPXPAK_INTRO_LEN        8
 /**
- * \brief The Value the INTRO String should have.
+ * @brief The Value the INTRO String should have.
  */
 #define LPXPAK_INTRO            "XPAKPACK"
 /**
- * \brief The Length of the OUTRO String.
+ * @brief The Length of the OUTRO String.
  */
 #define LPXPAK_OUTRO_LEN        8
 /**
- * \brief The Value the OUTRO String should have.
+ * @brief The Value the OUTRO String should have.
  */
 #define LPXPAK_OUTRO            "XPAKSTOP"
 /**
- * \brief The Length of the STOP String in Bytes 
+ * @brief The Length of the STOP String in Bytes 
  */
 #define LPXPAK_STOP_LEN         4
 /**
- * \brief The Value the STOP String should have.
+ * @brief The Value the STOP String should have.
  */
 #define LPXPAK_STOP             "STOP"
 
 /**
- * \brief size of lpxpak_int_t in bytes.
+ * @brief size of lpxpak_int_t in bytes.
  */
 #define LPXPAK_INT_SIZE       4
 
@@ -110,12 +110,12 @@ extern "C" {
 #endif
 
 /**
- * \brief The Datatype for the offset/length values XPAK uses.
+ * @brief The Datatype for the offset/length values XPAK uses.
  */
 typedef uint32_t lpxpak_int_t;
 
 /**
- * \brief A xpak index element.
+ * @brief A xpak index element.
  *
  * This is the Datastructure that holds one element of the Index Data parsed
  * by __lpxpak_parse_index.
@@ -125,20 +125,20 @@ typedef uint32_t lpxpak_int_t;
  */
 typedef struct lpxpak_index_entry {
      /**
-      * \brief The Offset of the Data.
+      * @brief The Offset of the Data.
       *
       * The Offset needed to find the corresponding data block, calculated
       * from the start of the data block.
       */
      size_t offset;
      /**
-      * \brief The Length of the Data Block.
+      * @brief The Length of the Data Block.
       *
       * The Length needed to copy out the corresponding data block.
       */
      size_t len;
      /**
-      * \brief The Name of the Element.
+      * @brief The Name of the Element.
       *
       * This Element is implemented as a null terminated C String.
       */
@@ -146,12 +146,12 @@ typedef struct lpxpak_index_entry {
 } lpxpak_index_entry_t;
 
 /**
- * \brief The xpak data structure.
+ * @brief The xpak data structure.
  *
  * None of the Pointers in this struct will point to memory regions which are
  * used elsewhere by the lpxpak library.
  *
- *  \sa lpxpak_create(), lpxpak_init(), lpxpak_reinit(), lpxpak_destroy().
+ * @sa lpxpak_create(), lpxpak_init(), lpxpak_reinit(), lpxpak_destroy().
  */
 typedef struct lpxpak_index {
      /**
@@ -165,7 +165,7 @@ typedef struct lpxpak_index {
 } lpxpak_index_t;
 
 /**
- * \brief Parses the Index block of an XPAK.
+ * @brief Parses the Index block of an XPAK.
  *
  * Gets a pointer to the index block of an xpak and the length of that index
  * block and parses it into the provided lpxpak_index_t handle. If an error
@@ -173,18 +173,18 @@ typedef struct lpxpak_index {
  *
  * The provided Index data will not be modified by this function.
  *
- * \param handle a pointer to an lpxpak_index_t data structure used for this
+ * @param handle a pointer to an lpxpak_index_t data structure used for this
  * operation.
  *
- * \param data a pointer to a memory segment which holds the index block.
+ * @param data a pointer to a memory segment which holds the index block.
  * 
- * \param len the length of the index block pointed to by data.
+ * @param len the length of the index block pointed to by data.
  *
- * \return 0 if successfull or -1 if an error occured.
+ * @return 0 if successfull or -1 if an error occured.
  *
- * \sa lpxpak_index_destroy().
+ * @sa lpxpak_index_destroy().
  *
- * \b Errors:
+ * @b Errors:
  * 
  * - This function may fail and set errno for any of the errors specified for
  *   the routine malloc(3).
@@ -193,21 +193,21 @@ static int
 lpxpak_index_parse(lpxpak_index_t *handle, const void *data, size_t len);
 
 /**
- * \brief Allocates a new lpxpak_index_t object and returns a pointer to it.
+ * @brief Allocates a new lpxpak_index_t object and returns a pointer to it.
  *
- * If an error occurs, \c NULL is returned and errno is set.
+ * If an error occurs, @c NULL is returned and errno is set.
  *
  * The returned data structure can be initialized by lpxpak_index_init().
  * 
  * The Memory for the returned array including all its members can be freed
  * with lpxpak_index_destroy().
  *
- * \return a pointer to an lpxpak_index_t object or \c NULL if an error
+ * @return a pointer to an lpxpak_index_t object or @c NULL if an error
  * occured.
  *
- * \sa lpxpak_index_init(), lpxpak_index_destroy().
+ * @sa lpxpak_index_init(), lpxpak_index_destroy().
  * 
- * \b Errors:
+ * @b Errors:
  *
  * - This function may fail and set errno for any of the errors specified for
  *   the routine malloc(3).
@@ -216,30 +216,30 @@ static lpxpak_index_t *
 lpxpak_index_create(void);
 
 /**
- * \brief Initialises a lpxpak_index_t object.
+ * @brief Initialises a lpxpak_index_t object.
  *
- * This function sets all values of the structure to \c 0 and all pointers to
- * \c NULL.
+ * This function sets all values of the structure to @c 0 and all pointers to
+ * @c NULL.
  *
- * \param index a pointer to an lpxpak_index_t object.
+ * @param index a pointer to an lpxpak_index_t object.
  * 
- * \sa lpxpak_index_create(), lpxpak_index_destroy().
+ * @sa lpxpak_index_create(), lpxpak_index_destroy().
  */
 static void
 lpxpak_index_init(lpxpak_index_t *index);
 
 /**
- * \brief resize an lpxpak_index_t object.
+ * @brief resize an lpxpak_index_t object.
  *
  * Resizes an lpxpak_index_t object and initializes the newly created entries.
  *
- * \param index a pointer to an lpxpak_index_t object.
+ * @param index a pointer to an lpxpak_index_t object.
  *
- * \param size the new size it needs to be resized to.
+ * @param size the new size it needs to be resized to.
  *
- * \return 0 if successfull or -1 if an error occured.
+ * @return @c 0 if successfull or @c -1 if an error occured.
  *
- * \b Errors:
+ * @b Errors:
  *
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine realloc(3).
@@ -248,22 +248,22 @@ static int
 lpxpak_index_resize(lpxpak_index_t *index, size_t size);
 
 /**
- * \brief Destroy an lpxpak_index_t object.
+ * @brief Destroy an lpxpak_index_t object.
  *
  * frees up the struct and all of the underlying structures plus the pointers
- * they have using free(3). If a \c NULL pointer was given, this function will
- * just return.
+ * they have using free(3). If @c NULL was given, this function will just
+ * return.
  *
- * \param index a pointer to an lpxpak_index_t object.
+ * @param index a pointer to an lpxpak_index_t object.
  *
- * \b Attention: Do not try to access the data structure after destroying it
- * or anything can happen.
+ * @warning Do not try to access the data structure after destroying it or
+ * anything can happen.
  */
 static void
 lpxpak_index_destroy(lpxpak_index_t *index);
 
 /**
- * \brief Allocates a new lpxpak_index_entry_t object and returns a pointer to
+ * @brief Allocates a new lpxpak_index_entry_t object and returns a pointer to
  * it.
  *
  * If an error occurs, \c NULL is returned and errno is set.
@@ -274,12 +274,12 @@ lpxpak_index_destroy(lpxpak_index_t *index);
  * The Memory for the returned array including all its members can be freed
  * with lpxpak_index_entry_destroy().
  *
- * \return a pointer to an lpxpak_index_t object or \c NULL if an error
+ * @return a pointer to an lpxpak_index_t object or @c NULL if an error
  * occured.
  *
- * \sa lpxpak_index_entry_init(), lpxpak_index_entry_destroy().
+ * @sa lpxpak_index_entry_init(), lpxpak_index_entry_destroy().
  * 
- * \b Errors:
+ * @b Errors:
  *
  * - This function may fail and set errno for any of the errors specified for
  *   the routine malloc(3).
@@ -288,31 +288,31 @@ static lpxpak_index_entry_t *
 lpxpak_index_entry_create(size_t len);
 
 /**
- * \brief Initialises a array of lpxpak_index_entry_t objects.
+ * @brief Initialises a array of lpxpak_index_entry_t objects.
  *
- * This function sets all values of the included structures to \c 0 and all
- * pointers to \c NULL.
+ * This function sets all values of the included structures to @c 0 and all
+ * pointers to @c NULL.
  *
- * \param index a pointer to an array of lpxpak_index_entry_t objects.
+ * @param index a pointer to an array of lpxpak_index_entry_t objects.
  *
- * \param len the length of the given array.
+ * @param len the length of the given array.
  * 
- * \sa lpxpak_index_entry_create(), lpxpak_index_entry_destroy().
+ * @sa lpxpak_index_entry_create(), lpxpak_index_entry_destroy().
  */
 static void
 lpxpak_index_entry_init(lpxpak_index_entry_t *entries, size_t len);
 
 /**
- * \brief Destroy an lpxpak_index_entry_t object.
+ * @brief Destroy an lpxpak_index_entry_t object.
  *
- * frees up the array and all of the underlying structures plus the pointers
- * they have using free(3). If a \c NULL pointer was given, this function will
+ * Frees up the array and all of the underlying structures plus the pointers
+ * they have using free(3). If a @c NULL pointer was given, this function will
  * just return.
  *
- * \param index a pointer to an lpxpak_index_t object.
+ * @param index a pointer to an lpxpak_index_t object.
  *
- * \b Attention: Do not try to access the array after destroying it or
- * anything can happen.
+ * @warning Do not try to access the array after destroying it or anything can
+ * happen.
  */
 static void
 lpxpak_index_entry_destroy(lpxpak_index_entry_t *entries, size_t len);
@@ -324,28 +324,28 @@ static void
 lpxpak_entry_init(lpxpak_entry_t *entry, size_t size);
 
 /**
- * \brief Parses an data block according to the provided index
+ * @brief Parses an data block according to the provided index
  *
- * Gets a pointer to the data block of an xpak and a \c NULL terminated array
+ * Gets a pointer to the data block of an xpak and a @c NULL terminated array
  * of pointers to lpxpak_index_t structures which hold the corresponding
- * index data and returns and returns a \c NULL terminated array of pointers
+ * index data and returns and returns a @c NULL terminated array of pointers
  * to lpxpak_t structures with the xpak data. If an error occurred, \c NULL is
  * returned and errno is set to indicate the error.
  *
  * The provided lpxpak_index_t may be modified by this function.
  *
- * \param data a pointer to the memory segment which holds the data block of
+ * @param data a pointer to the memory segment which holds the data block of
  * the xpak.
  *
- * \param index a \c NULL terminated array of lpxpak_index_t structures
+ * @param index a @c NULL terminated array of lpxpak_index_t structures
  * which hold the corresponding index data.
  *
- * \return a \c NULL terminated array of lpxpak_index_t structures which
- * hold the parsed xpak data or \c NULL if an error occured.
+ * @return a @c NULL terminated array of lpxpak_index_t structures which
+ * hold the parsed xpak data or @c NULL if an error occured.
  *
- * \sa lpxpak_destroy()
+ * @sa lpxpak_destroy()
  *
- * \b Errors:
+ * @b Errors:
  *
  * - This function may fail and set errno for any of the errors specified for
  *   the routine malloc(3).
@@ -358,18 +358,18 @@ static int
 lpxpak_data_parse(lpxpak_t *handle, const void *data, lpxpak_index_t *index);
 
 /**
- * \brief compiles the index data of a \c NULL terminated array of lpxpak_t
+ * @brief compiles the index data of a @c NULL terminated array of lpxpak_t
  * structs into a xpak index binary blob.
  *
- * If an error occurs, \c NULL is returned and \c errno is set to indicate the
+ * If an error occurs, @c NULL is returned and @c errno is set to indicate the
  * error.
  *
- * \param xpak a \c NULL terminated array of lpxpak_t data structures.
+ * @param xpak a @c NULL terminated array of lpxpak_t data structures.
  *
- * \return a pointer to a lpxpak_blob_t data structure or \c NULL if an error
+ * @return a pointer to a lpxpak_blob_t data structure or @c NULL if an error
  * occured.
  * 
- * \b Errors:
+ * @b Errors:
  * 
  * - This function may fail and set errno for any of the errors specified for
  *   the routine malloc(3).
@@ -378,18 +378,18 @@ static lpxpak_blob_t *
 lpxpak_indexblob_compile(lpxpak_t *xpak);
 
 /**
- * \brief compiles the data data of a \c NULL terminated array of lpxpak_t
+ * @brief compiles the data data of a @c NULL terminated array of lpxpak_t
  * structs into a xpak data binary blob.
  *
- * If an error occurs, \c NULL is returned and \c errno is set to indicate the
+ * If an error occurs, @c NULL is returned and @c errno is set to indicate the
  * error.
  *
- * \param xpak a \c NULL terminated array of lpxpak_t data structures.
+ * @param xpak a @c NULL terminated array of lpxpak_t data structures.
  *
- * \return a pointer to a lpxpak_blob_t data structure or \c NULL if an error
+ * @return a pointer to a lpxpak_blob_t data structure or @c NULL if an error
  * occured.
  * 
- * \b Errors:
+ * @b Errors:
  * 
  * - This function may fail and set errno for any of the errors specified for
  *   the routine malloc(3).

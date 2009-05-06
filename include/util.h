@@ -39,26 +39,26 @@ extern "C" {
 #  endif
 
 /**
- * \brief Get regexp match
+ * @brief Get regexp match
  *
  * Returns a string with the given match from a array of regmatch_t
  * structs. The Memory for the returned string is obtained by malloc(3) and
  * can be freed with free(3).
  *
- * If an error occurs, \c NULL is returned and errno is set to indicate the
+ * If an error occurs, @c NULL is returned and errno is set to indicate the
  * error.
  *
- * \param match a array of regmatch_t objects as used by regexec(3).
- * \param n the wanted element starting by 0 for the first element.
- * \param s the string that was matched by regexec(3).
+ * @param match a array of regmatch_t objects as used by regexec(3).
+ * @param n the wanted element starting by 0 for the first element.
+ * @param s the string that was matched by regexec(3).
  *
- * \return the matched string as a null terminated c string.
+ * @return the matched string as a null terminated c string.
  * 
- * \sa regex(3)
+ * @sa regex(3)
  *
- * \b Errors:
+ * @b Errors:
  *
- * - \c EINVAL one or both of the given pointers are \c NULL
+ * - @c EINVAL one or both of the given pointers are @c NULL
  * - This function may also fail and set errno for any of the errors specified
  *   for the routine malloc(3)
  */
@@ -66,7 +66,7 @@ extern char *
 lputil_get_re_match(const regmatch_t *match, int n, const char *s);
 
 /**
- * \brief Copy substring from a string.
+ * @brief Copy substring from a string.
  *
  * Copies a substring with the length len starting at off and returns it. The
  * memory for the returned String is obtained by malloc(3) and can be freed
@@ -75,17 +75,17 @@ lputil_get_re_match(const regmatch_t *match, int n, const char *s);
  * lputil_get_re_match() does not check if the requested match is inside the
  * borders of the given string.
  *
- * If an error occurs, \c NULL is returned and errno is set to indicate the
+ * If an error occurs, @c NULL is returned and errno is set to indicate the
  * error.
  *
- * \param s the string of which we want the substring
- * \param off the start of the substring
- * \param len the length of the substring
+ * @param s the string of which we want the substring
+ * @param off the start of the substring
+ * @param len the length of the substring
  *
- * \return the substring as a null terminated substring.
+ * @return the substring as a null terminated substring.
  *
- * \b Errors:
- * - \c EINVAL s is \c NULL.
+ * @b Errors:
+ * - @c EINVAL s is @c NULL.
  * - This routine may also fail and set errno for any of the errors specified
  *    for the routine malloc(3).
  */
@@ -93,7 +93,7 @@ extern char *
 lputil_substr(const char *s, size_t off, size_t len);
 
 /**
- * \brief Split a String into tokens.
+ * @brief Split a String into tokens.
  *
  * Splits a string into tokens with a given delimiter. Delimiter Characters at
  * the Start or the End of the String are ignored. Memory for the returned
@@ -102,18 +102,18 @@ lputil_substr(const char *s, size_t off, size_t len);
  * If you want to free the returned data, you can so so by using
  * lputil_splitstr_destroy().
  *
- * If an error occurs, \c NULL is returned and errno is set to indicate the
+ * If an error occurs, @c NULL is returned and errno is set to indicate the
  * error.
  *
- * \param s the string to be parsed.
- * \param delim a set of characters that delim the tokens in the parsed
+ * @param s the string to be parsed.
+ * @param delim a set of characters that delim the tokens in the parsed
  * string.
  *
- * \return a array of c strings which is terminated by the value \c NULL.
+ * @return a array of c strings which is terminated by the value \c NULL.
  *
- * \sa strtok(3), lputil_splitstr_destroy()
+ * @sa strtok(3), lputil_splitstr_destroy()
  *
- * \b Errors:
+ * @b Errors:
  * 
  * - \c EINVAL one or both of the given pointers are \c NULL
  * - This routine may also fail and set errno for any of the errors specified
@@ -125,7 +125,7 @@ extern char **
 lputil_splitstr(const char *s, const char *delim);
 
 /**
- * \brief duplicates a memory region.
+ * @brief duplicates a memory region.
  *
  * returns a pointer to a new memory region which is a duplicate of the given
  * memory region. Memory for the new region is obtained by malloc(3) and can
@@ -137,16 +137,16 @@ lputil_splitstr(const char *s, const char *delim);
  * If an error occurs, \c NULL is returned and errno is set to indicate the
  * error.
  *
- * \param s a pointer to the memory region to be copied.
- * \param len the length of the memory region to be copied in bytes.
+ * @param s a pointer to the memory region to be copied.
+ * @param len the length of the memory region to be copied in bytes.
  *
- * \return a pointer to a duplicate of the memory region.
+ * @return a pointer to a duplicate of the memory region.
  *
- * \sa strdup(3)
+ * @sa strdup(3)
  *
- * \b Errors:
+ * @b Errors:
  *
- * - \c EINVAL s is \c NULL.
+ * - @c EINVAL s is @c NULL.
  * - This routine may also fail and set errno for any of the errors specified
  *   for the routine malloc(3)
  */
@@ -154,23 +154,23 @@ extern void *
 lputil_memdup(const void *s, size_t len);
 
 /**
- * \brief calculates the length in digits of a int.
+ * @brief calculates the length in digits of a int.
  * 
- * \param d an integer which's length is to be calculated.
+ * @param d an integer which's length is to be calculated.
  *
- * \return the length of the integer \c d in digits.
+ * @return the length of the integer @c d in digits.
  */
 size_t
 lputil_intlen(int d);
 
 /**
- * \brief destroys an \c NULL terminated array of \c nul terminated C Strings
+ * @brief destroys an @c NULL terminated array of @c null terminated C Strings
  * as returned by lputil_splitstr().
  *
- * \param splitstr an \c NULL terminated array of \c nul terminated C Strings
+ * @param splitstr an @c NULL terminated array of @c nul terminated C Strings
  * as returned by lputil_splitstr().
  *
- * \sa lputil_splitstr()
+ * @sa lputil_splitstr()
  */
 extern void
 lputil_splitstr_destroy(char **splitstr);
