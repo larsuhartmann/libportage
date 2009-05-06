@@ -2,7 +2,7 @@
 
 	* include/version.h (lpversion_init): corrected documentation.
 
-	Replaced latex like formatting codes with jdoc like formatting codes.
+	Replaced latex like formatting codes with jdoc like formatting codes:
 	* src/liblpxpak.c: updated.
 	* include/xpak.h: updated.
 	* include/util.h: updated.
@@ -10,12 +10,12 @@
 
 2009-04-26  Lars Hartmann  <lars (at) chaotika (dot) org>
 
-	Added tests for lpversion_parse.
+	Added tests for lpversion_parse:
 	* test/Makefile.am: added 05_lpversion_parse.
 	* test/05_lpversion_parse.txt: added.
 	* test/05_lpversion_parse.c (main): added.
 
-	Added lpversion.
+	Added lpversion:
 	* src/Makefile.am (libportage_la_SOURCES): added liblpversion.c
 	* include/Makefile.am (header_HEADERS): added version.h.
 	* src/liblpversion.c: added.
