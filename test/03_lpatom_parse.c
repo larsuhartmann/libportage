@@ -46,7 +46,7 @@ int main(void)
           if ( chdir(srcpath) == -1 )
                return EXIT_FAILURE;
      
-     if ( (file = fopen("02_lpatom_parse.txt", "r")) == NULL )
+     if ( (file = fopen("03_lpatom_parse.txt", "r")) == NULL )
           return EXIT_FAILURE;
 
      if ( (atom1 = lpatom_create()) == NULL )

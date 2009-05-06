@@ -38,8 +38,8 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#define TESTFILE        "04_lparchives.tbz2"
-#define TESTFILECONTENT "04_lparchives.txt"
+#define TESTFILE        "05_lparchives.tbz2"
+#define TESTFILECONTENT "05_lparchives.txt"
 #define MAXLEN          1024
 
 int

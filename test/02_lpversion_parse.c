@@ -48,7 +48,7 @@ main(void)
           if ( chdir(srcpath) == -1 )
                return EXIT_FAILURE;
 
-     if ( (file = fopen("05_lpversion_parse.txt", "r")) == NULL )
+     if ( (file = fopen("02_lpversion_parse.txt", "r")) == NULL )
           return EXIT_FAILURE;
 
      if ( (s = malloc(MAXLEN)) == NULL )

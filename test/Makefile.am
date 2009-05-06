@@ -4,8 +4,8 @@ if USE_VALGRIND
     TESTS_ENVIRONMENT=./valgrind-wrapper
 endif
 
-TESTS = 01_lputil_intlen 01_lputil_splitstr 02_lpatom_parse 03_lpxpak	\
-04_lparchives 05_lpversion_parse
+TESTS = 01_lputil_intlen 01_lputil_splitstr 02_lpversion_parse		\
+03_lpatom_parse 04_lpxpak 05_lparchives
 
 check_PROGRAMS = $(TESTS)
 
@@ -20,21 +20,21 @@ lp_objects = ../src/liblputil.o ../src/liblpatom.o ../src/liblpxpak.o	\
 01_lputil_splitstr_LDFLAGS = $(all_libraries)
 01_lputil_splitstr_LDADD = $(lp_objects)
 
-02_lpatom_parse_SOURCES = 02_lpatom_parse.c 02_lpatom_parse.txt
-02_lpatom_parse_LDFLAGS = $(all_libraries)
-02_lpatom_parse_LDADD = $(lp_objects)
+02_lpversion_parse_SOURCES = 02_lpversion_parse.c
+02_lpversion_parse_LDFLAGS = $(all_libraries)
+02_lpversion_parse_LDADD = $(lp_objects)
 
-03_lpxpak_SOURCES = 03_lpxpak.c 03_lpxpak.tbz2
-03_lpxpak_LDFLAGS = $(all_libraries)
-03_lpxpak_LDADD = $(lp_objects)
+03_lpatom_parse_SOURCES = 03_lpatom_parse.c 03_lpatom_parse.txt
+03_lpatom_parse_LDFLAGS = $(all_libraries)
+03_lpatom_parse_LDADD = $(lp_objects)
 
-04_lparchives_SOURCES = 04_lparchives.c 04_lparchives.tbz2 04_lparchives.txt
-04_lparchives_LDFLAGS = $(all_libraries)
-04_lparchives_LDADD = $(lp_objects)
+04_lpxpak_SOURCES = 04_lpxpak.c 04_lpxpak.tbz2
+04_lpxpak_LDFLAGS = $(all_libraries)
+04_lpxpak_LDADD = $(lp_objects)
 
-05_lpversion_parse_SOURCES = 05_lpversion_parse.c
-05_lpversion_parse_LDFLAGS = $(all_libraries)
-05_lpversion_parse_LDADD = $(lp_objects)
+05_lparchives_SOURCES = 05_lparchives.c 05_lparchives.tbz2 05_lparchives.txt
+05_lparchives_LDFLAGS = $(all_libraries)
+05_lparchives_LDADD = $(lp_objects)
 
 AM_CPPFLAGS = -I$(top_srcdir)/include
 

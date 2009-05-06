@@ -1,5 +1,21 @@
 2009-05-06  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Move tests for lpversion before lpatom:
+	* test/02_lpatom_parse.c: renamed to 03_lpatom_parse.c.
+	* test/02_lpatom_parse.txt: renamed to 03_lpatom_parse.txt.
+	* test/03_lpxpak.c: renamed to 04_lpxpak.c.
+	* test/03_lpxpak.tbz2: renamed to 04_lpxpak.tbz2.
+	* test/04_lparchives.c: renamed to 05_lparchives.c.
+	* test/04_lparchives.tbz2: renamed to 05_lparchives.tbz2.
+	* test/04_lparchives.txt: renamed to 05_lparchives.txt.
+	* test/05_lpversion_parse.c: renamed to 02_lpversion_parse.c.
+	* test/05_lpversion_parse.txt: renamed to 02_lpversion_parse.txt.
+	* test/Makefile.am: updated.
+	* test/05_lparchives.c: updated.
+	* test/04_lpxpak.c: updated.
+	* test/03_lpatom_parse.c: updated.
+	* test/02_lpversion_parse.c: updated.
+
 	Updated tests for lpatom:
 	* test/02_lpatom_parse.txt: updated.
 	* test/02_lpatom_parse.c: updated.
