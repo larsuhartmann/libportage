@@ -108,9 +108,6 @@ lpversion_create(void);
  *
  * If you want to initialize an already used handle, use lpversion_reset()
  *
- * If an error occurs, @c NULL is returned and @c errno is set to indicate the
- * error.
- *
  * @param handle a lpatom_t handle to initialize
  *
  * @b Errors:
