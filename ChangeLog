@@ -1,5 +1,9 @@
 2009-05-06  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Updated tests for lpatom:
+	* test/02_lpatom_parse.txt: updated.
+	* test/02_lpatom_parse.c: updated.
+
 	Rewritten lpatom with support for lpversion:
 	* include/atom.h: updated.
 	* src/liblpversion.c: rewritten.

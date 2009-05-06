@@ -2,3 +2,7 @@ sys-foobar/foo_bar-sources-2.6.22a_pre228-r92
 sys-foobar/foo-2.8.19
 sys/foo-2.8.19_alpha2
 foobar-2.9-r9
+sys-foobar/foo_bar-sources
+sys-foobar
+sys/foo
+foobar
