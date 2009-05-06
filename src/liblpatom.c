@@ -26,7 +26,7 @@
  */
 
 /**
- * \brief Feature test macro for POSIX.1, POSIX.2, XPG4, SUSv2, SUSv3.
+ * @brief Feature test macro for POSIX.1, POSIX.2, XPG4, SUSv2, SUSv3.
  *
  * This makes sure, we have a Standard conformant environment.
  */
@@ -60,673 +60,157 @@ extern int errno;
 #include <ctype.h>
 
 /**
- * \brief Regular expression for a package atom.
+ * @brief the regular expression used for validating the given version string.
  */
-#define LPATOM_RE         "^(([A-Za-z0-9+_][A-Za-z0-9+_.-]*)?/?([A-Za-z0-9+_-]\
-*[A-Za-z+_-]|[A-Za-z+_][0-9]+))-([0-9]+([.][0-9]+)*[a-z]?)((_(alpha|beta|pre|\
-rc|p)[0-9]*)?(-r[0-9]+)?)?$"
+#define LPATOM_RE         "^(([A-Za-z0-9+_][A-Za-z0-9+_.-]*)/)?([A-Za-z0-9+_-]\
+*([A-Za-z+_-]|[A-Za-z+_][0-9]+))(-(([0-9]+([.][0-9]+)*[a-z]?)?)((_(alpha|beta|\
+pre|rc|p)[0-9]*)?)(-r[0-9]+)?)?$"
+
 /**
- * \brief Regular expression for a category
+ * @brief the regular expression used for matching the category-
+ *
+ * This regexp will export:
+ *
+ * - The category part.
  */
 #define LPATOM_RE_CAT     "^([A-Za-z0-9+_][A-Za-z0-9+_.-]*)/"
 /**
- * \brief Regular expression for a package name
+ * @brief the regular expression used for matching the package name
+ *
+ * This regexp will export:
+ *
+ * - The atom name.
  */
-#define LPATOM_RE_NAME    "^([A-Za-z0-9+_][A-Za-z0-9+_.-]*/)?([A-Za-z0-9+_-]*\
-([A-Za-z+_-]|[A-Za-z+_][0-9]+))-"
+#define LPATOM_RE_NAME "([A-Za-z0-9+_-]*([A-Za-z+_-]|[A-Za-z+_][0-9]+))(-(([0-\
+9]+([.][0-9]+)*[a-z]?)?)((_(alpha|beta|pre|rc|p)[0-9]*)?)(-r[0-9]+)?)?$"
 /**
- * \brief Regular expression to check for a suffix version
+ * \@brief the regular expression used for matching the version.
+ *
+ * Thix regexp will export:
+ *
+ * - the version.
  */
-#define LPATOM_RE_SUF    "_(alpha|beta|pre|rc|p)([0-9]+)"
-/**
- * \brief Regular expression for a package release version
- */
-#define LPATOM_RE_REL     "-r([0-9]+)$"
-/**
- * \brief Regular expression for a Package version
- */
-#define LPATOM_RE_VER     "^([0-9]+([.][0-9]+)*)([a-z]?)"
+#define LPATOM_RE_VER     "(([0-9]+([.][0-9]+)*[a-z]?)(_(alpha|beta|pre|rc|p)[\
+0-9]*)?(-r[0-9]+)?)$"
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-/**
- * \brief Reads the suffix out of an suffix string
- * 
- * gets an suffix string (eg alpha), parses it and stores the value in the
- * provided lpatom_t structure.
- *
- * \param atom a pointer to an lpatom_t structure. 
- * \param s a \c nul terminated c string with the suffix.
- *
- */
-static void
-lpatom_suffix_parse(lpatom_t *atom, const char *s);
-
-/**
- * \brief parses a atom_suffe_t enum into a string.
- * 
- * Returns the Suffix as a \c nul terminated c String.
- *
- * If an error occured, \c NULL is returned and \c errno is set to indicate
- * the Error.
- *
- * \param suffix a lpatom_sufe_t enum.
- *
- * \return a \c nul terminated c string with the suffix.
- *
- * \b Errors:
- *
- * - This function may also fail and set errno for any of the errors specified
- *   for the routine strdup(3).
- */
-static char *
-lpatom_suffe_to_string(lpatom_sufe_t suffix);
-
-/**
- * \brief parses an version string.
- *
- * Parses an version string into multiple integers and returns a \c -1
- * terminated int array.
- *
- * If an error occured, \c NULL is returned and \c errno is set to indicate
- * the error.
- *
- * \param ver a \c nul terminated version string eg: 4.2.1.9
- *
- * \return a \c -1 terminated integer array.
- *
- * \b Errors:
- *
- * - This function may fail and set errno for any of the errors specified for
- *   the routine strdup(3).
- * - This function may also fail and set errno for any of the errors specified
- *   for the routine malloc(3).
- * - This function may also fail and set errno for any of the errors specified
- *   for the routine realloc(3).
- */
-static int *
-lpatom_version_explode(const char *ver);
-
-/**
- * \brief returns the suffix of an atom as a c string.
- *
- * Returns a String containing the version suffix of a given lpatom_t data
- * structure.
- *
- * If the atom has no suffix, an empty string ("") is returned.
- *
- * If an error occured, \c NULL is returned and \c errno is set to indicate
- * the error.
- *
- * \param atom a pointer to an lpatom_t data structure that was returned by
- * lpatom_parse().
- *
- * \return a string containing the suffix, an empty string if the atom has no
- * suffix or \c NULL if an error has occured.
- *
- * \b Errors:
- *
- * - This function may also fail and set errno for any of the errors specified
- *   for the routine malloc(3).
- */
-static char *
-lpatom_get_suffix(const lpatom_t *atom);
-
-/**
- * \brief returns the release of a given atom.
- *
- * Returns a \c nul terminated string with the release of the given atom - eg
- * \c "r29".
- *
- * If an error occured, \c NULL is returned and \c errno is set to indicate
- * the error.
- *
- * \param atom a pointer to an lpatom_t data structure that was returned by
- * lpatom_parse().
- *
- * \return a string containing the release version, an empty string if the
- * atom has no release version or \c NULL if an error has occured.
- *
- * \b Errors:
- *
- * - This function may fail and set errno for any of the errors specified for
- *   the routine strdup(3).
- * - This function may also fail and set errno for any of the errors specified
- *   for the routine malloc(3).
- */
-
-static char *
-lpatom_get_release(const lpatom_t *atom);
-
 extern int
-lpatom_parse(lpatom_t *atom, const char *pname)
+lpatom_parse(lpatom_t *handle, const char *s)
 {
-     regmatch_t regmatch[512];
-     char *relv, *suf, *sufv, *ver, *vers, *vert;
-     size_t len = 0;
-     bool has_cat = false;
+     regmatch_t match[512];
+     char *vs;
 
-     /* check if this is a valid atom */
-     if ( regexec(&atom->regex.name, pname, 0, regmatch, 0) != 0) {
+     if ( (handle->fname = strdup(s)) == NULL )
+          return -1;
+     
+     /* FIXME: add proper error handling */
+     if ( regexec(&handle->regex.atom, s, 0, match, 0) != 0 ) {
           errno = EINVAL;
           return -1;
      }
-
-     /* check if this atom has a category */
-     if ( regexec(&atom->regex.category, pname, 2, regmatch, 0) == 0) {
-          /* assign the category string to atom->cat */
-          if ( (atom->cat = lputil_get_re_match(regmatch, 1, pname)) == NULL )
+     
+     /* FIXME: add proper error handling */
+     if ( regexec(&handle->regex.category, s, 4, match, 0 ) == 0 )
+          if ( (handle->cat = lputil_get_re_match(match, 1, s)) == NULL )
                return -1;
-          has_cat = true;
-     }
 
-     (void)regexec(&atom->regex.name, pname, 3, regmatch, 0);
-     /* assign the package name to atom->name */
-     if ( (atom->name = lputil_get_re_match(regmatch, 2, pname)) == NULL )
+     /* FIXME: add error handling */
+     regexec(&handle->regex.name, s, 5, match, 0 );
+     if ( (handle->name = lputil_get_re_match(match, 1, s)) == NULL )
           return -1;
 
-     /* count the length of the part before the version */
-     if ( has_cat )
-          len += (strlen(atom->cat) + 1);
-     len += strlen(atom->name);
-
-     /* snip off the rest of the string (shoud include the version plus the
-      * suffix and release version */
-     if ( (vers = strdup(pname+len+1)) == NULL )
-          return -1;
-
-     (void)regexec(&atom->regex.version, vers, 1, regmatch, 0);
-
-     /* get the version as string */
-     if ( (ver = lputil_get_re_match(regmatch, 0, vers)) == NULL ) {
-          free(vers);
-          return -1;
-     }
-     
-     /* get the length of ver */
-     len = strlen(ver);
-     
-     /* check if the digit of the version is a lowercase char, if yes, assign
-      * that to atom->verc and resize ver */
-     if ( islower(ver[len-1]) ) {
-          atom->verc = ver[len-1];
-          ver[len-1] = '\0';
-          /* resize ver */
-          if ( (vert = realloc(ver, len)) == NULL ) {
-               free(vers);
-               free(ver);
+     if ( regexec(&handle->regex.version, s, 2, match, 0 ) == 0 ) {
+          if ( (handle->version = lpversion_create()) == NULL )
                return -1;
-          }
-          ver = vert;
-     }
-     
-     /* assign ver to atom->ver */
-     atom->ver = ver;
-     
-     /* parse the version into a string array */
-     if ( (atom->ver_ex = lpatom_version_explode(atom->ver)) == NULL ) {
-          free(vers);
-          return -1;
+          lpversion_init(handle->version);
+          if ( (vs = lputil_get_re_match(match, 1, s)) == NULL )
+               return -1;
+          return lpversion_parse(handle->version, vs);
      }
 
-     /* check if it matches */
-     if ( regexec(&atom->regex.suffix, vers, 3, regmatch, 0) == 0) {
-          /* assign the first match (the suffix string) to suf  */
-          if ( (suf = lputil_get_re_match(regmatch, 1, vers)) == NULL ) {
-               free(vers);
-               return -1;
-          }
-          /* assign the second match (the suffix version) to sufv */
-          if ( (sufv = lputil_get_re_match(regmatch, 2, vers)) == NULL ) {
-               free(suf);
-               free(vers);
-               return -1;
-          }
-          /* assign the parsed suffix string to atom->sufenum */
-          lpatom_suffix_parse(atom, suf);
-          /* assign the converted sufv string to atom->sufv */
-          atom->sufv = atoi(sufv);
-
-          /* free up the allocated memory */
-          free(suf);
-          free(sufv);
-     }
-
-     
-     /* check if the regex matches */
-     if ( regexec(&atom->regex.release, vers, 2, regmatch, 0) == 0 ) {
-          /* assign the matched substring to relv */
-          if ( (relv = lputil_get_re_match(regmatch, 1, vers)) == NULL ) {
-               free(vers);
-               return -1;
-          }
-          /* convert the substring to int and assign it to atom->rel */
-          atom->rel = atoi(relv);
-          free(relv);
-     }
-     /* free up the regexp object */
-     free(vers);
      return 0;
 }
 
-static void
-lpatom_suffix_parse(lpatom_t *atom, const char *s)
-{
-     switch(s[0]) {
-     case 'a':
-          atom->sufenum = LP_ALPHA;
-          break;
-     case 'b':
-          atom->sufenum = LP_BETA;
-          break;
-     case 'p':
-          switch(s[1]) {
-          case 'r':
-               atom->sufenum = LP_PRE;
-               break;
-          default:
-               atom->sufenum = LP_P;
-               break;
-          }
-          break;
-     case 'r':
-          atom->sufenum = LP_RC;
-          break;
-     default:
-          atom->sufenum = LP_NO;
-          break;
-     }
-     return;
-}
-
+/*@only@*//*@null@*//*@out@*/
 extern lpatom_t *
 lpatom_create(void)
 {
-     /* return newly allocated memory */
      return malloc(sizeof(lpatom_t));
 }
 
 extern void
 lpatom_init(lpatom_t *atom)
 {
-     /* initialize struct */
      atom->name = NULL;
      atom->cat = NULL;
-     atom->ver = NULL;
-     atom->ver_ex = NULL;
-     atom->verc = 0;
-     atom->sufenum = LP_NO;
-     atom->sufv = 0;
-     atom->rel = 0;
+     atom->version = NULL;
+     atom->fname = NULL;
 
-     /* compile regexp's */
+     /* FIXME: add error handling */
      (void)regcomp(&atom->regex.atom, LPATOM_RE, REG_EXTENDED);
      (void)regcomp(&atom->regex.category, LPATOM_RE_CAT, REG_EXTENDED);
      (void)regcomp(&atom->regex.name, LPATOM_RE_NAME, REG_EXTENDED);
-     (void)regcomp(&atom->regex.suffix, LPATOM_RE_SUF, REG_EXTENDED);
-     (void)regcomp(&atom->regex.release, LPATOM_RE_REL, REG_EXTENDED);
      (void)regcomp(&atom->regex.version, LPATOM_RE_VER, REG_EXTENDED);
 
      return;
 }
 
 extern void
-lpatom_reinit(lpatom_t *atom) {
-     /* free up pointers */
-     free(atom->name);
-     free(atom->cat);
-     free(atom->ver);
-     free(atom->ver_ex);
+lpatom_reset(lpatom_t *handle) {
+     free(handle->name);
+     free(handle->cat);
+     free(handle->fname);
 
-     /* initialize struct */
-     atom->name = NULL;
-     atom->cat = NULL;
-     atom->ver = NULL;
-     atom->ver_ex = NULL;
-     atom->verc = 0;
-     atom->sufenum = LP_NO;
-     atom->sufv = 0;
-     atom->rel = 0;
+     if ( handle->version != NULL ) {
+          lpversion_destroy(handle->version);
+          handle->version = NULL;
+     }
+     
+     handle->name = NULL;
+     handle->cat = NULL;
+     handle->version = NULL;
+     handle->fname = NULL;
 
      return;
 }
 
 extern void
-lpatom_destroy(lpatom_t *atom)
+lpatom_destroy(lpatom_t *handle)
 {
-     if (atom != NULL) {
-          /* free up compiled regexps */
-          regfree(&atom->regex.atom);
-          regfree(&atom->regex.category);
-          regfree(&atom->regex.name);
-          regfree(&atom->regex.suffix);
-          regfree(&atom->regex.release);
-          regfree(&atom->regex.version);
+     if (handle != NULL) {
+          regfree(&handle->regex.atom);
+          regfree(&handle->regex.category);
+          regfree(&handle->regex.name);
+          regfree(&handle->regex.version);
 
-          /* free up the rest */
-          free(atom->name);
-          free(atom->cat);
-          free(atom->ver);
-          free(atom->ver_ex);
-          free(atom);
+          if ( handle->version != NULL )
+               lpversion_destroy(handle->version);
+          
+          free(handle->name);
+          free(handle->cat);
+          free(handle);
      }
      return;
 }
-
-static char *
-lpatom_get_suffix(const lpatom_t *atom)
-{
-     char *suf, *r;
-     size_t len;
-     /* check if we have a suffix */
-     if ( atom->sufenum != LP_NO ) {
-          /* get suffix string */
-          if ( (suf = lpatom_suffe_to_string(atom->sufenum)) == NULL )
-               return NULL;
-          /* check if we got a suffix version number */
-          if ( atom->sufv != 0 ) {
-               len = strlen(suf) + lputil_intlen(atom->sufv) + 1;
-               /* allocate memory */
-               if ( (r = malloc(len)) == NULL ) {
-                    free(suf);
-                    return NULL;
-               }
-               /* r = suf + 'atom->sufv' */
-               (void)snprintf(r, len, "%s%d", suf, atom->sufv);
-               free(suf);
-          } else {
-               /* r = suf */
-               r = suf;
-               suf = NULL;
-          }
-     } else
-          /* r = "" */
-          if ( (r = strdup("")) == NULL)
-               return NULL;
-     return r;
-}
-
-static char *
-lpatom_get_release(const lpatom_t *atom)
-{
-     char *r;
-     size_t rellen;
-     /* check if we have a release number */
-     if (atom->rel > 0) {
-          rellen = lputil_intlen(atom->rel)+2;
-          /* allocate memory */
-          if ( (r = malloc(rellen)) == NULL )
-               return NULL;
-          /* r = 'atom->rel' */
-          (void)snprintf(r, rellen, "r%d", atom->rel);
-     } else
-          /* r = "" */
-          if ( (r = strdup("")) == NULL )
-               return NULL;
-     return r;
-}
-
-extern char *
-lpatom_get_qname(const lpatom_t *atom)
-{
-     char *r;
-     size_t len;
-
-     /* check if we have a category */
-     if ( atom->cat != NULL ) {
-          len = strlen(atom->cat) + strlen(atom->name) + 2;
-          /* allocate memory */
-          if ( (r = malloc(len)) == NULL )
-               return NULL;
-          /* r = atom->cat + '/' + atom->name */
-          (void)snprintf(r, len, "%s/%s", atom->cat, atom->name);
-     } else
-          /* r = atom->name */
-          if ( (r = strdup(atom->name)) == NULL )
-               return NULL;
-     return r;
-}
-
-static char *
-lpatom_suffe_to_string(lpatom_sufe_t suffix)
-{
-     char *suf;
-     
-     switch(suffix){
-     case LP_ALPHA:
-          if ( (suf = strdup("alpha")) == NULL )
-               return NULL;
-          break;
-     case LP_BETA:
-          if ( (suf = strdup("beta")) == NULL )
-               return NULL;
-          break;
-     case LP_PRE:
-          if ( (suf = strdup("pre")) == NULL )
-               return NULL;
-          break;
-     case LP_RC:
-          if ( (suf = strdup("rc")) == NULL )
-               return NULL;
-          break;
-     case LP_P:
-          if ( (suf = strdup("p")) == NULL )
-               return NULL;
-          break;
-     default:
-          if ( (suf = strdup("")) == NULL )
-               return NULL;
-          break;
-     }
-     return suf;
-}
-
-extern char *
-lpatom_get_version(const lpatom_t *atom)
-{
-     size_t suflen, rellen, verlen, len;
-     char *r, *suf, *sufs, *rel, *rels, *vers;
-
-     /* get suffix string */
-     if ( (suf = lpatom_get_suffix(atom)) == NULL )
-          return NULL;
-     /* get release string */
-     if ( (rel = lpatom_get_release(atom)) == NULL ) {
-          free(suf);
-          return NULL;
-     }
-
-     /* check if we got a suffix */
-     if ( strcmp(suf, "") != 0 ) {
-          suflen = strlen(suf) + 1;
-          /* allocate memory */
-          if ( (sufs = malloc(suflen + 1)) == NULL ) {
-               free(suf);
-               free(rel);
-               return NULL;
-          }
-          /* sufs = '_' + suffix */
-          (void)snprintf(sufs, suflen + 1, "_%s", suf);
-          free(suf);
-     } else {
-          /* sufs = "" */
-          sufs = suf;
-          suf = NULL;
-          suflen = 0;
-     }
-
-     /* check if we got a release */
-     if ( strcmp(rel, "") != 0 ) {
-          rellen = strlen(rel) + 1;
-          /* allocate memory */
-          if ( (rels = malloc(rellen + 1)) == NULL ) {
-               free(sufs);
-               free(rel);
-               return NULL;
-          }
-          /* rels = '-' + rel */
-          (void)snprintf(rels, rellen + 1, "-%s", rel);
-          free(rel);
-     } else {
-          /* rels = "" */
-          rels = rel;
-          rel = NULL;
-          rellen = 0;
-     }
-
-     /* check if we got a version character */
-     if ( atom->verc != (char)0 ) {
-          verlen = strlen(atom->ver) + 1;
-          /* allocate memory */
-          if ( (vers = malloc(verlen + 1)) == NULL ) {
-               free(sufs);
-               free(rels);
-               return NULL;
-          }
-          /* vers = atom->ver + 'atom->verc' */
-          (void)snprintf(vers, verlen + 1, "%s%c", atom->ver, atom->verc);
-     } else {
-          /* vers = atom->ver */
-          if ( (vers = strdup(atom->ver)) == NULL )
-               return NULL;
-          verlen = strlen(vers);
-     }
-
-     len = suflen + rellen + verlen + 1;
-     /* allocate memory for the whole version string */
-     if ( (r = malloc(len)) == NULL ) {
-          free(sufs);
-          free(rels);
-          free(vers);
-          return NULL;
-     }
-     /* r = vers + sufs + rels */
-     snprintf(r, len, "%s%s%s", vers, sufs, rels);
-     
-     /* clean up memory */
-     free(vers);
-     free(sufs);
-     free(rels);
-     return r;
-}
-
-static int *
-lpatom_version_explode(const char *ver) {
-     int *ia;
-     size_t i;
-     char **sv;
-
-     /* split up the version string */
-     if ( (sv = lputil_splitstr(ver, ".")) == NULL )
-          /* return NULL if error was received */
-          return NULL;
-     /* get the number of individual strings */
-     for ( i=0; sv[i] != NULL; ++i )
-          ;
-     /* allocate space for an int array with i entrys */
-     if ( (ia = malloc(sizeof(int)*(i+1))) == NULL ) {
-          /* if allocation wasnt successful, throw away sv and return NULL *
-           * (errno is already set by malloc) */
-          lputil_splitstr_destroy(sv);
-          return NULL;
-     }
-     /* iterate over the string array which was returned by
-      * lputil_splitstr() */
-     for ( i=0; sv[i] != NULL; ++i )
-          /* convert the current string to an int and assign that one to
-           * ia[i] */
-          ia[i] = atoi(sv[i]);
-     /* clean up the string array which was returned by lputil_splitstr() */
-     ia[i] = -1;
-    lputil_splitstr_destroy(sv);
-     return ia;
-}
-
-
-extern int
-lpatom_version_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
-{
-     int *ia1, *ia2, i;
-
-     ia1 = atom1->ver_ex;
-     ia2 = atom2->ver_ex;
-     
-     /* iterate over both int arrays until the end of one of em is reached */
-     for ( i=0; ia1[i] != -1 || ia2[i] != -1; ++i )
-          /* check if both are different, if yes, return the difference */
-          if ( ia1[i] != ia2[i] )
-               /* return the difference */
-               return ia1[i] - ia2[i];
-     /* check if we reached the end of only one of the two versions */
-     if ( ia1[i] != ia2[i] )
-          /* return the difference */
-          return ia1[i] - ia2[i];
-     /* check if the two version characters differ */
-     if ( atom1->verc != atom2->verc )
-          /* return the difference */
-          return (int)(atom1->verc - atom2->verc);
-     /* check if the two suffixes differ */
-     if ( atom1->sufenum != atom2->sufenum )
-          /* return the difference */
-          return atom1->sufenum - atom2->sufenum;
-     /* return the difference between the release versions */
-     return atom1->rel - atom2->rel;
-}
-
 extern int
 lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
 {
      int ret;
 
-     /* check if both atoms have a category string */
      if ( atom1->cat != NULL && atom2->cat != NULL )
-          /* check if the category string differs */
           if ( (ret = strcmp(atom1->cat, atom2->cat)) != 0 )
                return ret;
-     /* check if the atom names differ */
+     
      if ( (ret = strcmp(atom1->name, atom2->name)) != 0 )
           return ret;
-     /* compare versions */
-     return lpatom_version_cmp(atom1, atom2);
-}
-
-extern char *
-lpatom_get_fullname(const lpatom_t *atom)
-{
-     char *qname, *ver, *r;
-     size_t len = 0;
-
-     /* get qname and version string */
-     if ( (qname = lpatom_get_qname(atom)) == NULL )
-          return NULL;
-     if ( (ver = lpatom_get_version(atom)) == NULL ) {
-          free(qname);
-          return NULL;
-     }
-
-     /* add length of qname and version string, plus one byte for the '-' and
-      * one for the nul terminator */
-     len = strlen(qname) + 1;
-     len += strlen(ver);
-     ++len;
-
-     /* allocate memory */
-     if ( (r = malloc(len)) == NULL ) {
-          free(qname);
-          free(ver);
-          return NULL;
-     }
-
-     /* r = qname+'-'+ver */
-     (void)snprintf(r, len, "%s-%s", qname, ver); 
-
-     /* free up the qname and ver strings */
-     free(qname);
-     free(ver);
-
-     return r;
+     
+     if ( atom1->version != NULL && atom2->version != NULL )
+          return lpversion_cmp(atom1->version, atom2->version);
+     
+     return 0;
 }
 
 #ifdef __cplusplus

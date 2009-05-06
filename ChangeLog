@@ -1,5 +1,9 @@
 2009-05-06  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Rewritten lpatom with support for lpversion:
+	* include/atom.h: updated.
+	* src/liblpversion.c: rewritten.
+
 	* include/version.h (lpversion_init): corrected documentation.
 
 	Replaced latex like formatting codes with jdoc like formatting codes:
