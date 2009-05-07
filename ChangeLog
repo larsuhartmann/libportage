@@ -1,3 +1,12 @@
+2009-05-07  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Random Doxygen documentation updates:
+	* include/archives.h: updated.
+	* include/atom.h: updated.
+	* include/util.h: updated
+	* include/version.h: updated.
+	* include/xpak.h: updated.
+
 2009-05-06  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* test/03_lpatom_parse.txt: added some more tests.

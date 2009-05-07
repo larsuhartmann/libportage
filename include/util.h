@@ -26,11 +26,13 @@
  */
 
 /**
- * \file liblputil.h
- * \brief Small helper Functions.
+ * @file util.h
+ * @brief Functions for small tasks.
  */
 #ifndef LPUTIL
+/** @cond */
 #define LPUTIL 1
+/** @endcond */
 
 #  include <regex.h>
 
@@ -72,8 +74,8 @@ lputil_get_re_match(const regmatch_t *match, int n, const char *s);
  * memory for the returned String is obtained by malloc(3) and can be freed
  * with free(3).
  *
- * lputil_get_re_match() does not check if the requested match is inside the
- * borders of the given string.
+ * This function does not check if the requested match is inside the borders
+ * of the given string.
  *
  * If an error occurs, @c NULL is returned and errno is set to indicate the
  * error.

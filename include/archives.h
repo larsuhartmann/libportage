@@ -25,8 +25,15 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * @file archives.h
+ * @brief Functions to handle archives.
+ */
+
 #ifndef LPARCHIVE
+/** @cond */
 #define LPARCHIVE 1
+/** @endcond */
 
 #  ifdef __cplusplus
 extern "C" {

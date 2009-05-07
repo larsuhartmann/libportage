@@ -25,8 +25,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * @file version.h
+ * @brief Functions to handle version strings.
+ */
 #ifndef LPVERSION
+/** @cond */
 #define LPVERSION 1
+/** @endcond */
 
 #  ifdef __cplusplus
 extern "C" {
@@ -48,23 +54,27 @@ typedef enum {
 } lpversion_sufenum_t;
 
 /**
+ * @brief struct for compiled regexes.
+ */
+typedef struct lpversion_regex {
+     regex_t verify;            /**< @brief regex to match a valid version
+                                 * string */
+     regex_t suffix;            /**< @brief regex to match the suffix */
+     regex_t release;           /**< @brief regex to match the release
+                                 * version */
+} lpversion_regex_t;
+
+/**
  * @brief the lpversion object handle.
  *
  * This is the handle to be used by any function in this lib to store some
  * data.
  *
- * @warn do not allocate or free it yourself, use lpversion_create() and
+ * @warning do not allocate or free it yourself, use lpversion_create() and
  * lpversion_destroy().
  */
 typedef struct lpversion {
-     /**
-      * @brief struct for compiled regexes.
-      */
-     struct {
-          regex_t verify;
-          regex_t suffix;
-          regex_t release;
-     } regex;
+     lpversion_regex_t regex;    /**< @brief a struct with compiled regexes */
      lpversion_sufenum_t suffix; /**< @brief the suffix type */
      unsigned int suffv;         /**< @brief the numerical suffix version  */
      unsigned int release;       /**< @brief the release version */

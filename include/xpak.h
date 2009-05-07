@@ -25,8 +25,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * @file xpak.h
+ * @brief Functions to handle xpak blobs.
+ */
 #ifndef LPXPAK
+/** @cond */
 #define LPXPAK 1
+/** @endcond */
 
 #  include <sys/types.h>
 #  include <stdint.h>
@@ -84,7 +90,8 @@ typedef struct lpxpak {
       */
      size_t size;
      /**
-      * A pointer to an array of holding <len> lpxpak_entry_t data structures.
+      * A pointer to an array of holding @c len lpxpak_entry_t data
+      * structures.
       */
      lpxpak_entry_t *entries;
 } lpxpak_t;
@@ -230,8 +237,6 @@ lpxpak_parse_path(lpxpak_t *handle, const char *path);
  * The Memory for the returned array including all its members can be freed
  * with lpxpak_destroy().
  *
- * @param size the size of the requested array.
- *
  * @return a @c NULL terminated array of lpxpak_t structures or @c NULL if an
  * error occured.
  *
@@ -366,7 +371,7 @@ lpxpak_blob_init(lpxpak_blob_t *blob);
  * @brief Destroys an lpxpak_blob_t data structure using free(3). If a @c NULL
  * pointer was given, lpxpak_destroy() will just return.
  *
- * @param xpak a pointer to an lpxpak_blob_t data structure.
+ * @param blob a pointer to an lpxpak_blob_t data structure.
  *
  * @warning Do not try to access the data structure after destroying it or
  * anything can happen.

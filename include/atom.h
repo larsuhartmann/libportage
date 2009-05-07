@@ -25,8 +25,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+/**
+ * @file atom.h
+ * @brief Functions to handle atom strings.
+ */
 #ifndef LPATOM
+/** @cond */
 #  define LPATOM 1
+/** @endcond */
 
 #  include <stdio.h>
 #  include <regex.h>
@@ -38,40 +44,31 @@ extern "C" {
 #  endif
 
 /**
+ * @brief struct for compiled regexes.
+ */
+typedef struct lpatom_regex{
+     regex_t atom;     /**< @brief regex for matching a valid atom */
+     regex_t category; /**< @brief regex to check for a category string */
+     regex_t name;     /**< @brief regex to match the package name */
+     regex_t version;  /**< @brief regex to match the package version */
+} lpatom_regex_t;
+
+/**
  * @brief The lpatom object handle.
  *
  * This is the handle to be used for any function in this lib to store some
  * date.
  *
- * @warn do not allocate or free it yourself, use lpatom_create() or
+ * @warning do not allocate or free it yourself, use lpatom_create() or
  * lpversion_destroy().
  */
 typedef struct lpatom {
-     /**
-      * @brief struct for compiled regexes.
-      */
-     struct lpatom_regex{
-          regex_t atom;
-          regex_t category;
-          regex_t name;
-          regex_t version;
-     } regex;
-     /**
-      * @brief the name.
-      */
-     char *name;
-     /**
-      * @brief the category.
-      */
-     char *cat;
-     /**
-      * @brief the string the atom was parsed from.
-      */
-     char *fname;
-     /**
-      * @brief a version handle.
-      */
-     lpversion_t *version;
+     lpatom_regex_t regex;      /**< @brief compiled regexes. */
+     char *name;                /**< @brief the name. */
+     char *cat;                 /**< @brief the category. */
+     char *fname;               /**< @brief the string the atom was parsed
+                                 * from. */
+     lpversion_t *version;      /**< @brief a version handle. */
 } lpatom_t;
 
 /**
@@ -125,7 +122,7 @@ extern void
 lpatom_reset(lpatom_t *handle);
 
 /**
- * @parses an atom string.
+ * @brief parses an atom string.
  *
  * The given string must be a valid gentoo atom with or without version.
  *
@@ -162,7 +159,7 @@ lpatom_parse(lpatom_t *handle, const char *s);
  *
  * @sa lpatom_t, lpatom_parse()
  *
- * @warn Do not try to access the datastructure after destroying it or
+ * @warning Do not try to access the datastructure after destroying it or
  * anything can happen.
  */
 extern void
