@@ -147,7 +147,7 @@ lputil_splitstr(const char *s, const char *delim)
      /* assign the first character after the last delimiter to r[i] */
      r[i] = st;
      /* shrink r to optimal size */
-     if ( i < (size-1) ) {
+     if ( i < (size) ) {
           if ( (rt = realloc(r, sizeof(char *)*(i+2))) == NULL ) {
                lputil_splitstr_destroy(r);
                return NULL;
