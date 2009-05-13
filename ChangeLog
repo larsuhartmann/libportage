@@ -1,5 +1,8 @@
 2009-05-13  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* test/Makefile.am (02_lpversion_parse_SOURCES): added
+	02_lpversion_parse.txt.
+
 	* test/01_lputil_splitstr.c: extended test to use lputil_joinstr()
 	and check if the returned string is the same as the one originally
 	fed to lputil_splitstr().

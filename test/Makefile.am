@@ -20,7 +20,7 @@ lp_objects = ../src/liblputil.o ../src/liblpatom.o ../src/liblpxpak.o	\
 01_lputil_splitstr_LDFLAGS = $(all_libraries)
 01_lputil_splitstr_LDADD = $(lp_objects)
 
-02_lpversion_parse_SOURCES = 02_lpversion_parse.c
+02_lpversion_parse_SOURCES = 02_lpversion_parse.c 02_lpversion_parse.txt
 02_lpversion_parse_LDFLAGS = $(all_libraries)
 02_lpversion_parse_LDADD = $(lp_objects)
 
