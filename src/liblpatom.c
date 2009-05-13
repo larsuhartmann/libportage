@@ -99,6 +99,8 @@ extern "C" {
 
 extern int
 lpatom_parse(lpatom_t *handle, const char *s)
+/*@requires isnull handle->fname, handle->cat, handle->name,
+handle->version@*/
 {
      regmatch_t match[512];
      char *vs;
@@ -118,7 +120,7 @@ lpatom_parse(lpatom_t *handle, const char *s)
                return -1;
 
      /* FIXME: add error handling */
-     regexec(&handle->regex.name, s, 5, match, 0 );
+     (void)regexec(&handle->regex.name, s, 5, match, 0 );
      if ( (handle->name = lputil_get_re_match(match, 1, s)) == NULL )
           return -1;
 
@@ -143,6 +145,8 @@ lpatom_create(void)
 
 extern void
 lpatom_init(lpatom_t *handle)
+/*@sets handle@*//*@ensures isnull handle->name, handle->cat, handle->version,
+handle->fname@*/
 {
      atom->name = NULL;
      atom->cat = NULL;
@@ -159,7 +163,9 @@ lpatom_init(lpatom_t *handle)
 }
 
 extern void
-lpatom_reset(lpatom_t *handle) {
+lpatom_reset(lpatom_t *handle)
+/*@sets handle@*//*@ensures isnull handle->name, handle->cat, handle->version, handle->fname@*/
+{
      free(handle->name);
      free(handle->cat);
      free(handle->fname);
@@ -195,6 +201,7 @@ lpatom_destroy(lpatom_t *handle)
      }
      return;
 }
+
 extern int
 lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
 {
