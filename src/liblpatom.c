@@ -148,16 +148,16 @@ lpatom_init(lpatom_t *handle)
 /*@sets handle@*//*@ensures isnull handle->name, handle->cat, handle->version,
 handle->fname@*/
 {
-     atom->name = NULL;
-     atom->cat = NULL;
-     atom->version = NULL;
-     atom->fname = NULL;
+     handle->name = NULL;
+     handle->cat = NULL;
+     handle->version = NULL;
+     handle->fname = NULL;
 
      /* FIXME: add error handling */
-     (void)regcomp(&atom->regex.atom, LPATOM_RE, REG_EXTENDED);
-     (void)regcomp(&atom->regex.category, LPATOM_RE_CAT, REG_EXTENDED);
-     (void)regcomp(&atom->regex.name, LPATOM_RE_NAME, REG_EXTENDED);
-     (void)regcomp(&atom->regex.version, LPATOM_RE_VER, REG_EXTENDED);
+     (void)regcomp(&handle->regex.atom, LPATOM_RE, REG_EXTENDED);
+     (void)regcomp(&handle->regex.category, LPATOM_RE_CAT, REG_EXTENDED);
+     (void)regcomp(&handle->regex.name, LPATOM_RE_NAME, REG_EXTENDED);
+     (void)regcomp(&handle->regex.version, LPATOM_RE_VER, REG_EXTENDED);
 
      return;
 }

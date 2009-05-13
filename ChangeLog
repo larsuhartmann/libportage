@@ -1,5 +1,8 @@
 2009-05-13  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* src/liblpatom.c (lpatom_init): fixed compile error which was
+	introduced by commit d1649c56802cb5ea25a3fbec51495ab9c1a3a2e2.
+
 	* src/liblpatom.c: fixed some lint(1) warnings.
 
 	* src/liblpatom.c (lpatom_init): renamed symbol atom to handle.
