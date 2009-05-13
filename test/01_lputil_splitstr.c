@@ -41,7 +41,7 @@ int main(void)
      bool has_failed = false;
      FILE *file;
      int len, i;
-     char *srcpath, s[MAXLEN], delim[MAXLEN], entry[MAXLEN], t[MAXLEN];
+     char *srcpath, s[MAXLEN], delim[MAXLEN], entry[MAXLEN], t[MAXLEN], *join;
      char **split;
 
      if ( (srcpath = getenv("srcdir")) != NULL )
@@ -69,6 +69,13 @@ int main(void)
                     ;
                if ( i != len )
                     has_failed = true;
+               /* check if the joined string is the same as the one we
+                * originally fed to lputil_splitstr() */
+               if ( (join = lputil_joinstr(split, delim)) == NULL )
+                    has_failed = true;
+               if ( strcmp(s, join) != 0 )
+                    has_failed = true;
+               free(join);
                lputil_splitstr_destroy(split);
           }
      }

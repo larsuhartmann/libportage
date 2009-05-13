@@ -1,5 +1,9 @@
 2009-05-13  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* test/01_lputil_splitstr.c: extended test to use lputil_joinstr()
+	and check if the returned string is the same as the one originally
+	fed to lputil_splitstr().
+
 	* src/liblputil.c (lputil_joinstr): added string join function.
 
 	* src/liblpatom.c (lpatom_init): fixed compile error which was
