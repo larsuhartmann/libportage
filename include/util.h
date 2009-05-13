@@ -127,6 +127,31 @@ extern char **
 lputil_splitstr(const char *s, const char *delim);
 
 /**
+ * @brief joins tokens into a String.
+ *
+ * Joins a given Array into a String seperated by the given String. Memory for
+ * the returned Data is obtained by malloc(3) and can be freed with free(3).
+ *
+ * If an error occurs, @c NULL is returned and errno is set to indicate the
+ * error.
+ *
+ * @param sa a @c NULL terminated array of c strings.
+ * @param sep the separator string.
+ *
+ * @return a @c null terminated c string or @c NULL if an error occured.
+ *
+ * @sa strtok(3), lputil_splitstr_destroy()
+ *
+ * @b Errors:
+ * 
+ * - \c EINVAL one or both of the given pointers are \c NULL
+ * - This routine may also fail and set errno for any of the errors specified
+ *   for the routine malloc(3).
+ */
+extern char *
+lputil_joinstr(const char *sa[], const char *sep);
+
+/**
  * @brief duplicates a memory region.
  *
  * returns a pointer to a new memory region which is a duplicate of the given

@@ -191,6 +191,30 @@ lputil_splitstr_destroy(char **splitstr)
      free(splitstr);
 }
 
+extern char *
+lputil_joinstr(const char *sa[], const char *sep)
+{
+     size_t len=1;
+     unsigned int i, j;
+     char *s;
+
+     for ( i=0; sa[i] != NULL; ++i )
+          len += strlen(sa[i]);
+     len += (i-1)*strlen(sep);
+
+     if ( (s = malloc(len)) == NULL )
+          return NULL;
+     s[0] = '\0';
+
+     for ( j=0; j < i-1; ++j ) {
+          strcat(s, sa[j]);
+          strcat(s, sep);
+     }
+     strcat(s, sa[j]);
+
+     return s;
+}
+
 #ifdef __cplusplus
 }
 #endif
