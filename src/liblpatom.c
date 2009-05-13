@@ -142,7 +142,7 @@ lpatom_create(void)
 }
 
 extern void
-lpatom_init(lpatom_t *atom)
+lpatom_init(lpatom_t *handle)
 {
      atom->name = NULL;
      atom->cat = NULL;

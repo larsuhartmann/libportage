@@ -1,3 +1,7 @@
+2009-05-13  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* src/liblpatom.c (lpatom_init): renamed symbol atom to handle.
+
 2009-05-12  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* src/liblputil.c (lputil_splitstr): fixed buffer overflow.
