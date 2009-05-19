@@ -170,7 +170,7 @@ lpversion_destroy(lpversion_t *handle);
  */
 
 extern int
-lpversion_parse(lpversion_t *handle, char *version);
+lpversion_parse(lpversion_t *handle, const char *version);
 
 /**
  * @brief compares two lpatom_t handles.

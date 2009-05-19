@@ -1,3 +1,9 @@
+2009-05-19  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Changed parameters to const:
+	* src/liblpversion.c (lpversion_suffix_parse): updated.
+	* include/version.h (lpversion_parse): updated.
+
 2009-05-13  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* test/Makefile.am (02_lpversion_parse_SOURCES): added

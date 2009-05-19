@@ -116,7 +116,7 @@ lpversion_version_parse(const char *ver);
  * @return the suffix number.
  */
 static inline lpversion_sufenum_t
-lpversion_suffix_parse(char *suffix);
+lpversion_suffix_parse(const char *suffix);
 
 extern lpversion_t *
 lpversion_create(void)
@@ -167,7 +167,7 @@ lpversion_destroy(lpversion_t *handle)
 }
 
 extern int
-lpversion_parse(lpversion_t *handle, char *version)
+lpversion_parse(lpversion_t *handle, const char *version)
 /*@requires isnull handle->va, handle->version@*/
 {
      regmatch_t match[3];
@@ -260,7 +260,7 @@ lpversion_version_parse(const char *ver)
 }
 
 static inline lpversion_sufenum_t
-lpversion_suffix_parse(char *suffix)
+lpversion_suffix_parse(const char *suffix)
 {
      switch(suffix[0]) {
      case 'a':
