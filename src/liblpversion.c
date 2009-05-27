@@ -146,6 +146,7 @@ lpversion_reset(lpversion_t *handle)
 {
      free(handle->version);
      handle->version = NULL;
+     handle->suffix = LPV_NO;
      handle->suffv = 0;
      handle->release = 0;
      handle->verc = (char)0;

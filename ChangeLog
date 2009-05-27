@@ -1,3 +1,8 @@
+2009-05-27  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* src/liblpversion.c (lpversion_reset): does now reset the suffix
+	enum too.
+
 2009-05-19  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Changed parameters to const:
