@@ -1,5 +1,9 @@
 2009-05-28  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Added replacement for stpcpy:
+	* replace/stpcpy.c (stpcpy): added.
+	* configure.ac (AC_REPLACE_FUNCS): added stpcpy.
+
 	added lputil_int64len:
 	* test/01_lputil_int64len.c: added tests for lputil_int64len.
 	* test/Makefile.am: added tests for lputil_int64len.

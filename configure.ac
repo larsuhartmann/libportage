@@ -15,7 +15,7 @@ AC_HEADER_STDC
 AC_CHECK_HEADERS(errno.h)
 
 #check for functions
-AC_REPLACE_FUNCS(strndup)
+AC_REPLACE_FUNCS(strndup stpcpy)
 
 # check for libarchive and abort if not found
 AC_CHECK_HEADERS(archive.h,,AC_MSG_ERROR(archive.h not found!))
