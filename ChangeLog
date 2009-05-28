@@ -1,3 +1,9 @@
+2009-05-28  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	added lputil_int64len:
+	* include/util.h (lputil_int64len): added prototype.
+	* src/liblputil.c (lputil_int64len): added.
+
 2009-05-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* src/liblpversion.c (lpversion_reset): does now reset the suffix

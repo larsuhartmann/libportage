@@ -184,6 +184,30 @@ lputil_intlen(int d)
      return i;
 }
 
+extern size_t
+lputil_int64len(int64_t d)
+{
+     size_t i = 0;
+
+     /* avoid overflow on negation: value range -2^n .. (2^n)-1 */
+     if ( d == INT64_MIN ) {
+          d = INT64_MAX;
+          ++i;
+     }
+     if ( d < 0 ) {
+          d = -d;
+          ++i;
+     }
+
+     while ( d >= 10 ) {
+          ++i;
+          d /= 10;
+     }
+     /* we still got one digit left */
+     ++i;
+     return i;
+}
+
 extern void
 lputil_splitstr_destroy(char **splitstr)
 {

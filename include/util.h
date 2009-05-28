@@ -35,6 +35,7 @@
 /** @endcond */
 
 #  include <regex.h>
+#  include <stdint.h>
 
 #  ifdef __cplusplus
 extern "C" {
@@ -189,6 +190,16 @@ lputil_memdup(const void *s, size_t len);
  */
 size_t
 lputil_intlen(int d);
+
+/**
+ * @brief calculates the length in digits of a int.
+ * 
+ * @param d an 64bit integer which's length is to be calculated.
+ *
+ * @return the length of the integer @c d in digits.
+ */
+size_t
+lputil_int64len(int64_t d);
 
 /**
  * @brief destroys an @c NULL terminated array of @c null terminated C Strings
