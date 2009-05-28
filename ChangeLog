@@ -1,6 +1,8 @@
 2009-05-28  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	added lputil_int64len:
+	* test/01_lputil_int64len.c: added tests for lputil_int64len.
+	* test/Makefile.am: added tests for lputil_int64len.
 	* include/util.h (lputil_int64len): added prototype.
 	* src/liblputil.c (lputil_int64len): added.
 

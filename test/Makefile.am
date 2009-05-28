@@ -4,8 +4,8 @@ if USE_VALGRIND
     TESTS_ENVIRONMENT=./valgrind-wrapper
 endif
 
-TESTS = 01_lputil_intlen 01_lputil_splitstr 02_lpversion_parse		\
-03_lpatom_parse 04_lpxpak 05_lparchives
+TESTS = 01_lputil_intlen 01_lputil_int64len 01_lputil_splitstr	\
+02_lpversion_parse 03_lpatom_parse 04_lpxpak 05_lparchives
 
 check_PROGRAMS = $(TESTS)
 
@@ -15,6 +15,10 @@ lp_objects = ../src/liblputil.o ../src/liblpatom.o ../src/liblpxpak.o	\
 01_lputil_intlen_SOURCES = 01_lputil_intlen.c
 01_lputil_intlen_LDFLAGS = $(all_libraries)
 01_lputil_intlen_LDADD = $(lp_objects)
+
+01_lputil_int64len_SOURCES = 01_lputil_int64len.c
+01_lputil_int64len_LDFLAGS = $(all_libraries)
+01_lputil_int64len_LDADD = $(lp_objects)
 
 01_lputil_splitstr_SOURCES = 01_lputil_splitstr.c 01_lputil_splitstr.txt
 01_lputil_splitstr_LDFLAGS = $(all_libraries)
