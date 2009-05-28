@@ -33,11 +33,9 @@ extern "C" {
 extern char *
 stpcpy(char *dest, const char *src)
 {
-     while ( (*dest = *src) != '\0' ) {
-          ++dest;
-          ++src;
-     }
-     return dest;
+     while ( (*dest++ = *src++) != '\0' )
+          ;
+     return dest-1;
 }
 
 #ifdef __cplusplus

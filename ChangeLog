@@ -1,5 +1,7 @@
 2009-05-28  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* replace/stpcpy.c (stpcpy): fixed memory error.
+
 	* src/liblputil.c (lputil_joinstr): rewritten to use stpcpy(3)
 	instead of strcat(3).
 
