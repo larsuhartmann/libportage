@@ -30,6 +30,8 @@
 # include <config.h>
 #endif
 
+#include <replace.h>
+
 #include <util.h>
 
 #include <limits.h>

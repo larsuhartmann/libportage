@@ -1,5 +1,12 @@
 2009-05-28  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Added header for replacement functions:
+	* src/liblputil.c: ainclude replace.h
+	* src/Makefile.am (AM_CPPFLAGS): added replace-dir.
+	* replace/Makefile.am (EXTRA_DIST): added replace.h to the
+	distribution package.
+	* replace/replace.h: added.
+
 	* replace/stpcpy.c (stpcpy): fixed memory error.
 
 	* src/liblputil.c (lputil_joinstr): rewritten to use stpcpy(3)
