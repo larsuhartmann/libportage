@@ -220,7 +220,7 @@ lputil_joinstr(const char *sa[], const char *sep)
 {
      size_t len=1;
      unsigned int i, j;
-     char *s;
+     char *s, *tmp;
 
      for ( i=0; sa[i] != NULL; ++i )
           len += strlen(sa[i]);
@@ -228,13 +228,14 @@ lputil_joinstr(const char *sa[], const char *sep)
 
      if ( (s = malloc(len)) == NULL )
           return NULL;
-     s[0] = '\0';
+
+     tmp = s;
 
      for ( j=0; j < i-1; ++j ) {
-          strcat(s, sa[j]);
-          strcat(s, sep);
+          tmp = stpcpy(tmp, sa[j]);
+          tmp = stpcpy(tmp, sep);
      }
-     strcat(s, sa[j]);
+     stpcpy(tmp, sa[j]);
 
      return s;
 }

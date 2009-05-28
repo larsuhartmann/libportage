@@ -1,5 +1,8 @@
 2009-05-28  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* src/liblputil.c (lputil_joinstr): rewritten to use stpcpy(3)
+	instead of strcat(3).
+
 	Added replacement for stpcpy:
 	* replace/stpcpy.c (stpcpy): added.
 	* configure.ac (AC_REPLACE_FUNCS): added stpcpy.
