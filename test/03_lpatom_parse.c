@@ -38,7 +38,7 @@ int main(void)
 {
      lpatom_t *atom1 = NULL;
      lpatom_t *atom2 = NULL;
-     char s[1024], *srcpath;
+     char s[1024], *srcpath, *sa1, *sa2;
      bool has_failed = false;
      FILE *file;
 
@@ -58,13 +58,22 @@ int main(void)
 
      while ( fgets(s, sizeof(s), file) != NULL) {
           s[strlen(s)-1] = '\0';
-          if ( lpatom_parse(atom1, s) == -1)
+          if ( lpatom_parse(atom1, s) == -1 || lpatom_parse(atom2, s) == -1)
                has_failed = true;
-          if ( lpatom_parse(atom2, s) == -1)
-               has_failed = true;
-          if (! has_failed)
+          if (! has_failed) {
                if ( lpatom_cmp(atom1, atom2) != 0 )
                     has_failed = true;
+               if ( (sa1 = lpatom_compile(atom1)) == NULL ||
+                    (sa2 = lpatom_compile(atom2)) == NULL )
+                    has_failed = true;
+               else if ( strcmp(sa1, sa2) != 0 ) {
+                    printf("sa1: %s <> sa2: %s\n", sa1, sa2);
+                    has_failed = true;
+               } else if ( strcmp(sa1, s) != 0 ) {
+                    printf("input: %s <> sa1: %s\n");
+                    has_failed = true;
+               }
+          }
           lpatom_reset(atom1);
           lpatom_reset(atom2);
      }
