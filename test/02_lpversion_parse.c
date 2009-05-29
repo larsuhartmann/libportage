@@ -40,7 +40,7 @@ main(void)
 {
      lpversion_t *v1;
      lpversion_t *v2;
-     char *srcpath, *s;
+     char *srcpath, *s, *vs1, *vs2;
      FILE *file;
      bool has_failed = false;
      
@@ -67,6 +67,17 @@ main(void)
                has_failed = true;
           else if (lpversion_cmp(v1, v2) != 0)
                has_failed = true;
+          if ( (vs1 = lpversion_compile(v1)) == NULL ||
+               (vs2 = lpversion_compile(v2)) == NULL )
+               has_failed = true;
+          else {
+               if ( strcmp(vs1, vs2) != 0 )
+                    has_failed = true;
+               else if (strcmp(s, vs1) != 0 || strcmp(s, vs2) != 0 )
+                    has_failed = true;
+               free(vs1);
+               free(vs2);
+          }
           lpversion_reset(v1);
           lpversion_reset(v2);
      }

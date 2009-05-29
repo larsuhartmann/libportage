@@ -1,6 +1,7 @@
 2009-05-29  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Added lpversion_compile:
+	* test/02_lpversion_parse.c: added test for lpversion_compile.
 	* src/liblpversion.c (lpversion_suffix_compile): added.
 	(lpversion_version_compile): added.
 	(lpversion_compile): added.
