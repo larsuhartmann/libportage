@@ -1,5 +1,8 @@
 2009-05-29  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Added lpatom_compile:
+	* src/liblpatom.c (lpatom_compile): added.
+
 	Added lpversion_compile:
 	* test/02_lpversion_parse.c: added test for lpversion_compile.
 	* src/liblpversion.c (lpversion_suffix_compile): added.

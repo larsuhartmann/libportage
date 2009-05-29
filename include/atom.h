@@ -66,8 +66,6 @@ typedef struct lpatom {
      lpatom_regex_t regex;      /**< @brief compiled regexes. */
      char *name;                /**< @brief the name. */
      char *cat;                 /**< @brief the category. */
-     char *fname;               /**< @brief the string the atom was parsed
-                                 * from. */
      lpversion_t *version;      /**< @brief a version handle. */
 } lpatom_t;
 
@@ -184,6 +182,19 @@ lpatom_destroy(lpatom_t *atom);
  */
 extern int
 lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2);
+
+/**
+ * @brief compiles a lpatom handle into a @c null terminated C string.
+ *
+ * If an error occurs while compiling the string, @c NULL is returned and @c
+ * errno is set to indicate the error.
+ *
+ * @param handle a lpatom handle.
+ *
+ * @return a @c null terminated C string with the compiled version.
+ */
+extern char *
+lpatom_compile(const lpatom_t *handle);
 
 #  ifdef __cplusplus
 }

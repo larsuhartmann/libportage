@@ -38,6 +38,7 @@
 
 #include <atom.h>
 #include <util.h>
+#include <stdbool.h>
 
 #include <sys/types.h>
 
@@ -104,10 +105,8 @@ handle->version@*/
 {
      regmatch_t match[512];
      char *vs;
+     int ret;
 
-     if ( (handle->fname = strdup(s)) == NULL )
-          return -1;
-     
      /* FIXME: add proper error handling */
      if ( regexec(&handle->regex.atom, s, 0, match, 0) != 0 ) {
           errno = EINVAL;
@@ -130,7 +129,10 @@ handle->version@*/
           lpversion_init(handle->version);
           if ( (vs = lputil_get_re_match(match, 1, s)) == NULL )
                return -1;
-          return lpversion_parse(handle->version, vs);
+          ret = lpversion_parse(handle->version, vs) == -1;
+          free(vs);
+          
+          return ret;
      }
 
      return 0;
@@ -151,7 +153,6 @@ handle->fname@*/
      handle->name = NULL;
      handle->cat = NULL;
      handle->version = NULL;
-     handle->fname = NULL;
 
      /* FIXME: add error handling */
      (void)regcomp(&handle->regex.atom, LPATOM_RE, REG_EXTENDED);
@@ -168,7 +169,6 @@ lpatom_reset(lpatom_t *handle)
 {
      free(handle->name);
      free(handle->cat);
-     free(handle->fname);
 
      if ( handle->version != NULL ) {
           lpversion_destroy(handle->version);
@@ -178,7 +178,6 @@ lpatom_reset(lpatom_t *handle)
      handle->name = NULL;
      handle->cat = NULL;
      handle->version = NULL;
-     handle->fname = NULL;
 
      return;
 }
@@ -218,6 +217,42 @@ lpatom_cmp(const lpatom_t *atom1, const lpatom_t *atom2)
           return lpversion_cmp(atom1->version, atom2->version);
      
      return 0;
+}
+
+extern char *
+lpatom_compile(const lpatom_t *handle)
+{
+     char *ret, *ver = NULL, *tmp;
+     size_t len = 1;
+
+     if ( handle->version != NULL ) {
+          if ( (ver = lpversion_compile(handle->version)) == NULL )
+               return NULL;
+          else {
+               len += strlen(ver)+1;
+          }
+     }
+     if ( handle->cat != NULL )
+          len += strlen(handle->cat)+1;
+     len += strlen(handle->name);
+
+     if ( (ret = malloc(len)) == NULL ) {
+          free(ver);
+          return NULL;
+     }
+     tmp = ret;
+     if ( handle->cat != NULL ) {
+          tmp = stpcpy(tmp, handle->cat);
+          tmp = stpcpy(tmp, "/");
+     }
+     tmp = stpcpy(tmp, handle->name);
+     if ( ver != NULL ) {
+          tmp = stpcpy(tmp, "-");
+          tmp = stpcpy(tmp, ver);
+          free(ver);
+     }
+     
+     return ret;
 }
 
 #ifdef __cplusplus
