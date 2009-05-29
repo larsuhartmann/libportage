@@ -1,3 +1,10 @@
+2009-05-29  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Added lpversion_compile:
+	* src/liblpversion.c (lpversion_suffix_compile): added.
+	(lpversion_version_compile): added.
+	(lpversion_compile): added.
+
 2009-05-28  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Added header for replacement functions:

@@ -41,6 +41,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <inttypes.h>
+#include <stdbool.h>
 
 #if HAVE_ERRNO_H
 #  include <errno.h>
@@ -109,6 +110,29 @@ static inline int64_t *
 lpversion_version_parse(const char *ver);
 
 /**
+ * @brief compiles the numerical version part.
+ *
+ * If an error occurs, \c NULL is returned and \c errno is set to indicate
+ * the error.
+ *
+ * @param ver a \c nul terminated version string eg: 4.2.1.9.
+ *
+ * @return a \c -1 terminated integer array.
+ *
+ * @b Errors:
+ *
+ * - This function may fail and set errno for any of the errors specified for
+ *   the routine strdup(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine malloc(3).
+ * - This function may also fail and set errno for any of the errors specified
+ *   for the routine realloc(3).
+ */
+/*@null@*//*@only@*/
+static inline char *
+lpversion_version_compile(const lpversion_t *handle);
+
+/**
  * @brief parses a suffix string.
  *
  * @param suffix a @c nul terminated C string with the suffix.
@@ -117,6 +141,16 @@ lpversion_version_parse(const char *ver);
  */
 static inline lpversion_sufenum_t
 lpversion_suffix_parse(const char *suffix);
+
+/**
+ * @brief compiles the suffix into a string.
+ *
+ * @param handle a lpversion_t object.
+ *
+ * @return a @c null terminated character string.
+ */
+static inline char *
+lpversion_suffix_compile(const lpversion_t *handle);
 
 extern lpversion_t *
 lpversion_create(void)
@@ -128,7 +162,6 @@ extern void
 lpversion_init(lpversion_t *handle)
 /*@sets handle@*//*@ensures isnull handle->version, handle->va@*/
 {
-     handle->version = NULL;
      handle->va = NULL;
      handle->suffv = 0;
      handle->release = 0;
@@ -137,33 +170,33 @@ lpversion_init(lpversion_t *handle)
      (void)regcomp(&handle->regex.verify, LPVERSION_RE, REG_EXTENDED);
      (void)regcomp(&handle->regex.suffix, LPVERSION_RE_SUF, REG_EXTENDED);
      (void)regcomp(&handle->regex.release, LPVERSION_RE_REL, REG_EXTENDED);
-     
+
      return;
 }
 
 extern void
 lpversion_reset(lpversion_t *handle)
 {
-     free(handle->version);
-     handle->version = NULL;
+     free(handle->va);
+     handle->va = NULL;
      handle->suffix = LPV_NO;
      handle->suffv = 0;
+     handle->suffix = LPV_NO;
      handle->release = 0;
      handle->verc = (char)0;
-     
+
      return;
 }
 
 extern void
 lpversion_destroy(lpversion_t *handle)
 {
-     free(handle->version);
      free(handle->va);
      regfree(&handle->regex.verify);
      regfree(&handle->regex.suffix);
      regfree(&handle->regex.release);
      free(handle);
-     
+
      return;
 }
 
@@ -174,7 +207,7 @@ lpversion_parse(lpversion_t *handle, const char *version)
      regmatch_t match[3];
      char *tmp;
      size_t len;
-     
+
      /* validate input */
      if ( regexec(&handle->regex.verify, version, 3, match, 0) != 0 ) {
           errno = EINVAL;
@@ -208,8 +241,7 @@ lpversion_parse(lpversion_t *handle, const char *version)
           handle->release = (unsigned int)atoi(tmp);
           free(tmp);
      }
-     handle->version = strdup(version);
-     
+
      return 0;
 }
 
@@ -222,13 +254,13 @@ lpversion_cmp(const lpversion_t *v1, const lpversion_t *v2)
      for ( i=0; v1->va[i] != -1 || v2->va[i] != -1; ++i )
           if ( v1->va[i] != v2->va[i] )
                return (int)(v1->va[i] - v2->va[i]);
-     
+
      if ( v1->va[i] != v2->va[i] )
           return (int)(v1->va[i] - v2->va[i]);
 
      if ( v1->verc != v2->verc )
           return (int)(v1->verc - v2->verc);
-     
+
      if ( v1->suffix != v2->suffix )
           return (int)(v1->suffix - v2->suffix);
 
@@ -260,6 +292,47 @@ lpversion_version_parse(const char *ver)
      return ia;
 }
 
+/*@null@*//*@only@*/
+static inline char *
+lpversion_version_compile(const lpversion_t *handle)
+{
+     unsigned int i, j;
+     size_t len;
+     char **va, *ret, *tmp, *tmp2;
+
+     for ( i=0; handle->va[i] != -1; ++i )
+          ;
+     if ( (va = malloc(sizeof(char *)*(i+2))) == NULL )
+          return NULL;
+
+     for ( j=0; j<i; ++j ) {
+          if ( (va[j] = malloc(lputil_int64len(handle->va[j])+1)) == NULL ) {
+               for ( i=0; i<j; ++i )
+                    free(va[i]);
+               return NULL;
+          }
+          (void)sprintf(va[j], "%"PRIi64, handle->va[j]);
+     }
+     va[j] = NULL;
+     ret = lputil_joinstr((const char **)va, ".");
+     for (j=0; j<i; ++j)
+          free(va[j]);
+     free(va);
+
+     if (handle->verc != 0 ) {
+          if ( (tmp = malloc(strlen(ret)+2)) == NULL ) {
+               free(ret);
+               return NULL;
+          }
+          tmp2 = stpcpy(tmp, ret);
+          free(ret);
+          *tmp2++ = handle->verc;
+          *tmp2 = '\0';
+          ret = tmp;
+     }
+     return ret;
+}
+
 static inline lpversion_sufenum_t
 lpversion_suffix_parse(const char *suffix)
 {
@@ -280,6 +353,88 @@ lpversion_suffix_parse(const char *suffix)
      default:
           return LPV_NO;
      }
+}
+
+static inline char *
+lpversion_suffix_compile(const lpversion_t *handle)
+{
+     char *suffix, *ret, *tmp;
+     size_t len;
+
+     switch(handle->suffix) {
+     case LPV_ALPHA:
+          suffix = strdup("alpha");
+          break;
+     case LPV_BETA:
+          suffix = strdup("beta");
+          break;
+     case LPV_PRE:
+          suffix = strdup("pre");
+          break;
+     case LPV_P:
+          suffix = strdup("p");
+          break;
+     case LPV_RC:
+          suffix = strdup("rc");
+          break;
+     default:
+          suffix = strdup("");
+          break;
+     }
+
+     len = strlen(suffix)+lputil_intlen(handle->suffv)+1;
+     if ( (ret = malloc(len)) == NULL ) {
+          free(suffix);
+          return NULL;
+     }
+
+     tmp = stpcpy(ret, suffix);
+     (void)sprintf(tmp, "%d", handle->suffv);
+     free(suffix);
+     return ret;
+}
+
+extern char *
+lpversion_compile(const lpversion_t *handle)
+{
+     char *suffix=NULL, *numver, *ret, *tmp;
+     size_t len = 0;
+
+     if ( (numver = lpversion_version_compile(handle)) == NULL )
+          return NULL;
+     len += strlen(numver);
+     if ( handle->suffix != LPV_NO ) {
+          if ( (suffix = lpversion_suffix_compile(handle)) == NULL ) {
+               free(numver);
+               return NULL;
+          }
+          if ( suffix[0] != '\0') {
+               len += strlen(suffix);
+               len += lputil_intlen(handle->suffv);
+               ++len;
+          }
+     }
+     if ( handle->release > 0 ) {
+          len += lputil_intlen(handle->release);
+          len+=2;
+     }
+     if ( (ret = malloc(len+1)) == NULL ) {
+          free(numver);
+          free(suffix);
+     }
+     tmp = stpcpy(ret, numver);
+     free(numver);
+     if (suffix != NULL) {
+          tmp = stpcpy(tmp, "_");
+          tmp = stpcpy(tmp, suffix);
+          free(suffix);
+     }
+     if (handle->release != 0) {
+          tmp = stpcpy(tmp, "-r");
+          (void)sprintf(ret+strlen(ret), "%d", handle->release);
+     }
+
+     return ret;
 }
 
 #  ifdef __cplusplus
