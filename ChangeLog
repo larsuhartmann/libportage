@@ -1,5 +1,9 @@
 2009-06-05  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* release.sh: added copyright header.
+	added option to sign generated distribution-archives.
+	added option to give version string as parameter.
+
 	* build_release.sh: renamed to release.sh.
 
 	* doc/xpak.html: added html version of doc/xpak.txt.
