@@ -1,5 +1,7 @@
 2009-06-05  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* build_release.sh: renamed to release.sh.
+
 	* doc/xpak.html: added html version of doc/xpak.txt.
 
 2009-05-29  Lars Hartmann  <lars (at) chaotika (dot) org>
