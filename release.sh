@@ -29,10 +29,7 @@
 get_version()
 {
     if [ ! "$RELEASE" ]; then
-        case `git describe 2>&1` in
-            fatal:*) RELEASE=`date +%Y%m%d`;;
-            *) ;;
-        esac
+        RELEASE=`date +%Y%m%d`
     fi
     return
 }
