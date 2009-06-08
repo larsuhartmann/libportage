@@ -49,7 +49,7 @@ build_release()
     if ! ./configure; then
         return 1
     fi
-    if ! make dist dist-bzip2 dist-lzma; then
+    if ! make dist dist-bzip2 dist-zip; then
         return 1
     fi
     return 0
