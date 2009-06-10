@@ -138,6 +138,12 @@ data block(such as the DEPEND string):
 |<data1data2data3data...>|<data-we-want>|
 ----
 
+DEDICATED TO
+------------
+
+Daedalus - he died during the time i was writing this document; may you rest
+in peace, good friend.
+
 AUTHORS
 -------
 
