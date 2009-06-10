@@ -144,6 +144,16 @@ DEDICATED TO
 Daedalus - he died during the time i was writing this document; may you rest
 in peace, good friend.
 
+CREDITS
+-------
+
+Leonie Herzberg <leo@gaenseblum.org> - my girlfriend; she corrected my worst
+grammatical mistakes and kept me motivated all the time; thanks for that!
+
+Steven J. Long <igli@friendly-coders.info> - he corrected the even smaller
+grammatical mistakes and helped me make it easier to understand plus he did
+technical review; thanks for the help!
+
 AUTHORS
 -------
 
