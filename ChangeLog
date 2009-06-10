@@ -1,3 +1,7 @@
+2009-06-10  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* doc/xpak.5.txt: rewritten doc/xpak.txt in asciidoc.
+
 2009-06-08  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* release.sh: removed lzma distribution and added zip
