@@ -1,5 +1,7 @@
 2009-06-10  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* configure.ac: replaced bash code by POSIX sh code.
+
 	* doc/xpak.5.txt: rewritten doc/xpak.txt in asciidoc.
 	added "DEDICATED TO" section.
 	added "CREDITS" section.

@@ -29,9 +29,9 @@ AC_ARG_ENABLE(valgrind,
     [  --enable-valgrind       use valgrind when running unit tests. ],
     USE_VALGRIND=true
 )
-if [[ "$USE_VALGRIND" = "true" ]]; then
+if [ "$USE_VALGRIND" = "true" ]; then
     AC_CHECK_PROG(HAVE_VALGRIND, valgrind, yes, no)
-    if [[ "$HAVE_VALGRIND" = "no" ]]; then
+    if [ "$HAVE_VALGRIND" = "no" ]; then
         AC_MSG_ERROR([Valgrind not found in PATH. ])
     fi
 fi
