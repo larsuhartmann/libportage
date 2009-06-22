@@ -1,5 +1,10 @@
 2009-06-22  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Added asciidoc support to build framework:
+	* doc/Makefile.am: added build options.
+	* configure.ac: added an --enable-asciidoc switch and checks for
+	asciidoc(1) and a2x(1).
+
 	Removed obsolete non-asciidoc files:
 	* doc/xpak.5: removed.
 	* doc/xpak.txt: removed.

@@ -37,6 +37,21 @@ if [ "$USE_VALGRIND" = "true" ]; then
 fi
 AM_CONDITIONAL(USE_VALGRIND, $USE_VALGRIND)
 
+# hack to get asciidoc docs via --enable-asciidoc
+USE_ASCIIDOC=false
+AC_ARG_ENABLE(asciidoc,
+    [  --enable-asciidoc       generate asciidoc documentation. ],
+    USE_ASCIIDOC=true
+)
+if [ "$USE_ASCIIDOC" = "true" ]; then
+    AC_CHECK_PROG(HAVE_ASCIIDOC, asciidoc, yes, no)
+    AC_CHECK_PROG(HAVE_A2X, a2x, yes, no)
+    if test "$HAVE_ASCIIDOC" = "no"  || test "$HAVE_A2X" = "no" ; then
+        AC_MSG_ERROR([asciidoc not found in PATH. ])
+    fi
+fi
+AM_CONDITIONAL(USE_ASCIIDOC, $USE_ASCIIDOC)
+
 # other stuff
 AC_CONFIG_HEADERS(config.h)
 
