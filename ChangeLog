@@ -1,5 +1,12 @@
 2009-06-22  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Removed obsolete non-asciidoc files:
+	* doc/xpak.5: removed.
+	* doc/xpak.txt: removed.
+	* doc/xpak.html: removed.
+	* doc/Makefile.am: removed xpak.txt and xpak.html from doc_DATA
+	and EXTRA_DIST.
+
 	* doc/Makefile.am (EXTRA_DIST): added asciidoc file to
 	distribution.
 
