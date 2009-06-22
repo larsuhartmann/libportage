@@ -41,7 +41,7 @@ set_version()
 }
 
 # build release distribution archives
-build_release()
+config_release()
 {
     if ! autoreconf -i; then
         return 1
@@ -49,7 +49,40 @@ build_release()
     if ! ./configure; then
         return 1
     fi
-    if ! make dist dist-bzip2 dist-zip; then
+    return 0
+}
+
+# build gzip distribution
+build_gzip()
+{
+    if ! make dist; then
+        return 1
+    fi
+    return 0
+}
+
+# build bzip2 distribution
+build_bzip()
+{
+    if ! make dist-bzip2; then
+        return 1
+    fi
+    return 0
+}
+
+# build zip distribution
+build_zip()
+{
+    if ! make dist-zip; then
+        return 1
+    fi
+    return 0
+}
+
+# build lzma distribution
+build_lzma()
+{
+    if ! make dist-lzma; then
         return 1
     fi
     return 0
@@ -71,15 +104,23 @@ Usage: $0 [options]
 Options:
   -r <version>  Set version to <version>
   -s <key-id>   GPG-Sign release with key <key-id>
+  -b            make a bzip2 release
+  -g            make a gzip release
+  -z            make a zip release
+  -l            make a lzma release
   -h            Display this information
 EOF
 }
 
 #parse command line arguments
-while getopts hr:s: arg; do
+while getopts bghlr:s:z arg; do
     case "$arg" in
         s)      GPG_KEY="$OPTARG";;
         r)      RELEASE="$OPTARG";;
+        b)      BZIP="t";;
+        g)      GZIP="t";;
+        l)      LZMA="t";;
+        z)      ZIP="t";;
         h|?)    print_help; exit 0;;
     esac
 done
@@ -90,28 +131,59 @@ if [ -n "$GPG_KEY" ]; then
     echo "GPG-Key: $GPG_KEY";
 fi
 
-set_version $RELEASE
+if [ "$GZIP" = "t" ]||[ "$BZIP" = "t" ]||[ "$LZMA" = "t" ]||[ "$ZIP" = "t" ]; then
+    set_version $RELEASE
+    if ! config_release; then
+        cleanup
+        echo "an error has occured!"
+        exit 1
+    fi
 
-if ! build_release; then
+    if [ "$GZIP" eq "true" ]; then
+        if ! build_gzip; then
+            cleanup
+            echo "an error has occured!"
+            exit 1
+        fi
+    fi
+    if [ "$BZIP" eq "true" ]; then
+        if ! build_bzip2; then
+            cleanup
+            echo "an error has occured!"
+            exit 1
+        fi
+    fi
+    if [ "$LZMA" eq "true" ]; then
+        if ! build_lzma; then
+            cleanup
+            echo "an error has occured!"
+            exit 1
+        fi
+    fi
+    if [ "$ZIP" eq "true" ]; then
+        if ! build_zip; then
+            cleanup
+            echo "an error has occured!"
+            exit 1
+        fi
+    fi
     cleanup
-    echo "an error has occured!"
-    exit 1
-fi
 
-cleanup
+    # sign packages if -s was given
+    if [ -n "$GPG_KEY" ]; then
+        for i in libportage-$RELEASE.*; do
+            gpg -sau "$GPG_KEY" $i
+        done
+    fi
 
-# sign packages if -s was given
-if [ -n "$GPG_KEY" ]; then
+    echo ""
+    echo "Release: $RELEASE"
+    echo "Files:"
     for i in libportage-$RELEASE.tar.*; do
-        gpg -sau "$GPG_KEY" $i
+        echo "  $i"
     done
+    
+    exit 0
 fi
-
-echo ""
-echo "Release: $RELEASE"
-echo "Files:"
-for i in libportage-$RELEASE.tar.*; do
-    echo "  $i"
-done
-
+print_help
 exit 0
