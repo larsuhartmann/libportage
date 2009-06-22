@@ -1,3 +1,8 @@
+2009-06-22  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* doc/Makefile.am (EXTRA_DIST): added asciidoc file to
+	distribution.
+
 2009-06-10  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	* configure.ac: replaced bash code by POSIX sh code.
