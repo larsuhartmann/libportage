@@ -2,6 +2,7 @@
 
 	* replace/replace.h : included stdlib.h to fix a bug on some
 	systems which actually need those replace functions.
+	added include-guards.
 
 2009-06-22  Lars Hartmann  <lars (at) chaotika (dot) org>
 
