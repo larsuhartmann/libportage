@@ -1,3 +1,8 @@
+2009-08-26  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	* replace/replace.h : included stdlib.h to fix a bug on some
+	systems which actually need those replace functions.
+
 2009-06-22  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Added asciidoc support to build framework:

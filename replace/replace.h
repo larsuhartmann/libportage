@@ -29,6 +29,8 @@
 extern "C" {
 #endif
 
+#include <stdlib.h>
+
 #ifndef HAVE_STPCPY
 extern char *
 stpcpy(char *dest, const char *src);
