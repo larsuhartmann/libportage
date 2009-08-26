@@ -2,7 +2,9 @@
 
 	* test/valgrind-wrapper: removed.
 	* test/Makefile.am (METASOURCES): removed valgrind wrapper.
+	switched to old libtool based tests.
 	* configure.ac: removed valgrind hacks.
+	removed ugly libtool-hack.
 	* replace/replace.h : included stdlib.h to fix a bug on some
 	systems which actually need those replace functions.
 	added include-guards.

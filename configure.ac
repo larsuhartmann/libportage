@@ -44,9 +44,4 @@ AC_CONFIG_HEADERS(config.h)
 AC_CONFIG_FILES(Makefile replace/Makefile src/Makefile include/Makefile
                 test/Makefile doc/Makefile)
 
-# hack to transform replace lib list into libtool format.
-Xsed="sed -e s/^X//"
-LTLIBOBJS=`echo X"$LIBOBJS" | \$Xsed -e "s,\. [^.]* ,.lo,g;s,\.[^.]*$,.lo,"`
-AC_SUBST(LTLIBOBJS)
-
 AC_OUTPUT
