@@ -1,5 +1,8 @@
 2009-08-26  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	* test/valgrind-wrapper: removed.
+	* test/Makefile.am (METASOURCES): removed valgrind wrapper.
+	* configure.ac: removed valgrind hacks.
 	* replace/replace.h : included stdlib.h to fix a bug on some
 	systems which actually need those replace functions.
 	added include-guards.

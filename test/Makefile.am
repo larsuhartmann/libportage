@@ -1,9 +1,5 @@
 METASOURCES = AUTO
 
-if USE_VALGRIND
-    TESTS_ENVIRONMENT=./valgrind-wrapper
-endif
-
 TESTS = 01_lputil_intlen 01_lputil_int64len 01_lputil_splitstr	\
 02_lpversion_parse 03_lpatom_parse 04_lpxpak 05_lparchives
 
@@ -41,8 +37,6 @@ lp_objects = ../src/liblputil.o ../src/liblpatom.o ../src/liblpxpak.o	\
 05_lparchives_LDADD = $(lp_objects)
 
 AM_CPPFLAGS = -I$(top_srcdir)/include
-
-EXTRA_DIST = valgrind-wrapper
 
 # dev-targets
 check-syntax:
