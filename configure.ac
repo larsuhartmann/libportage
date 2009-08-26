@@ -1,4 +1,4 @@
-AC_INIT([libportage], [HEAD], [libportage-bugs@lists.berlios.de])
+AC_INIT([libportage], [HEAD], [libportage-bugs@lists.sourceforge.net])
 AC_CONFIG_AUX_DIR(config)
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 

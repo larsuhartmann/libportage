@@ -1,5 +1,8 @@
 2009-08-26  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Changed bug email-address:
+	* configure.ac: changed email-address.
+
 	* test/valgrind-wrapper: removed.
 	* test/Makefile.am (METASOURCES): removed valgrind wrapper.
 	switched to old libtool based tests.
