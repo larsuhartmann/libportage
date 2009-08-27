@@ -98,7 +98,7 @@ test_lparchives_extract(bool distcheck)
      if ( distcheck )
           chmod(cwd, S_IRUSR|S_IWUSR|S_IXUSR);
      
-     mkdir("test", 0777
+     mkdir("test", 0777);
 
      if ( lparchive_extract(archive, "test") == -1 ) {
           fclose(file);
