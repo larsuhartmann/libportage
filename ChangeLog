@@ -1,5 +1,9 @@
 2009-08-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Fixed bug only occuring in make distcheck, because autotools do
+	set crazy file permissions:
+	* test/05_lparchives.c : added workaround.
+
 	Fixed "cant make target whatever/libportage.la" error:
 	* test/Makefile.am: added relative paths.
 

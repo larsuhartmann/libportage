@@ -43,7 +43,7 @@
 #define MAXLEN          1024
 
 int
-test_lparchives_extract();
+test_lparchives_extract(bool distcheck);
 
 int
 test_lparchives_get_entry_names();
@@ -51,22 +51,22 @@ test_lparchives_get_entry_names();
 int main(void)
 {
      char *srcpath;
-    
-     if ( (srcpath = getenv("srcdir")) != NULL )
+     bool distcheck=false;
+
+     if ( (srcpath = getenv("srcdir")) != NULL ) {
           if ( chdir(srcpath) == -1 )
                return EXIT_FAILURE;
-
+          distcheck = true;
+     }
      if ( test_lparchives_get_entry_names() == -1 )
           return EXIT_FAILURE;
-
-     if ( test_lparchives_extract() == -1 )
+     if ( test_lparchives_extract(distcheck) == -1 )
           return EXIT_FAILURE;
-     
      return EXIT_SUCCESS;
 }
 
 int
-test_lparchives_extract()
+test_lparchives_extract(bool distcheck)
 {
      FILE *file;
      int fd;
@@ -74,38 +74,38 @@ test_lparchives_extract()
      char buf[MAXLEN], cwd[MAXLEN];
      struct stat statstruct;
      bool has_failed = false;
-
      if ( (file = fopen(TESTFILECONTENT, "r")) == NULL ) {
           return -1;
      }
-
      if ( (fd = open(TESTFILE, O_RDONLY)) == -1 ) {
           fclose(file);
           return -1;
      }
-
      if ( (archive = lparchive_new()) == NULL ) {
           fclose(file);
           close(fd);
           return -1;
      }
      lparchive_init(archive);
-
      if ( (lparchive_open_fd(archive, fd)) == -1) {
           fclose(file);
           close(fd);
           return -1;
      }
 
-     mkdir("test", 0777);
+     getcwd(cwd, MAXLEN);
+
+     if ( distcheck )
+          chmod(cwd, S_IRUSR|S_IWUSR|S_IXUSR);
      
+     mkdir("test", 0777
+
      if ( lparchive_extract(archive, "test") == -1 ) {
           fclose(file);
           close(fd);
           lparchive_destroy(archive);
           return -1;
      }
-     getcwd(cwd, MAXLEN);
      chdir("test");
      fgets(buf, MAXLEN, file);
      while (fgets(buf, MAXLEN, file) != NULL) {
