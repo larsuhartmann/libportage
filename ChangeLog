@@ -1,5 +1,8 @@
 2009-08-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+        Cleaned up test for lparchive:
+        * test/05_lparchives.c: replaced multiple bailout-code with goto.
+
 	Fixed Compile error:
 	* test/05_lparchives.c (test_lparchives_extract): fixed syntax error.
 

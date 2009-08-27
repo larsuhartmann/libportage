@@ -68,31 +68,24 @@ int main(void)
 int
 test_lparchives_extract(bool distcheck)
 {
-     FILE *file;
-     int fd;
-     lparchive_t *archive;
+     FILE *file = NULL;
+     int fd = 0;
+     lparchive_t *archive = NULL;
      char buf[MAXLEN], cwd[MAXLEN];
      struct stat statstruct;
      bool has_failed = false;
-     if ( (file = fopen(TESTFILECONTENT, "r")) == NULL ) {
-          return -1;
-     }
-     if ( (fd = open(TESTFILE, O_RDONLY)) == -1 ) {
-          fclose(file);
-          return -1;
-     }
-     if ( (archive = lparchive_new()) == NULL ) {
-          fclose(file);
-          close(fd);
-          return -1;
-     }
-     lparchive_init(archive);
-     if ( (lparchive_open_fd(archive, fd)) == -1) {
-          fclose(file);
-          close(fd);
-          return -1;
-     }
+     if ( (file = fopen(TESTFILECONTENT, "r")) == NULL )
+          goto test_lparchives_extract_bailout;
 
+     if ( (fd = open(TESTFILE, O_RDONLY)) == -1 )
+          goto test_lparchives_extract_bailout;
+
+     if ( (archive = lparchive_new()) == NULL )
+          goto test_lparchives_extract_bailout;
+
+     lparchive_init(archive);
+     if ( (lparchive_open_fd(archive, fd)) == -1)
+          goto test_lparchives_extract_bailout;
      getcwd(cwd, MAXLEN);
 
      if ( distcheck )
@@ -100,12 +93,8 @@ test_lparchives_extract(bool distcheck)
      
      mkdir("test", 0777);
 
-     if ( lparchive_extract(archive, "test") == -1 ) {
-          fclose(file);
-          close(fd);
-          lparchive_destroy(archive);
-          return -1;
-     }
+     if ( lparchive_extract(archive, "test") == -1 )
+          goto test_lparchives_extract_bailout;
      chdir("test");
      fgets(buf, MAXLEN, file);
      while (fgets(buf, MAXLEN, file) != NULL) {
@@ -136,44 +125,42 @@ test_lparchives_extract(bool distcheck)
           return -1;
      
      return 0;
+
+test_lparchives_extract_bailout:
+     if ( file )
+          fclose(file);
+     if ( fd )
+          close(fd);
+     if ( archive )
+          lparchive_destroy(archive);
+     remove("test");
+     return -1;
 }
 
 int
 test_lparchives_get_entry_names()
 {
-     FILE *file;
-     int fd;
-     lparchive_t *archive;
+     FILE *file = NULL;
+     int fd = 0;
+     lparchive_t *archive = NULL;
      char **r, buf[MAXLEN];
      size_t len;
      int i;
      bool has_failed = false;
      
-     if ( (file = fopen(TESTFILECONTENT, "r")) == NULL ) {
-          return -1;
-     }
-     if ( (fd = open(TESTFILE, O_RDONLY)) == -1 ) {
-          fclose(file);
-          return -1;
-     }
-     if ( (archive = lparchive_new()) == NULL ) {
-          fclose(file);
-          close(fd);
-          return -1;
-     }
-     lparchive_init(archive);
-     if ( (lparchive_open_fd(archive, fd)) == -1) {
-          fclose(file);
-          close(fd);
-          return -1;
-     }
+     if ( (file = fopen(TESTFILECONTENT, "r")) == NULL )
+          goto test_lparchives_get_entry_names_bailout;
+     if ( (fd = open(TESTFILE, O_RDONLY)) == -1 )
+          goto test_lparchives_get_entry_names_bailout;
+     if ( (archive = lparchive_new()) == NULL )
+          goto test_lparchives_get_entry_names_bailout;
+          lparchive_init(archive);
+     if ( (lparchive_open_fd(archive, fd)) == -1)
+          goto test_lparchives_get_entry_names_bailout;
 
-     if ( (r = lparchive_get_entry_names(archive)) == NULL ) {
-          lparchive_destroy(archive);
-          fclose(file);
-          close(fd);
-          return -1;
-     }
+     if ( (r = lparchive_get_entry_names(archive)) == NULL )
+          goto test_lparchives_get_entry_names_bailout;
+
      fgets(buf, MAXLEN, file);
      len = atoi(buf);
      for ( i=0; r[i] != NULL; ++i ) {
@@ -182,13 +169,8 @@ test_lparchives_get_entry_names()
           if (strcmp(buf, r[i]) != 0)
                has_failed = true;
      }
-     if (! has_failed)
-          if ( len != i ) {
-               lparchive_destroy(archive);
-               fclose(file);
-               close(fd);
-               return -1;
-          }
+     if ( has_failed || len != i )
+               goto test_lparchives_get_entry_names_bailout;
 
      for ( i=0; r[i] != NULL; ++i )
           free((char *)r[i]);
@@ -200,4 +182,13 @@ test_lparchives_get_entry_names()
      fclose(file);
 
      return 0;
+
+test_lparchives_get_entry_names_bailout:
+     if ( archive )
+          lparchive_destroy(archive);
+     if ( file )
+          fclose(file);
+     if ( fd )
+          close(fd);
+     return -1;
 }
