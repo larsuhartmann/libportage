@@ -1,5 +1,8 @@
 2009-08-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Fixed "cant make target whatever/libportage.la" error:
+	* test/Makefile.am: added relative paths.
+
 	Fixed SIGABRT in test:
 	* test/05_lparchives.c (test_lparchives_extract): one should
 	return if an error has occured ;-).
