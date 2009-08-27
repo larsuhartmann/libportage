@@ -1,3 +1,9 @@
+2009-08-27  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Fixed SIGABRT in test:
+	* test/05_lparchives.c (test_lparchives_extract): one should
+	return if an error has occured ;-).
+
 2009-08-26  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Changed bug email-address:

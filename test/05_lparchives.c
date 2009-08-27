@@ -103,6 +103,7 @@ test_lparchives_extract()
           fclose(file);
           close(fd);
           lparchive_destroy(archive);
+          return -1;
      }
      getcwd(cwd, MAXLEN);
      chdir("test");
