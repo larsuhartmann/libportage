@@ -188,7 +188,7 @@ test_lparchives_get_entry_names_bailout:
           lparchive_destroy(archive);
      if ( file )
           fclose(file);
-     if ( fd )
+     if ( fd && fd != -1)
           close(fd);
      return -1;
 }

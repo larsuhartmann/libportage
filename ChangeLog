@@ -1,5 +1,11 @@
 2009-08-28  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Cleaned up tests:
+	* test/04_lpxpak.c: replaced multiple repeated bailout code with
+	gotos.
+	* test/05_lparchives.c: fixed possible error when calling close(2)
+	after open(2) failed.
+
 	Fixed compiler warnings:
 	* src/liblpatom.c: added declaration for stpcpy if we are using glibc.
 	* src/liblputil.c: added declaration for stpcpy if we are using glibc.
