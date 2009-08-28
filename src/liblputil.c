@@ -59,6 +59,12 @@ extern int errno
 extern "C" {
 #endif
 
+/* this function seems to be in glibc right from the beginning */
+#ifdef __GNUC__
+extern char *
+stpcpy(char *dest, const char *src);
+#endif
+
 extern char *
 lputil_get_re_match(const regmatch_t *match, int n, const char *s)
 {

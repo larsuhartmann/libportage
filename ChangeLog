@@ -1,3 +1,11 @@
+2009-08-28  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Fixed compiler warnings:
+	* src/liblpatom.c: added declaration for stpcpy if we are using glibc.
+	* src/liblputil.c: added declaration for stpcpy if we are using glibc.
+	* src/liblpversion.c: added declaration for stpcpy if we are using glibc.
+	(lpversion_version_compile): removed unused variable len.
+
 2009-08-27  Lars Hartmann  <lars (at) chaotika (dot) org>
 
         Cleaned up test for lparchive:

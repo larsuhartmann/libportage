@@ -55,6 +55,12 @@ extern int errno;
 extern "C" {
 #  endif
 
+/* this function seems to be in glibc right from the beginning */
+#ifdef __GNUC__
+extern char *
+stpcpy(char *dest, const char *src);
+#endif
+
 /**
  * @brief the regular expression used for validating and tokenizing of the
  * given version string.
@@ -297,7 +303,6 @@ static inline char *
 lpversion_version_compile(const lpversion_t *handle)
 {
      unsigned int i, j;
-     size_t len;
      char **va, *ret, *tmp, *tmp2;
 
      for ( i=0; handle->va[i] != -1; ++i )

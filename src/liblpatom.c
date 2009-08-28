@@ -31,7 +31,6 @@
  * This makes sure, we have a Standard conformant environment.
  */
 #define _XOPEN_SOURCE   600
-
 #if HAVE_CONFIG_H
 # include <config.h>
 #endif
@@ -59,6 +58,12 @@ extern int errno;
 
 #include <stdbool.h>
 #include <ctype.h>
+
+/* this function seems to be in glibc right from the beginning */
+#ifdef __GNUC__
+extern char *
+stpcpy(char *dest, const char *src);
+#endif
 
 /**
  * @brief the regular expression used for validating the given version string.
