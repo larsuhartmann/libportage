@@ -1,3 +1,9 @@
+2009-08-30  Lars Hartmann  <lars (at) chaotika (dot) org>
+
+	Optimized replacement functions:
+	* replace/stpcpy.c: beautified.
+	* replace/strndup.c: fastified.
+
 2009-08-28  Lars Hartmann  <lars (at) chaotika (dot) org>
 
 	Cleaned up tests:

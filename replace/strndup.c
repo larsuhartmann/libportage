@@ -25,6 +25,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 #include <stdlib.h>
+#include <string.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -35,14 +36,18 @@ extern char *
 strndup(const char *s, size_t n)
 {
      char *r;
+     size_t len;
      
-     if ( strlen(s) <= n )
-          r = strdup(s);
-     else
-          if ( (r = malloc(n+1)) != NULL) {
-               memcpy(r, s, n);
-               r[n] = '\0';
-          }
+     if ( (len = strlen(s)) <= n ) {
+          if (! (r = malloc(len+1)) )
+               return NULL;
+          memcpy(r, s, len);
+          r[len] = '\0';
+          return r;
+     } else if ( (r = malloc(n+1)) != NULL) {
+          memcpy(r, s, n);
+          r[n] = '\0';
+     }
      return r;
 }
 
