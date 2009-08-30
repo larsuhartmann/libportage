@@ -1,5 +1,10 @@
 2009-08-30  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Fixed lputil_int64len test:
+	* test/01_lputil_int64len.c: replaced lputil_intlen function call
+	with lputil_int64len.
+	Used inttypes.h printf macros to make it work on 32bit platforms too.
+
 	Cleaned up error handling:
 	* src/liblpxpak.c: Replaced individual cleanup routines with gotos.
 	* src/liblpversion.c (lpversion_compile): added missing return.

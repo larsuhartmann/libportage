@@ -33,6 +33,7 @@
 #include <limits.h>
 #include <string.h>
 #include <stdbool.h>
+#include <inttypes.h>
 
 #define MAXLEN          1024
 
@@ -41,12 +42,12 @@ int main(void)
      char s[MAXLEN];
 
      /* test if lputil_intlen can handle INT64_MIN */
-     sprintf(s, "%d", INT64_MIN);
-     if ( lputil_intlen(INT64_MIN) != strlen(s))
+     sprintf(s, "%"PRIi64, INT64_MIN);
+     if ( lputil_int64len(INT64_MIN) != strlen(s))
           return EXIT_FAILURE;
      /* test if lputil_intlen can handle INT64_MAX */
-     sprintf(s, "%d", INT64_MAX);
-     if ( lputil_intlen(INT64_MAX) != strlen(s))
+     sprintf(s, "%"PRIi64, INT64_MAX);
+     if ( lputil_int64len(INT64_MAX) != strlen(s))
           return EXIT_FAILURE;
      
      return EXIT_SUCCESS;
