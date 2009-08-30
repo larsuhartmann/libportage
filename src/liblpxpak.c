@@ -417,7 +417,7 @@ lpxpak_parse_data(lpxpak_t *handle, const lpxpak_blob_t *blob)
          (memcmp((uint8_t *)blob->data+blob->len-LPXPAK_OUTRO_LEN,
          LPXPAK_OUTRO, LPXPAK_OUTRO_LEN) != 0) ) {
           errno = EINVAL;
-          return -1;
+          goto lpxpak_parse_data_bailout;
      }
      count += LPXPAK_INTRO_LEN;
      
@@ -432,7 +432,7 @@ lpxpak_parse_data(lpxpak_t *handle, const lpxpak_blob_t *blob)
       * is equal to len to make sure the len values are correct */
      if ( count+index_len+data_len+LPXPAK_OUTRO_LEN != blob->len ) {
           errno = EINVAL;
-          return -1;
+          goto lpxpak_parse_data_bailout;
      }
 
      index_data = (uint8_t *)blob->data+count;
@@ -440,13 +440,11 @@ lpxpak_parse_data(lpxpak_t *handle, const lpxpak_blob_t *blob)
 
      /* create and initialize an index object */
      if ( (index = lpxpak_index_create()) == NULL )
-          return -1;
+          goto lpxpak_parse_data_bailout;
      lpxpak_index_init(index);
      /* get index */
-     if ( lpxpak_index_parse(index, index_data, (size_t)index_len) == -1 ) {
-          lpxpak_index_destroy(index);
-          return -1;
-     }
+     if ( lpxpak_index_parse(index, index_data, (size_t)index_len) == -1 )
+          goto lpxpak_parse_data_bailout;
      /* check if the sum of all len entries of all data elements is equal to
       * data_len to make sure the len values are correct, if not, clean up the
       * heap, set errno and return.  */
@@ -454,21 +452,22 @@ lpxpak_parse_data(lpxpak_t *handle, const lpxpak_blob_t *blob)
           tl += index->entries[i].len;
      if ( tl != data_len ) {
           errno = EINVAL;
-          lpxpak_index_destroy(index);
-          return -1;
+          goto lpxpak_parse_data_bailout;
      }
 
      /* get xpak-data  */
-     if ( (lpxpak_data_parse(handle, data_data, index)) == -1 ) {
-          lpxpak_index_destroy(index);
-          return -1;
-     }
+     if ( (lpxpak_data_parse(handle, data_data, index)) == -1 )
+          goto lpxpak_parse_data_bailout;
 
      handle->size = index->len;
      /* free up index */
      lpxpak_index_destroy(index);
 
      return 0;
+
+lpxpak_parse_data_bailout:
+     lpxpak_index_destroy(index);
+     return -1;
 }
 
 extern int
@@ -506,7 +505,7 @@ lpxpak_blob_get_fd(int fd)
 {
      void *xpakdata = NULL;
      void *tmp = NULL;
-     lpxpak_int_t *xpakoffset = NULL;
+     lpxpak_int_t *xpakoffset;
      ssize_t rs;
      lpxpak_blob_t *xpakblob;
 
@@ -521,24 +520,20 @@ lpxpak_blob_get_fd(int fd)
      if ( (tmp = malloc(LPXPAK_STOP_LEN+LPXPAK_INT_SIZE)) == NULL )
           return NULL;
      if ( (rs = read(fd, tmp, LPXPAK_STOP_LEN+LPXPAK_INT_SIZE))
-         == -1 ) {
-          free(tmp);
-          return NULL;
-     }
+         == -1 )
+          goto lpxpak_blob_get_fd_bailout;
      if ( rs != LPXPAK_STOP_LEN+LPXPAK_INT_SIZE ) {
-          free(tmp);
           errno = EBUSY;
-          return NULL;
+          goto lpxpak_blob_get_fd_bailout;
      }
      
      /* check if the read in __LPXPAK_STOP string equals __LPXPAK_STOP.  If
       * not, free the allocated memory, set errno and return NULL as this is
       * an invalid xpak. */
      if ( memcmp((uint8_t *)tmp+LPXPAK_INT_SIZE, LPXPAK_STOP,
-         LPXPAK_STOP_LEN) != 0 ) {
-          free(tmp);
+                 LPXPAK_STOP_LEN) != 0 ) {
           errno = EINVAL;
-          return NULL;
+          goto lpxpak_blob_get_fd_bailout;
      }
      /* assign a pointer to the xpak offset data to xpakoffset and convert it
       * to local byte order */
@@ -549,35 +544,20 @@ lpxpak_blob_get_fd(int fd)
       * to the start of the xpak data, read in the xpak data and store it in
       * xpakdata. */
      if ( lseek(fd, (off_t)((off_t)*xpakoffset+LPXPAK_OFFSET_LEN)*-1,
-         SEEK_END) == -1 ) {
-          free(tmp);
-          free(xpakdata);
-          return NULL;
-     }
-     if ( (xpakdata = malloc((size_t)*xpakoffset)) == NULL ) {
-          free(tmp);
-          return NULL;
-     }
+         SEEK_END) == -1 )
+          goto lpxpak_blob_get_fd_bailout;
+     if ( (xpakdata = malloc((size_t)*xpakoffset)) == NULL )
+          goto lpxpak_blob_get_fd_bailout;
      /* check if a error occured while data was read in */
-     if ( (rs = read(fd, xpakdata, (size_t)*xpakoffset)) == -1 ) {
-          free(tmp);
-          free(xpakdata);
-          return NULL;
-     }
+     if ( (rs = read(fd, xpakdata, (size_t)*xpakoffset)) == -1 )
+          goto lpxpak_blob_get_fd_bailout;
      /* check if all of the data was read, if not, set errno and return with
       * failure  */
-     if ( rs != (ssize_t)*xpakoffset ) {
-          free(tmp);
-          free(xpakdata);
-          errno = EBUSY;
-          return NULL;
-     }
+     if ( rs != (ssize_t)*xpakoffset )
+          goto lpxpak_blob_get_fd_bailout;
      /* initialize data structure for xpakblob */
-     if ( (xpakblob = lpxpak_blob_create()) == NULL ) {
-          free(tmp);
-          free(xpakdata);
-          return NULL;
-     }
+     if ( (xpakblob = lpxpak_blob_create()) == NULL )
+          goto lpxpak_blob_get_fd_bailout;
      lpxpak_blob_init(xpakblob);
      xpakblob->data = xpakdata;
      xpakblob->len = *xpakoffset;
@@ -585,6 +565,11 @@ lpxpak_blob_get_fd(int fd)
      /* clear up allocated memory*/
      free(tmp);
      return xpakblob;
+
+lpxpak_blob_get_fd_bailout:
+     free(tmp);
+     free(xpakdata);
+     return NULL;
 }
 
 extern int
@@ -909,34 +894,27 @@ lpxpak_blob_compile(lpxpak_t *handle)
 {
      size_t bloblen;
      size_t count = 0;
-     lpxpak_blob_t *index;
-     lpxpak_blob_t *data;
-     lpxpak_blob_t *blob;
+     lpxpak_blob_t *index=NULL;
+     lpxpak_blob_t *data=NULL;
+     lpxpak_blob_t *blob=NULL;
      lpxpak_int_t bil, bdl;
     
 
      /* build index blob */
      if ( (index = lpxpak_indexblob_compile(handle)) == NULL )
-          return NULL;
+          goto lpxpak_blob_compile_bailout;
 
-     if ( (data = lpxpak_datablob_compile(handle)) == NULL ) {
-          lpxpak_blob_destroy(index);
-          return NULL;
-     }
+     if ( (data = lpxpak_datablob_compile(handle)) == NULL )
+          goto lpxpak_blob_compile_bailout;
 
      bloblen = LPXPAK_INTRO_LEN + (LPXPAK_INT_SIZE*2) + data->len +
           index->len + LPXPAK_OUTRO_LEN;
 
-     if ( (blob = lpxpak_blob_create()) == NULL ) {
-          lpxpak_blob_destroy(index);
-          return NULL;
-     }
+     if ( (blob = lpxpak_blob_create()) == NULL )
+          goto lpxpak_blob_compile_bailout;
      lpxpak_blob_init(blob);
-     if ( (blob->data = malloc(bloblen)) == NULL ) {
-          lpxpak_blob_destroy(index);
-          lpxpak_blob_destroy(blob);
-          return NULL;
-     }
+     if ( (blob->data = malloc(bloblen)) == NULL )
+          goto lpxpak_blob_compile_bailout;
      bil = htonl(index->len);
      bdl = htonl(data->len);
      
@@ -957,6 +935,11 @@ lpxpak_blob_compile(lpxpak_t *handle)
      blob->len = count;
 
      return blob;
+
+lpxpak_blob_compile_bailout:
+     lpxpak_blob_destroy(index);
+     lpxpak_blob_destroy(blob);
+     return NULL;
 }
 
 static lpxpak_blob_t *

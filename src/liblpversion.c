@@ -426,6 +426,7 @@ lpversion_compile(const lpversion_t *handle)
      if ( (ret = malloc(len+1)) == NULL ) {
           free(numver);
           free(suffix);
+          return NULL;
      }
      tmp = stpcpy(ret, numver);
      free(numver);

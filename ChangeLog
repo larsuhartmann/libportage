@@ -1,5 +1,9 @@
 2009-08-30  Lars Hartmann  <lars (at) chaotika (dot) org>
 
+	Cleaned up error handling:
+	* src/liblpxpak.c: Replaced individual cleanup routines with gotos.
+	* src/liblpversion.c (lpversion_compile): added missing return.
+
 	Optimized replacement functions:
 	* replace/stpcpy.c: beautified.
 	* replace/strndup.c: fastified.
