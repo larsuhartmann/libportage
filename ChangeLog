@@ -1,4 +1,7 @@
 2009-09-04  Lars Hartmann  <lars (at) chaotika (dot) org>
+	Fixed Shellutils:
+	* bin/lp_atomcompare.c: will now return 0 and print out the output
+	of lpatom_cmp.
 
 	Added shellutils using libportage provided by Patrick Lauer:
 	* bin/lp_atomcompare.c: added.

@@ -47,14 +47,6 @@ int main(int argc, char** argv)
           return 1;
      }
      
-     ret = lpatom_cmp(first, second);
-     if ( ret == 0 )
-          ret = 1;
-     else if ( ret < 0 )
-          ret = 0;
-     else if ( ret > 0 )
-          ret = 2;
-     
-     printf("%d\n", ret);
+     printf("%d\n", lpatom_cmp(first, second););
      return 0;
 }
