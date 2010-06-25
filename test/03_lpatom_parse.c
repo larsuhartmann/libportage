@@ -70,7 +70,7 @@ int main(void)
                     printf("sa1: %s <> sa2: %s\n", sa1, sa2);
                     has_failed = true;
                } else if ( strcmp(sa1, s) != 0 ) {
-                    printf("input: %s <> sa1: %s\n");
+                    printf("input: %s <> sa1: %s\n", s, sa1);
                     has_failed = true;
                }
           }

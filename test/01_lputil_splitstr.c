@@ -52,12 +52,15 @@ int main(void)
      
      while ( fgets(s, MAXLEN, file) != NULL ) {
           s[strlen(s)-1] = '\0';
-          fgets(delim, MAXLEN, file);
+          if (fgets(delim, MAXLEN, file) == NULL )
+               return EXIT_FAILURE;
           delim[strlen(delim)-1] = '\0';
-          fgets(t, MAXLEN, file);
+          if (fgets(t, MAXLEN, file) == NULL )
+               return EXIT_FAILURE;
           t[strlen(t)-1] = '\0';
           len = atoi(t);
-          fgets(entry, MAXLEN, file);
+          if (fgets(entry, MAXLEN, file) == NULL )
+               return EXIT_FAILURE;
           entry[strlen(entry)-1] = '\0';
 
           if ( (split = lputil_splitstr(s, delim)) == NULL )
@@ -71,7 +74,8 @@ int main(void)
                     has_failed = true;
                /* check if the joined string is the same as the one we
                 * originally fed to lputil_splitstr() */
-               if ( (join = lputil_joinstr(split, delim)) == NULL )
+               if ( (join = lputil_joinstr((const char **)split, delim))
+                    == NULL )
                     has_failed = true;
                if ( strcmp(s, join) != 0 )
                     has_failed = true;

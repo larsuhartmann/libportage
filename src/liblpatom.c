@@ -152,8 +152,8 @@ lpatom_create(void)
 
 extern void
 lpatom_init(lpatom_t *handle)
-/*@sets handle@*//*@ensures isnull handle->name, handle->cat, handle->version,
-handle->fname@*/
+/*@sets handle@*//*@ensures isnull handle->name, handle->cat,
+handle->version, handle->fname@*/
 {
      handle->name = NULL;
      handle->cat = NULL;
@@ -164,13 +164,13 @@ handle->fname@*/
      (void)regcomp(&handle->regex.category, LPATOM_RE_CAT, REG_EXTENDED);
      (void)regcomp(&handle->regex.name, LPATOM_RE_NAME, REG_EXTENDED);
      (void)regcomp(&handle->regex.version, LPATOM_RE_VER, REG_EXTENDED);
-
      return;
 }
 
 extern void
 lpatom_reset(lpatom_t *handle)
-/*@sets handle@*//*@ensures isnull handle->name, handle->cat, handle->version, handle->fname@*/
+/*@sets handle@*//*@ensures isnull handle->name, handle->cat,
+handle->version, handle->fname@*/
 {
      free(handle->name);
      free(handle->cat);

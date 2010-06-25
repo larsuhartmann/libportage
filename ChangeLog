@@ -1,3 +1,12 @@
+2010-06-25  Lars Hartmann  <lars@chaotika.org>
+
+	Fixed some minor things (thanks clang compiler-warnings :-):
+	* test/03_lpatom_parse.c (main): yes one should actually give
+	parameters to printf..
+	* src/liblpatom.c: reformatted.
+	* test/01_lputil_splitstr.c: fixed compiler warnings and added
+	error handling for fgets calls.
+
 2009-09-04  Lars Hartmann  <lars (at) chaotika (dot) org>
 	Fixed Shellutils:
 	* bin/lp_atomcompare.c: will now return 0 and print out the output
